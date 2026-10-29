@@ -13,7 +13,6 @@
     <link href="css/styles.css" rel="stylesheet">
 </head>
 <body class="bg-body">
-    <div class="bg-warning-subtle text-warning-emphasis text-center small py-2 px-3" role="note">Demo de prueba · Datos ficticios · No realiza trámites ni pagos reales.</div>
     <header>
         <!-- Barra GOV.CO -->
         <div class="gov-bar d-none d-lg-block">
@@ -42,14 +41,11 @@
                             <i class="bi bi-bell" aria-hidden="true"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">1</span>
                         </a>
-                        <button class="btn btn-light text-primary rounded-circle" type="button" data-onboarding-start aria-label="Ayuda: ver guía de uso">
-                            <i class="bi bi-question-circle" aria-hidden="true"></i>
-                        </button>
 
                         <!-- Perfil de usuario -->
                         <div class="dropdown">
                             <button class="btn btn-link link-dark text-decoration-none d-flex align-items-center gap-2 p-0 dropdown-toggle" id="profileMenuButton" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Cuenta de PERSONA PRUEBA, Contribuyente">
-                                    <span id="profileInitials" class="rounded-circle bg-primary-subtle text-primary-emphasis d-inline-flex align-items-center justify-content-center fw-semibold p-2" aria-hidden="true">MV</span>
+                                    <span id="profileInitials" class="rounded-circle bg-primary-subtle text-primary-emphasis d-inline-flex align-items-center justify-content-center fw-semibold flex-shrink-0" aria-hidden="true">PP</span>
                                 <span class="d-none d-lg-flex flex-column align-items-start gap-1">
                                     <span id="profileName" class="fw-semibold">PERSONA PRUEBA</span>
                                     <span class="badge bg-primary-subtle text-primary-emphasis profile-active-badge">Contribuyente</span>
@@ -288,88 +284,6 @@
                 </div>
             </main>
         </div>
-    </div>
-
-    <div class="modal fade tax-benefit-modal" id="taxBenefitModal" tabindex="-1" aria-labelledby="taxBenefitTitle" aria-describedby="taxBenefitDescription" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header tax-benefit-modal-header text-white">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="tax-benefit-icon" aria-hidden="true"><i class="bi bi-bank"></i></span>
-                        <div>
-                            <p class="small text-white-50 text-uppercase fw-semibold mb-1">Información para contribuyentes</p>
-                            <h2 class="modal-title fs-4 fw-semibold mb-0" id="taxBenefitTitle">Beneficio tributario</h2>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar aviso"></button>
-                </div>
-                <div class="modal-body p-4 p-md-5" id="taxBenefitDescription">
-                    <p class="fs-5 text-body mb-4">El <strong>Acuerdo 1084 de 2026</strong> otorga descuentos sobre el valor de los intereses y las sanciones de las obligaciones tributarias pendientes.</p>
-                    <div class="tax-benefit-details rounded-3 p-3 p-md-4">
-                        <div class="d-flex gap-3">
-                            <i class="bi bi-info-circle-fill text-primary fs-4" aria-hidden="true"></i>
-                            <p class="mb-0">El descuento se verá reflejado después de presentar la declaración inicial o su corrección. Para consultarlo, genera un <strong>ROP (Recibo Oficial de Pago)</strong> desde la ruta <strong>Consultas &gt; Obligaciones Pendientes &gt; Generar ROP</strong> en la Oficina Virtual del contribuyente.</p>
-                        </div>
-                    </div>
-                    <p class="small text-secondary text-uppercase fw-semibold mt-4 mb-0">Contribuyente</p>
-                    <p class="fw-semibold mb-0">BANCO BILBAO VIZCAYA ARGENTARIA COLOMBIA</p>
-                </div>
-                <div class="modal-footer bg-body-tertiary px-4 py-3">
-                    <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Entendido</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="onboarding-tour d-none" id="onboardingTour" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle" aria-describedby="onboardingDescription">
-        <div class="onboarding-shade onboarding-shade-top" data-onboarding-shade></div>
-        <div class="onboarding-shade onboarding-shade-bottom" data-onboarding-shade></div>
-        <div class="onboarding-shade onboarding-shade-left" data-onboarding-shade></div>
-        <div class="onboarding-shade onboarding-shade-right" data-onboarding-shade></div>
-        <div class="onboarding-spotlight border border-3 border-primary rounded-3" aria-hidden="true"></div>
-        <section class="card shadow onboarding-card">
-            <div class="card-body p-3 p-sm-4">
-                <div class="d-flex align-items-start justify-content-between gap-3 mb-2">
-                    <h2 class="h5 card-title mb-0" id="onboardingTitle">Bienvenida a tu Oficina Virtual</h2>
-                    <button class="btn-close flex-shrink-0" type="button" data-onboarding-close aria-label="Cerrar guía"></button>
-                </div>
-                <div class="d-flex align-items-center gap-2 mb-3" id="onboardingDots" aria-label="Paso 1 de 5">
-                    <span class="rounded-circle bg-primary onboarding-dot" aria-hidden="true"></span>
-                    <span class="rounded-circle bg-secondary onboarding-dot" aria-hidden="true"></span>
-                    <span class="rounded-circle bg-secondary onboarding-dot" aria-hidden="true"></span>
-                    <span class="rounded-circle bg-secondary onboarding-dot" aria-hidden="true"></span>
-                    <span class="rounded-circle bg-secondary onboarding-dot" aria-hidden="true"></span>
-                    <span class="small text-secondary ms-1" id="onboardingDescription" aria-live="polite">Paso 1 de 5</span>
-                </div>
-                <div class="onboarding-step" data-onboarding-step="0">
-                    <h3 class="h6">Tu cuenta</h3>
-                    <p class="small text-secondary mb-0">Bienvenida, <span id="onboardingUserName">PERSONA PRUEBA</span>. Aquí puedes confirmar tu tipo y número de documento.</p>
-                </div>
-                <div class="onboarding-step d-none" data-onboarding-step="1" aria-hidden="true">
-                    <h3 class="h6">Tus declaraciones pendientes</h3>
-                    <p class="small text-secondary mb-0">Este es el inicio de tu Oficina Virtual. Aquí puedes buscar, seleccionar y consultar tus declaraciones pendientes.</p>
-                </div>
-                <div class="onboarding-step d-none" data-onboarding-step="2" aria-hidden="true">
-                    <h3 class="h6">Cambia tu correo o usuario</h3>
-                    <p class="small text-secondary mb-0">En <strong>Mi RIT &gt; Datos personales</strong>, esta sección te permite actualizar el correo electrónico que usas como usuario.</p>
-                </div>
-                <div class="onboarding-step d-none" data-onboarding-step="3" aria-hidden="true">
-                    <h3 class="h6">Revisa tu tipo de usuario</h3>
-                    <p class="small text-secondary mb-0">Tu perfil actual aparece aquí. Abre el menú para ingresar como <strong>Contribuyente</strong> o <strong>Agente autorizado</strong>. La opción de concesionarios se muestra cuando cuentas con la autorización correspondiente.</p>
-                </div>
-                <div class="onboarding-step d-none" data-onboarding-step="4" aria-hidden="true">
-                    <h3 class="h6">Agrega un agente autorizado</h3>
-                    <p class="small text-secondary mb-0">Desde <strong>Mi RIT &gt; Agentes autorizados</strong> puedes iniciar el proceso para que otra persona gestione trámites en tu nombre. No crea otra cuenta ni cambia tu tipo de usuario.</p>
-                </div>
-                <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
-                    <button class="btn btn-link btn-sm text-secondary px-0" type="button" data-onboarding-skip>Omitir guía</button>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm" type="button" data-onboarding-back disabled>Anterior</button>
-                        <button class="btn btn-primary btn-sm" type="button" data-onboarding-next>Siguiente</button>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
     <div class="modal fade" id="companySelectorModal" tabindex="-1" aria-labelledby="companySelectorTitle" aria-describedby="companySelectorDescription" aria-hidden="true">

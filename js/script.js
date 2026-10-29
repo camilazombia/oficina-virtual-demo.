@@ -465,8 +465,6 @@ function syncTaxpayerProfile() {
 	if (profileName) profileName.textContent = identity.fullName;
 	if (profileInitials) profileInitials.textContent = identity.initials;
 	if (profileButton) profileButton.setAttribute("aria-label", `Cuenta de ${identity.fullName}, ${document.querySelector(".profile-current-role")?.textContent.trim() || "Contribuyente"}`);
-	const onboardingUserName = document.getElementById("onboardingUserName");
-	if (onboardingUserName) onboardingUserName.textContent = identity.fullName;
 }
 
 function restoreTaxpayerIdentityFields() {
@@ -1276,11 +1274,9 @@ function renderRoute() {
 
 window.addEventListener("hashchange", () => {
 	renderRoute();
-	if (onboardingTourActive) window.setTimeout(positionOnboardingTour, 50);
 });
 window.addEventListener("popstate", () => {
 	renderRoute();
-	if (onboardingTourActive) window.setTimeout(positionOnboardingTour, 50);
 });
 
 document.addEventListener("click", (event) => {
@@ -1296,7 +1292,6 @@ document.addEventListener("click", (event) => {
 	nextUrl.hash = routeId;
 	window.history.pushState(null, "", nextUrl);
 	renderRoute();
-	if (onboardingTourActive) window.setTimeout(positionOnboardingTour, 50);
 });
 
 document.addEventListener("click", (event) => {
@@ -1694,124 +1689,6 @@ document.addEventListener("drop", (event) => {
 	if (files?.length) addAgentDocuments([...files]);
 });
 
-const onboardingTour = document.getElementById("onboardingTour");
-const onboardingCard = onboardingTour.querySelector(".onboarding-card");
-const onboardingSteps = [...onboardingTour.querySelectorAll("[data-onboarding-step]")];
-const onboardingDots = [...document.querySelectorAll("#onboardingDots .onboarding-dot")];
-const onboardingBackButton = onboardingTour.querySelector("[data-onboarding-back]");
-const onboardingNextButton = onboardingTour.querySelector("[data-onboarding-next]");
-const onboardingProgress = document.getElementById("onboardingDescription");
-const onboardingStorageKey = "hacienda-onboarding-completed";
-const onboardingTargets = ["#dashboardWelcomeSection", "#pendingDeclarationsSection", "#change-email", "#profileMenuButton", '[data-bs-target="#agentLookupModal"]'];
-const onboardingRoutes = ["inicio", "inicio", "rit-datos", "rit-datos", "rit-agentes"];
-let currentOnboardingStep = 0;
-let onboardingTourActive = false;
-
-function positionOnboardingTour() {
-	if (!onboardingTourActive) return;
-	const target = document.querySelector(onboardingTargets[currentOnboardingStep]);
-	if (!target) {
-		console.error(`No se encontró el elemento de la guía: ${onboardingTargets[currentOnboardingStep]}`);
-		closeOnboardingTour();
-		return;
-	}
-
-	target.scrollIntoView({ block: "center", behavior: "auto" });
-	const bounds = target.getBoundingClientRect();
-	const padding = 8;
-	const left = Math.max(0, bounds.left - padding);
-	const top = Math.max(0, bounds.top - padding);
-	const right = Math.min(window.innerWidth, bounds.right + padding);
-	const bottom = Math.min(window.innerHeight, bounds.bottom + padding);
-	const shades = [...onboardingTour.querySelectorAll("[data-onboarding-shade]")];
-	const [topShade, bottomShade, leftShade, rightShade] = shades;
-
-	Object.assign(topShade.style, { top: "0", left: "0", width: "100%", height: `${top}px` });
-	Object.assign(bottomShade.style, { top: `${bottom}px`, left: "0", width: "100%", height: `${Math.max(0, window.innerHeight - bottom)}px` });
-	Object.assign(leftShade.style, { top: `${top}px`, left: "0", width: `${left}px`, height: `${bottom - top}px` });
-	Object.assign(rightShade.style, { top: `${top}px`, left: `${right}px`, width: `${Math.max(0, window.innerWidth - right)}px`, height: `${bottom - top}px` });
-	Object.assign(onboardingTour.querySelector(".onboarding-spotlight").style, {
-		top: `${top}px`,
-		left: `${left}px`,
-		width: `${right - left}px`,
-		height: `${bottom - top}px`,
-	});
-
-	onboardingCard.style.top = "";
-	onboardingCard.style.bottom = bounds.top + bounds.height / 2 > window.innerHeight / 2 ? "1rem" : "";
-	if (!onboardingCard.style.bottom) onboardingCard.style.top = "1rem";
-}
-
-function showOnboardingStep(stepIndex) {
-	currentOnboardingStep = stepIndex;
-	onboardingSteps.forEach((step, index) => {
-		const isCurrentStep = index === currentOnboardingStep;
-		step.classList.toggle("d-none", !isCurrentStep);
-		step.setAttribute("aria-hidden", String(!isCurrentStep));
-	});
-	onboardingDots.forEach((dot, index) => {
-		dot.classList.toggle("bg-primary", index === currentOnboardingStep);
-		dot.classList.toggle("bg-secondary", index !== currentOnboardingStep);
-	});
-	onboardingProgress.textContent = `Paso ${currentOnboardingStep + 1} de ${onboardingSteps.length}`;
-	document.getElementById("onboardingDots").setAttribute("aria-label", onboardingProgress.textContent);
-	onboardingBackButton.disabled = currentOnboardingStep === 0;
-	onboardingNextButton.textContent = currentOnboardingStep === onboardingSteps.length - 1 ? "Finalizar" : "Siguiente";
-
-	const nextRoute = onboardingRoutes[currentOnboardingStep];
-	if (window.location.hash !== `#${nextRoute}`) {
-		window.location.hash = nextRoute;
-	} else {
-		window.setTimeout(positionOnboardingTour, 50);
-	}
-}
-
-function completeOnboardingTour() {
-	try {
-		window.localStorage.setItem(onboardingStorageKey, "true");
-	} catch (error) {
-		console.error("No fue posible guardar el estado de la guía de bienvenida.", error);
-	}
-}
-
-function closeOnboardingTour() {
-	onboardingTourActive = false;
-	onboardingTour.classList.add("d-none");
-	completeOnboardingTour();
-}
-
-function startOnboardingTour() {
-	onboardingTourActive = true;
-	onboardingTour.classList.remove("d-none");
-	showOnboardingStep(0);
-	onboardingNextButton.focus();
-}
-
-onboardingBackButton.addEventListener("click", () => {
-	if (currentOnboardingStep > 0) showOnboardingStep(currentOnboardingStep - 1);
-});
-onboardingNextButton.addEventListener("click", () => {
-	if (currentOnboardingStep < onboardingSteps.length - 1) {
-		showOnboardingStep(currentOnboardingStep + 1);
-		return;
-	}
-	closeOnboardingTour();
-});
-onboardingTour.querySelectorAll("[data-onboarding-skip], [data-onboarding-close]").forEach((button) => {
-	button.addEventListener("click", closeOnboardingTour);
-});
-document.querySelector("[data-onboarding-start]").addEventListener("click", startOnboardingTour);
-document.addEventListener("keydown", (event) => {
-	if (event.key === "Escape" && onboardingTourActive) closeOnboardingTour();
-});
-window.addEventListener("resize", positionOnboardingTour);
-
-let hasCompletedOnboarding = false;
-try {
-	hasCompletedOnboarding = window.localStorage.getItem(onboardingStorageKey) === "true";
-} catch (error) {
-	console.error("No fue posible consultar el estado de la guía de bienvenida.", error);
-}
 document.addEventListener("click", (event) => {
 	if (event.target.closest("[data-social-add]")) {
 		const row = addRitSocialRow();
@@ -2026,8 +1903,3 @@ document.addEventListener("change", (event) => {
 syncTaxpayerProfile();
 if (!window.location.hash) window.location.hash = "inicio";
 renderRoute();
-const taxBenefitModal = document.getElementById("taxBenefitModal");
-taxBenefitModal.addEventListener("hidden.bs.modal", () => {
-	if (!hasCompletedOnboarding) startOnboardingTour();
-});
-bootstrap.Modal.getOrCreateInstance(taxBenefitModal).show();

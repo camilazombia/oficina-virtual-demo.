@@ -362,37 +362,10 @@
 	}
 }
 
-.onboarding-tour {
-	position: fixed;
-	inset: 0;
-	z-index: 1080;
-	pointer-events: none;
-}
-
-.onboarding-shade {
-	position: fixed;
-	background: var(--bs-backdrop-bg);
-	opacity: var(--bs-backdrop-opacity);
-	pointer-events: auto;
-}
-
-.onboarding-spotlight {
-	position: fixed;
-	z-index: 1081;
-	pointer-events: none;
-	box-shadow: 0 0 0 3px var(--bs-primary-border-subtle);
-}
-
-.onboarding-card {
-	position: fixed;
-	z-index: 1082;
-	left: 50%;
-	width: min(28rem, calc(100vw - 2rem));
-	transform: translateX(-50%);
-	pointer-events: auto;
-}
-
-.onboarding-dot {
-	width: 0.55rem;
-	height: 0.55rem;
+#profileInitials {
+    width: 2.5rem;
+    height: 2.5rem;
+    aspect-ratio: 1 / 1;
+    flex: 0 0 2.5rem;
+    padding: 0;
 }
