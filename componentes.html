@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Componentes y estados | Oficina Virtual</title>
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary">
+    <header class="bg-primary text-white py-3">
+        <nav class="container d-flex flex-wrap align-items-center justify-content-between gap-3" aria-label="Navegación">
+            <span class="fw-semibold">Oficina Virtual · Componentes y estados</span>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light btn-sm" href="tokens.html">Tokens de diseño</a>
+                <a class="btn btn-outline-light btn-sm" href="index.html">Volver al inicio</a>
+            </div>
+        </nav>
+    </header>
+    <main class="container py-5">
+        <p class="text-primary fw-semibold small text-uppercase">Biblioteca de componentes</p>
+        <h1 class="fw-bold">Componentes y estados</h1>
+        <p class="text-secondary col-lg-8">Aquí reunimos los elementos que aparecen durante una interacción o en situaciones específicas: modales, alertas y otros mensajes del portal.</p>
+        <section class="card border-0 shadow-sm mt-4" aria-labelledby="session-example-title">
+            <div class="card-body p-4">
+                <span class="badge text-bg-light border mb-3">Modal</span>
+                <h2 class="h4" id="session-example-title">Cierre de sesión por inactividad</h2>
+                <p class="text-secondary">Mensaje que se muestra cuando la sesión ha expirado por inactividad.</p>
+                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#sessionExpiredModal">Ver modal</button>
+                <p class="small text-secondary mt-3 mb-0">Vista de demostración. Puedes abrir el modal tantas veces como necesites.</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal fade" id="sessionExpiredModal" tabindex="-1" aria-labelledby="sessionExpiredTitle" aria-describedby="sessionExpiredDescription" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="d-flex justify-content-end p-3 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center px-4 pb-4 pt-2">
+                    <div class="mb-4 text-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle display-1"></i></div>
+                    <h2 class="h4 fw-bold mb-3" id="sessionExpiredTitle">Cierre de sesión por inactividad</h2>
+                    <p class="text-secondary mb-4" id="sessionExpiredDescription">Tu sesión ha expirado debido a la inactividad prolongada. Por favor, actualiza la página e inicia sesión nuevamente.</p>
+                    <a class="btn btn-primary" href="index.html">Volver al inicio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

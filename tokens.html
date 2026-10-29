@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokens de diseño | Oficina Virtual</title>
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/tokens.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary">
+    <header class="bg-primary text-white py-3">
+        <nav class="container d-flex align-items-center justify-content-between gap-3" aria-label="Navegación">
+            <span class="fw-semibold">Oficina Virtual · Sistema de diseño</span>
+            <a class="btn btn-outline-light btn-sm" href="index.html">Volver al inicio</a>
+        </nav>
+    </header>
+    <main class="container py-5">
+        <h1 class="fw-bold">Tokens de color del proyecto</h1>
+        <p class="text-secondary col-lg-9">Colores utilizados por los estilos y componentes presentes en el proyecto actual, incluida su guía visual. Se muestra el tema claro activo, con nombres sugeridos para Figma, valores y muestras de color.</p>
+        <div class="row g-3 my-3">
+            <div class="col-md-4"><section class="card h-100"><div class="card-body"><h2 class="h5">01 Primitives</h2><p class="small text-secondary mb-0">Colores base reutilizados por el proyecto. Ejemplo: <code>--bs-blue</code>.</p></div></section></div>
+            <div class="col-md-4"><section class="card h-100"><div class="card-body"><h2 class="h5">02 Semantic</h2><p class="small text-secondary mb-0">Expresan una intención: acción principal, éxito, texto o superficie. Pueden cambiar según el tema. Ejemplo: <code>--bs-body-color</code>.</p></div></section></div>
+            <div class="col-md-4"><section class="card h-100"><div class="card-body"><h2 class="h5">03 Components</h2><p class="small text-secondary mb-0">Colores locales de botones, tarjetas, menús y sus estados. Ejemplo: <code>--bs-btn-bg</code>.</p></div></section></div>
+        </div>
+        <p class="small text-secondary">Clasificación de documentación basada en el alcance y la intención de las variables existentes. Bootstrap no declara formalmente estos tres niveles; se conservan sus nombres y valores originales.</p>
+        <section class="alert alert-primary" aria-labelledby="figma-guide">
+            <h2 class="h6" id="figma-guide">Cómo llevar esta estructura a Figma</h2>
+            <p class="small mb-2">Crea las colecciones <strong>01 Primitives</strong>, <strong>02 Semantic</strong> y <strong>03 Components</strong>. Dentro de cada colección, usa el nombre sugerido: las barras <code>/</code> representan grupos anidados. Los nombres son una propuesta para este proyecto.</p>
+            <p class="small mb-2">En Semantic y Components, usa modos <strong>Light</strong> y <strong>Dark</strong> para los valores de tema de una misma variable. Los estados y variantes de componentes se conservan en la ruta; no son modos de tema. Conecta los componentes a variables semánticas y estas a primitivas mediante alias del mismo tipo.</p>
+            <p class="small mb-2">El valor mostrado sigue siendo CSS: convierte unidades como <code>rem</code> a números antes de crear variables numéricas. Los valores <code>var(...)</code> deben convertirse en alias. Las sombras y las composiciones tipográficas se documentan como estilos de efecto y de texto; las ternas RGB son auxiliares del código, no colores independientes para importar directamente.</p>
+            <a class="small" href="https://help.figma.com/hc/en-us/articles/14506821864087-Overview-of-variables-collections-and-modes" target="_blank" rel="noopener noreferrer">Referencia: colecciones, grupos, modos y alias en Figma</a>
+        </section>
+        <section class="card border-0 shadow-sm my-4" aria-labelledby="token-groups-title">
+            <div class="card-body">
+                <h2 class="h6" id="token-groups-title">Colecciones de Figma</h2>
+                <div id="token-groups" class="d-flex flex-wrap gap-2 mb-3" role="group" aria-label="Nivel de tokens"></div>
+                <p class="small fw-semibold mb-2">Grupos dentro de la colección</p>
+                <div id="token-families" class="d-flex flex-wrap gap-2" role="group" aria-label="Subgrupo de tokens"></div>
+            </div>
+        </section>
+        <section class="card border-0 shadow-sm my-4" aria-label="Buscar tokens">
+            <div class="card-body row g-3 align-items-end">
+                <div class="col-md-9">
+                    <label for="token-search" class="form-label fw-semibold">Buscar una variable o valor</label>
+                    <input id="token-search" class="form-control" type="search" placeholder="Ej.: primary, border-radius, #0d6efd" autocomplete="off">
+                </div>
+                <div class="col-md-3">
+                    <label for="token-source" class="form-label fw-semibold">Origen</label>
+                    <select id="token-source" class="form-select"><option value="">Todos los estilos</option><option value="Bootstrap">Bootstrap</option><option value="Proyecto">Proyecto</option></select>
+                </div>
+            </div>
+        </section>
+        <p id="token-count" class="text-secondary small" role="status" aria-live="polite">Cargando variables…</p>
+        <div class="table-responsive app-table-container mb-3">
+            <table class="table app-table table-hover align-middle mb-0">
+                <caption class="visually-hidden">Variables CSS, valores declarados y selectores de aplicación</caption>
+                <thead class="table-light"><tr><th scope="col">Nombre sugerido en Figma</th><th scope="col">Variable CSS</th><th scope="col">Valor declarado</th><th scope="col">Selector y contexto</th><th scope="col">Origen</th></tr></thead>
+                <tbody id="token-list"></tbody>
+            </table>
+        </div>
+        <p id="token-empty" class="text-center text-secondary py-5" hidden>No hay variables que coincidan con tu búsqueda.</p>
+        <noscript><p class="alert alert-warning mt-3">Activa JavaScript para consultar las variables.</p></noscript>
+    </main>
+    <script src="js/tokens.js"></script>
+    <script src="js/table-sort.js"></script>
+</body>
+</html>
