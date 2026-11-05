@@ -13,6 +13,13 @@
     <link href="css/styles.css" rel="stylesheet">
 </head>
 <body class="bg-body">
+    <aside class="offcanvas offcanvas-end rounded-start-4" tabindex="-1" id="notificationPanel" aria-labelledby="notificationPanelTitle">
+        <div class="offcanvas-header border-bottom"><h2 class="offcanvas-title h5 fw-semibold" id="notificationPanelTitle">Notificaciones <span class="badge text-bg-primary rounded-pill" data-notification-count>4</span></h2><button class="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Cerrar notificaciones"></button></div>
+        <div class="p-3 border-bottom"><div class="d-flex align-items-center justify-content-between gap-2"><div class="nav nav-pills gap-1" aria-label="Filtrar vista previa"><button class="nav-link active px-2 py-1" data-notification-filter="all" aria-pressed="true" type="button">Todas</button><button class="nav-link px-2 py-1" data-notification-filter="unread" aria-pressed="false" type="button">No leídas</button></div><button class="btn btn-link btn-sm text-secondary p-0" type="button" data-notification-read-all>Marcar todas leídas</button></div></div>
+        <div class="offcanvas-body p-0"><div class="list-group list-group-flush" id="notification-preview-list"></div></div>
+        <div class="border-top p-3"><a class="btn btn-outline-primary w-100" href="#notificaciones-todas" data-notification-view-all>Ver todas las notificaciones <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i></a></div>
+    </aside>
+
     <header>
         <!-- Barra GOV.CO -->
         <div class="gov-bar d-none d-lg-block">
@@ -37,17 +44,16 @@
                     </a>
 
                     <div class="ms-auto d-flex align-items-center justify-content-end gap-2 gap-md-4 account-utilities">
-                        <a class="btn btn-light text-primary rounded-circle position-relative" href="#notificaciones-todas" aria-label="Notificaciones, 1 nueva">
-                            <i class="bi bi-bell" aria-hidden="true"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">1</span>
-                        </a>
+                        <button class="btn btn-light text-primary rounded-circle position-relative d-inline-flex align-items-center justify-content-center flex-shrink-0 p-3 lh-1" id="notificationMenuButton" type="button" data-bs-toggle="offcanvas" data-bs-target="#notificationPanel" aria-controls="notificationPanel" aria-label="Notificaciones">
+                            <i class="bi bi-bell fs-5 lh-1" aria-hidden="true"></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger" data-notification-count>4</span>
+                        </button>
 
                         <!-- Perfil de usuario -->
                         <div class="dropdown">
-                            <button class="btn btn-link link-dark text-decoration-none d-flex align-items-center gap-2 p-0 dropdown-toggle" id="profileMenuButton" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Cuenta de PERSONA PRUEBA, Contribuyente">
+                            <button class="btn btn-link link-dark text-decoration-none d-flex align-items-center gap-2 p-0 dropdown-toggle" id="profileMenuButton" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Cuenta de MIGUEL SALAZAR, Contribuyente">
                                     <span id="profileInitials" class="rounded-circle bg-primary-subtle text-primary-emphasis d-inline-flex align-items-center justify-content-center fw-semibold flex-shrink-0" aria-hidden="true">PP</span>
                                 <span class="d-none d-lg-flex flex-column align-items-start gap-1">
-                                    <span id="profileName" class="fw-semibold">PERSONA PRUEBA</span>
+                                    <span id="profileName" class="fw-semibold">MIGUEL SALAZAR</span>
                                     <span class="badge bg-primary-subtle text-primary-emphasis profile-active-badge">Contribuyente</span>
                                 </span>
                             </button>
@@ -132,10 +138,10 @@
                         <section class="bg-white border rounded-3 p-3 p-md-4 mb-4" aria-labelledby="basic-personal-data">
                             <h2 class="h6 fw-semibold text-body border-bottom pb-2 mb-3" id="basic-personal-data">Datos personales y de identificación</h2>
                             <div class="row g-3">
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-name">Primer nombre</label><input class="form-control form-control-sm" id="basic-first-name" type="text" value="PERSONA" autocomplete="given-name" disabled></div>
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-middle-name">Segundo nombre</label><input class="form-control form-control-sm" id="basic-middle-name" type="text" value="DE" autocomplete="additional-name" disabled></div>
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-surname">Primer apellido</label><input class="form-control form-control-sm" id="basic-first-surname" type="text" value="PRUEBA" autocomplete="family-name" disabled></div>
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-second-surname">Segundo apellido</label><input class="form-control form-control-sm" id="basic-second-surname" type="text" value="DEMO" autocomplete="additional-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-name">Primer nombre</label><input class="form-control form-control-sm" id="basic-first-name" type="text" value="MIGUEL" autocomplete="given-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-middle-name">Segundo nombre</label><input class="form-control form-control-sm" id="basic-middle-name" type="text" value="ANDRÉS" autocomplete="additional-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-surname">Primer apellido</label><input class="form-control form-control-sm" id="basic-first-surname" type="text" value="SALAZAR" autocomplete="family-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-second-surname">Segundo apellido</label><input class="form-control form-control-sm" id="basic-second-surname" type="text" value="RÍOS" autocomplete="additional-name" disabled></div>
                                 <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-id-class">Clase de identificación</label><select class="form-select form-select-sm" id="basic-id-class" disabled><option value="">Seleccione</option><option value="CC" selected>CC - Cédula de Ciudadanía</option><option value="CE">Cédula de extranjería</option><option value="PA">Pasaporte</option></select></div>
                                 <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-document-number">Número de documento</label><input class="form-control form-control-sm" id="basic-document-number" type="text" inputmode="numeric" value="1000000001" autocomplete="off" disabled></div>
                                 <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-document-issue-date">Fecha de expedición del documento</label><input class="form-control form-control-sm" id="basic-document-issue-date" type="date" value="2000-01-01" disabled></div>
@@ -233,7 +239,7 @@
                         <section class="bg-white border rounded-3 p-3 p-md-4 mb-4" aria-labelledby="change-email">
                             <h2 class="h6 fw-semibold text-body border-bottom pb-2 mb-3" id="change-email">Cambiar correo electrónico / usuario</h2>
                             <div class="row g-3">
-                                <div class="col-12 col-md-6"><label class="form-label small mb-1" for="current-email">Correo electrónico</label><input class="form-control form-control-sm" type="email" id="current-email" autocomplete="email" value="contribuyente.demo@example.com"></div>
+                                <div class="col-12 col-md-6"><label class="form-label small mb-1" for="current-email">Correo electrónico</label><input class="form-control form-control-sm" type="email" id="current-email" autocomplete="email" value="miguel.salazar@example.com"></div>
                                 <div class="col-12 col-md-6"><label class="form-label small mb-1" for="new-email">Nuevo correo electrónico <span class="text-danger">*</span></label><input class="form-control form-control-sm" type="email" id="new-email" required autocomplete="email" placeholder="Ingresa el nuevo correo"></div>
                                 <div class="col-12 col-md-6"><label class="form-label small mb-1" for="confirm-email">Confirmar nuevo correo electrónico <span class="text-danger">*</span></label><input class="form-control form-control-sm" type="email" id="confirm-email" required autocomplete="email" placeholder="Repite el nuevo correo"></div>
                             </div>
@@ -312,7 +318,10 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/agent-flow.js"></script>
+    <script src="js/ica.js"></script>
+    <script src="js/predial-declaration.js"></script>
     <script src="js/script.js"></script>
     <script src="js/table-sort.js"></script>
+    <script src="js/review-notes.js"></script>
 </body>
 </html>

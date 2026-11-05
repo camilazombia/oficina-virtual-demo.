@@ -12,12 +12,87 @@ function startAgentEdit(agent) {
 }
 
 const agentQualityDocuments = {
-	'Tutor': ['Sentencia judicial', 'Testamento', 'Tarjeta de identidad del menor'],
-	'Administrador adjunto': ['Testamento', 'Sentencia judicial', 'Documento de nombramiento'],
-	'Representante Legal Principal': ['Documento de nombramiento'],
-	'Representante Legal Suplente': ['Documento de nombramiento'],
-	'Revisor Fiscal Principal': ['Documento de nombramiento'],
-	'Revisor Fiscal Suplente': ['Documento de nombramiento'],
+    "Administrador":  [
+                          "Documento que lo acredite como tal"
+                      ],
+    "Administrador adjunto":  [
+                                  "Testamento",
+                                  "Sentencia Judicial",
+                                  "Documento de nombramiento"
+                              ],
+    "Agente Oficioso":  [
+                            "Actua sin documento antecedente (será ratificado por el contribuyente según los tiempo estipulados)"
+                        ],
+    "Albacea heredero con administracion de Bienes y Curador de herencia yacente":  [
+                                                                                        "Testamento",
+                                                                                        "Documento de nombramiento",
+                                                                                        "Providencia Judicial",
+                                                                                        "La manifestación de haber aceptado el cargo",
+                                                                                        "En el acto que declare abierto el proceso"
+                                                                                    ],
+    "Apoderado Especial":  [
+                               "Poder especial concedido por documento privado o escritura pública",
+                               "Tarjeta profesional de abogado cuando el poder otorgado tenga por objeto la interposicuión de un recurso (reposición, reconsideración, revocatoria directa)"
+                           ],
+    "Apoderado General":  [
+                              "Escritura pública"
+                          ],
+    "Contador":  [
+                     "Tarjeta Profesional"
+                 ],
+    "Curador":  [
+                    "Sentencia Judicial",
+                    "Testamento",
+                    "Tarjeta de Identidad del menor"
+                ],
+    "Donatarios":  [
+                       "Escritura pública",
+                       "Testamento",
+                       "Instrumento otorgado ante el Juez"
+                   ],
+    "Fideicomitente y/o Beneficiario":  [
+                                            "Documento de identificación del agente"
+                                        ],
+    "Heredero":  [
+                     "Registro Civil de Nacimiento",
+                     "Testamento"
+                 ],
+    "Liquidador / Síndico":  [
+                                 "Certificado de Cámara de Comercio",
+                                 "Resolución Judicial",
+                                 "Acta de disolución de la sociedad",
+                                 "Documento que lo acredite como tal"
+                             ],
+    "Padre o Madre":  [
+                          "Registro Civil de Nacimiento",
+                          "Tarjeta de Identidad del menor"
+                      ],
+    "Representante legal del consorcio o union temporal":  [
+                                                               "Documento de identificación del agente"
+                                                           ],
+    "Representante Legal Principal":  [
+                                          "Certificado de Cámara de Comercio"
+                                      ],
+    "Representante Legal Suplente":  [
+                                         "Certificado de Cámara de Comercio"
+                                     ],
+    "Revisor Fiscal Principal":  [
+                                     "Acta de la asamblea o junta de socios donde fue designado",
+                                     "Certificado de Cámara de Comercio"
+                                 ],
+    "Revisor Fiscal Suplente":  [
+                                    "Acta de la asamblea o junta de socios donde fue designado",
+                                    "La manifestación de haber aceptado el cargo",
+                                    "Certificado de Cámara de Comercio"
+                                ],
+    "Socio gestor del contrato de cuentas en participacion":  [
+                                                                  "Contrato de Fiducia"
+                                                              ],
+    "Tutor":  [
+                  "Sentencia Judicial",
+                  "Testamento",
+                  "Tarjeta de Identidad del menor"
+              ]
 };
 const agentTaxNames = { predial: 'Predial', vehiculos: 'Vehicular', ica: 'ICA' };
 const agentBimesters = ['Enero – Febrero', 'Marzo – Abril', 'Mayo – Junio', 'Julio – Agosto', 'Septiembre – Octubre', 'Noviembre – Diciembre'];
@@ -171,7 +246,7 @@ function updateAgentAuthorizationFields() {
 	object.disabled = !object.required;
 	const label = tax === 'vehiculos' ? 'Placa' : document.querySelector('[name="agentPropertyType"]:checked').value;
 	document.getElementById('agentAuthObjectLabel').innerHTML = `${tax === 'vehiculos' ? 'Placa del veh\u00edculo' : label === 'CHIP' ? 'CHIP del predio' : 'Matr\u00edcula inmobiliaria'} <span class="text-danger">*</span>`;
-	object.placeholder = tax === 'vehiculos' ? 'Ej.: ABC123' : label === 'CHIP' ? 'Ej.: DEMO0000001' : 'Ej.: 000C00000001';
+	object.placeholder = tax === 'vehiculos' ? 'Ej.: ABC123' : label === 'CHIP' ? 'Ej.: AAA0248KJTR' : 'Ej.: 000C00000001';
  document.getElementById('agentAuthObjectHelp').textContent = tax === 'vehiculos' ? 'Escribe la placa sin espacios ni guiones.' : label === 'CHIP' ? 'Encuentra el CHIP en tu factura de impuesto predial.' : 'Encuentra este número en el certificado de tradición y libertad.';
  object.setCustomValidity('');
 }
