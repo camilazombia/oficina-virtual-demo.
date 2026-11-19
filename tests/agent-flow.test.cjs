@@ -42,6 +42,7 @@ function setup() {
 	} });
 	const run = (code) => vm.runInContext(code, context);
 	const main = fs.readFileSync(path.join(__dirname, '../js/script.js'), 'utf8');
+	run(main.slice(main.indexOf('function tableBadge('), main.indexOf('function showDetailModal(')));
 	run(fs.readFileSync(path.join(__dirname, '../js/agent-flow.js'), 'utf8'));
 	run(main.slice(main.indexOf('let selectedAgentLookup ='), main.indexOf('const vehicles =')));
 	run(main.slice(main.indexOf('const authorizedAgents ='), main.indexOf('function renderRitPage(')));
@@ -75,7 +76,7 @@ test('lookup finds a formatted document and asks for confirmation before continu
 	field('agentLookupConfirmation').classList.add('d-none');
 	context.searchForm = form;
 	run('searchAgentForWizard(searchForm)');
-	assert(field('agentLookupConfirmation').innerHTML.includes('Agente De Prueba Demo'));
+	assert(field('agentLookupConfirmation').innerHTML.includes('Agente Ejemplo Demo Ficticio'));
 	assert(field('agentLookupConfirmation').innerHTML.includes('data-agent-confirm-person'));
 	assert(form.classList.contains('d-none'));
 	assert.equal(context.window.location.hash, '');
@@ -114,7 +115,7 @@ test('quality validation blocks missing documents and inverted dates; permits ad
 	assert.equal(run('agentWizardDraft.step'), 3);
 	assert.equal(run('agentWizardDraft.quality'), 'Tutor');
 	run('updateAgentQualityDocuments()');
-	assert(field('agentRequiredDocuments').innerHTML.includes('Tarjeta de identidad del menor'));
+  assert(field('agentRequiredDocuments').innerHTML.includes('Tarjeta de Identidad del menor'));
 	run('navigateAgentWizard(2)');
 	assert.equal(run('agentWizardDraft.step'), 2);
 	assert.equal(run('selectedAgentDocuments.length'), 1);
@@ -147,10 +148,10 @@ test('authorizations use tax-specific periods, prevent duplicates, and finish ad
 	const previousCount = run('authorizedAgents.length');
 	emit('click', field('agentWizardFinish'));
 	assert.equal(run('authorizedAgents.length'), previousCount + 1);
-	assert.equal(run('authorizedAgents.at(-1).name'), 'Agente De Prueba Demo');
+	assert.equal(run('authorizedAgents.at(-1).name'), 'Agente Ejemplo Demo Ficticio');
 	assert.equal(run('authorizedAgents.at(-1).authorizations.length'), 1);
 	assert.equal(context.window.location.hash, 'rit-agentes');
-	assert(run('renderAuthorizedAgents()').includes('Se agregó a Agente De'));
+	assert(run('renderAuthorizedAgents()').includes('Se agregó a Agente Ejemplo'));
 });
 
 test('document upload rejects non-PDF and oversized files and avoids duplicates', () => {

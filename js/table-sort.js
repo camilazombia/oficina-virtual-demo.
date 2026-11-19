@@ -26,6 +26,8 @@
 		const direction = header.getAttribute('aria-sort') === 'ascending' ? -1 : 1;
 		const value = (row) => {
 			const text = row.cells[header.cellIndex]?.textContent.trim() || '';
+			const timestamp = text.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}:\d{2}:\d{2})$/);
+			if (timestamp) return `${timestamp[3]}-${timestamp[2]}-${timestamp[1]} ${timestamp[4]}`;
 			const date = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
 			return date ? `${date[3]}-${date[2]}-${date[1]}` : text;
 		};
@@ -53,6 +55,7 @@
 		const registered = table.closest('[data-registered-tax]');
 		if (registered) filterRegisteredTaxes(registered.dataset.registeredTax, true);
 		if (table.id === 'pending-declarations-table') filterPendingDeclarations(true);
+		if (table.id === 'notification-page-list') paginateNotifications(true);
 		if (table.id === 'predialPropertiesTable') filterPredialProperties();
 	});
 	new MutationObserver(enhanceTables).observe(document.body, { childList: true, subtree: true });

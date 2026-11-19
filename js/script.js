@@ -27,7 +27,7 @@ const routeGroups = [
 		items: [
 			["obligaciones-pendientes", "Obligaciones pendientes"],
 			["obligaciones-cuenta", "Estados de cuenta"],
-			["obligaciones-facilidades", "Facilidades de pago"],
+			["obligaciones-facilidades", "ROP Facilidades de Pago"],
 		],
 	},
 	{
@@ -160,7 +160,7 @@ try {
 }
 try {
 	if (window.localStorage.getItem(currentEmailSeedKey) !== "true") {
-		ritFormValues["current-email"] = { value: "miguel.salazar@example.com", checked: false };
+		ritFormValues["current-email"] = { value: "contribuyente.demo@example.com", checked: false };
 		window.localStorage.setItem(ritFormStorageKey, JSON.stringify(ritFormValues));
 		window.localStorage.setItem(currentEmailSeedKey, "true");
 	}
@@ -257,16 +257,16 @@ function saveContactAddressFromEditor() {
 }
 
 // Update legacy placeholder values without replacing user-entered information.
-Object.entries({ 'basic-first-name': ['PERSONA', 'MIGUEL'], 'basic-middle-name': ['DE', 'ANDRÉS'], 'basic-first-surname': ['PRUEBA', 'SALAZAR'], 'basic-second-surname': ['DEMO', 'RÍOS'], 'current-email': ['contribuyente.demo@example.com', 'miguel.salazar@example.com'] }).forEach(([id, [previous, current]]) => {
+Object.entries({ 'basic-first-name': ['PERSONA', 'CONTRIBUYENTE'], 'basic-middle-name': ['DE', 'EJEMPLO'], 'basic-first-surname': ['PRUEBA', 'DEMO'], 'basic-second-surname': ['DEMO', 'FICTICIO'], 'current-email': ['contribuyente.demo@example.com', 'contribuyente.demo@example.com'] }).forEach(([id, [previous, current]]) => {
  if (ritFormValues[id]?.value === previous) ritFormValues[id].value = current;
 });
 restoreRitFormValues(contentRoot);
 const existingRitPage = contentRoot.innerHTML;
 let taxpayerIdentity = {
-	firstName: "MIGUEL",
-	middleName: "ANDRÉS",
-	firstSurname: "SALAZAR",
-	secondSurname: "RÍOS",
+	firstName: "CONTRIBUYENTE",
+	middleName: "EJEMPLO",
+	firstSurname: "DEMO",
+	secondSurname: "FICTICIO",
 	documentType: "CC",
 	documentNumber: "1000000001",
 	documentIssueDate: "2000-01-01",
@@ -281,81 +281,81 @@ const agentDirectory = [
 		documentNumber: "1000000002",
 		issueDate: "2020-01-01",
 		taxpayerType: "Persona natural",
-		firstName: "Valentina",
-		middleName: "Isabel",
-		lastName: "Morales",
-		secondLastName: "Castro",
-		address: "Carrera 24 # 63-18, Bogotá, D. C.",
-		landline: "(601) 742 6813",
-		mobile: "315 628 4917",
-		email: "valentina.morales@example.com",
+		firstName: "Agente",
+		middleName: "Ejemplo",
+		lastName: "Demo",
+		secondLastName: "Ficticio",
+		address: "Dirección ficticia del agente",
+		landline: "",
+		mobile: "",
+		email: "agente.demo@example.com",
 		socialNetwork: "Instagram",
-		socialUser: "@valentina.morales",
+		socialUser: "@agente.demo",
 	},
 ];
 
 const vehicles = [
 	...[
-		['865NWX', 'FOTON', '2026', 'CAMIONETA', 'FURGON', '02', 'NO', '2499'],
-		['866NWX', 'FOTON', '2026', 'CAMIONETA', 'FURGON', '02', 'NO', '2499'],
-		['867NWX', 'FOTON', '2026', 'CAMIONETA', 'FURGON', '02', 'NO', '2499'],
-		['ADH93', 'HONDA', '1980', 'MOTOCICLETA', 'SIN CARROCERIA', '00', 'NO', '100'],
-		['AGI426', 'VIASA', '1971', 'CAMPERO', 'CABINADO', '2', 'NO', '2800'],
-		['BCO276', 'FIAT', '1993', 'AUTOMOVIL', 'COUPE', '2', 'NO', '1200'],
-		['BEE625', 'NISSAN', '1994', 'AUTOMOVIL', 'SEDAN', '4', 'NO', '1400'],
-		['BFC507', 'CHEVROLET', '1995', 'CAMIONETA', 'CABINADO', '02', 'NO', '2300'],
-		['BGC079', 'PEUGEOT', '1995', 'AUTOMOVIL', 'SEDAN', '4', 'NO', '2000'],
-		['BHK271', 'CHEVROLET', '1997', 'CAMPERO', 'CABINADO', '4', 'SI', '4300'],
+		['DEM351', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
+		['DEM352', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
+		['DEM353', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
+		['DEM355', 'Honda', '1980', 'Motocicleta', 'Sin carrocería', '00', 'No', '100'],
+		['DEM356', 'Viasa', '1971', 'Campero', 'Cabinado', '2', 'No', '2800'],
+		['DEM357', 'Fiat', '1993', 'Automóvil', 'Cupé', '2', 'No', '1200'],
+		['DEM358', 'Nissan', '1994', 'Automóvil', 'Sedán', '4', 'No', '1400'],
+		['DEM359', 'Chevrolet', '1995', 'Camioneta', 'Cabinado', '02', 'No', '2300'],
+		['DEM360', 'Peugeot', '1995', 'Automóvil', 'Sedán', '4', 'No', '2000'],
+		['DEM361', 'Chevrolet', '1997', 'Campero', 'Cabinado', '4', 'Sí', '4300'],
 	].map(([plate, brand, year, className, body, doors, armored, engine]) => ({ plate, brand, line: '', year, className, body, doors, armored, engine })),
-	{"plate":"DEM001","brand":"CITROEN","line":"","year":"2020","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1598"},
-	{"plate":"DEM002","brand":"RAM","line":"","year":"2019","className":"CAMIONETA","body":"DOBLE CABINA","doors":"4","armored":"NO","engine":"3600"},
-	{"plate":"DEM003","brand":"FORD","line":"","year":"2013","className":"AUTOMOVIL","body":"HATCH BACK","doors":"4","armored":"NO","engine":"1597"},
-	{"plate":"DEM004","brand":"FORD","line":"","year":"2013","className":"AUTOMOVIL","body":"SEDAN","doors":"4","armored":"NO","engine":"1597"},
-	{"plate":"DEM005","brand":"FORD","line":"","year":"2014","className":"CAMPERO","body":"WAGON","doors":"5","armored":"NO","engine":"1999"},
-	{"plate":"DEM006","brand":"CHEVROLET","line":"","year":"2014","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1796"},
-	{"plate":"DEM007","brand":"NISSAN","line":"","year":"2014","className":"AUTOMOVIL","body":"SEDAN","doors":"04","armored":"NO","engine":"1598"},
-	{"plate":"DEM008","brand":"CITROEN","line":"","year":"2014","className":"AUTOMOVIL","body":"SEDAN","doors":"5","armored":"NO","engine":"1587"},
-	{"plate":"DEM009","brand":"VOLKSWAGEN","line":"","year":"2016","className":"CAMIONETA","body":"WAGON","doors":"4","armored":"NO","engine":"1598"},
-	{"plate":"DEM010","brand":"RENAULT","line":"","year":"2016","className":"AUTOMOVIL","body":"SEDAN","doors":"4","armored":"NO","engine":"1598"},
-	{"plate":"DEM011","brand":"VOLKSWAGEN","line":"","year":"2019","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1599"},
-	{"plate":"DEM012","brand":"JEEP","line":"","year":"2019","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1747"},
-	{"plate":"DEM013","brand":"JEEP","line":"","year":"2019","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"2359"},
-	{"plate":"DEM014","brand":"RENAULT","line":"","year":"2019","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1599"},
-	{"plate":"DEM015","brand":"FORD","line":"","year":"2019","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1999"},
-	{"plate":"DEM016","brand":"KIA","line":"","year":"2020","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1999"},
-	{"plate":"DEM017","brand":"PEUGEOT","line":"","year":"2020","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1598"},
-	{"plate":"DEM018","brand":"PEUGEOT","line":"","year":"2020","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1587"},
-	{"plate":"DEM019","brand":"RENAULT","line":"","year":"2020","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"999"},
-	{"plate":"DEM020","brand":"SUZUKI","line":"","year":"2020","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1586"},
-	{"plate":"DEM021","brand":"SUZUKI","line":"","year":"2018","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1197"},
-	{"plate":"DEM022","brand":"SUZUKI","line":"","year":"2018","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1197"},
-	{"plate":"DEM023","brand":"RENAULT","line":"","year":"2017","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1599"},
-	{"plate":"DEM024","brand":"SUZUKI","line":"","year":"2018","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1197"},
-	{"plate":"DEM025","brand":"KIA","line":"","year":"2018","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1248"},
-	{"plate":"DEM026","brand":"HYUNDAI","line":"","year":"2017","className":"AUTOMOVIL","body":"SEDAN","doors":"4","armored":"NO","engine":"1591"},
-	{"plate":"DEM027","brand":"PEUGEOT","line":"","year":"2018","className":"AUTOMOVIL","body":"HATCH BACK","doors":"5","armored":"NO","engine":"1598"},
-	{"plate":"DEM028","brand":"JEEP","line":"","year":"2018","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1747"},
-	{"plate":"DEM029","brand":"VOLKSWAGEN","line":"","year":"2019","className":"AUTOMOVIL","body":"SEDAN","doors":"4","armored":"NO","engine":"1395"},
-	{"plate":"DEM030","brand":"VOLVO","line":"","year":"2019","className":"CAMIONETA","body":"WAGON","doors":"5","armored":"NO","engine":"1969"},
+	{"plate":"DEM001","brand":"Citroën","line":"","year":"2020","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1598"},
+	{"plate":"DEM002","brand":"RAM","line":"","year":"2019","className":"Camioneta","body":"Doble cabina","doors":"4","armored":"No","engine":"3600"},
+	{"plate":"DEM003","brand":"Ford","line":"","year":"2013","className":"Automóvil","body":"Hatchback","doors":"4","armored":"No","engine":"1597"},
+	{"plate":"DEM004","brand":"Ford","line":"","year":"2013","className":"Automóvil","body":"Sedán","doors":"4","armored":"No","engine":"1597"},
+	{"plate":"DEM005","brand":"Ford","line":"","year":"2014","className":"Campero","body":"Wagon","doors":"5","armored":"No","engine":"1999"},
+	{"plate":"DEM006","brand":"Chevrolet","line":"","year":"2014","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1796"},
+	{"plate":"DEM007","brand":"Nissan","line":"","year":"2014","className":"Automóvil","body":"Sedán","doors":"04","armored":"No","engine":"1598"},
+	{"plate":"DEM008","brand":"Citroën","line":"","year":"2014","className":"Automóvil","body":"Sedán","doors":"5","armored":"No","engine":"1587"},
+	{"plate":"DEM009","brand":"Volkswagen","line":"","year":"2016","className":"Camioneta","body":"Wagon","doors":"4","armored":"No","engine":"1598"},
+	{"plate":"DEM010","brand":"Renault","line":"","year":"2016","className":"Automóvil","body":"Sedán","doors":"4","armored":"No","engine":"1598"},
+	{"plate":"DEM011","brand":"Volkswagen","line":"","year":"2019","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1599"},
+	{"plate":"DEM012","brand":"Jeep","line":"","year":"2019","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1747"},
+	{"plate":"DEM013","brand":"Jeep","line":"","year":"2019","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"2359"},
+	{"plate":"DEM014","brand":"Renault","line":"","year":"2019","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1599"},
+	{"plate":"DEM015","brand":"Ford","line":"","year":"2019","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1999"},
+	{"plate":"DEM016","brand":"Kia","line":"","year":"2020","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1999"},
+	{"plate":"DEM017","brand":"Peugeot","line":"","year":"2020","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1598"},
+	{"plate":"DEM018","brand":"Peugeot","line":"","year":"2020","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1587"},
+	{"plate":"DEM019","brand":"Renault","line":"","year":"2020","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"999"},
+	{"plate":"DEM020","brand":"Suzuki","line":"","year":"2020","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1586"},
+	{"plate":"DEM021","brand":"Suzuki","line":"","year":"2018","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1197"},
+	{"plate":"DEM022","brand":"Suzuki","line":"","year":"2018","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1197"},
+	{"plate":"DEM023","brand":"Renault","line":"","year":"2017","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1599"},
+	{"plate":"DEM024","brand":"Suzuki","line":"","year":"2018","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1197"},
+	{"plate":"DEM025","brand":"Kia","line":"","year":"2018","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1248"},
+	{"plate":"DEM026","brand":"Hyundai","line":"","year":"2017","className":"Automóvil","body":"Sedán","doors":"4","armored":"No","engine":"1591"},
+	{"plate":"DEM027","brand":"Peugeot","line":"","year":"2018","className":"Automóvil","body":"Hatchback","doors":"5","armored":"No","engine":"1598"},
+	{"plate":"DEM028","brand":"Jeep","line":"","year":"2018","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1747"},
+	{"plate":"DEM029","brand":"Volkswagen","line":"","year":"2019","className":"Automóvil","body":"Sedán","doors":"4","armored":"No","engine":"1395"},
+	{"plate":"DEM030","brand":"Volvo","line":"","year":"2019","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1969"},
 	{ plate: "DEM031", brand: "Ducati", line: "", year: "2013", className: "Motocicleta", body: "Sin carrocería", doors: "0", armored: "No", engine: "1198" },
 	{ plate: "DEM032", brand: "BMW", line: "", year: "2012", className: "Automóvil", body: "Sedán", doors: "4", armored: "No", engine: "1997" },
 ];
 
 const predialProperties = [
-	['AAA0000XPTO', '050S00712129', 'CL 13 SUR 6 34 ESTE GJ 14', '', '2026', '00000000000010283338'],
-	['AAA0000XRYX', '050S00712203', 'CL 13 SUR 6 34 ESTE AP 802', '', '2026', '00000000000010232108'],
-	['AAA0001ASYN', '050S40265453', 'CL 13 BIS SUR 5A 65 GJ 10', '', '2026', '00000000000010962652'],
-	['AAA0001AUJZ', '050S40265422', 'CL 13 BIS SUR 5A 65 AP 403', '', '2026', '00000000000010962897'],
-	['AAA0001EUOM', '050S40203487', 'KR 2A 17A 35 SUR IN 14 AP 101', '', '2026', '00000000000011234902'],
-	['AAA0001EXAF', '050S40203531', 'KR 2A 17A 35 SUR IN 16 AP 201', '', '2026', '00000000000010098989'],
-	['AAA0001MNUZ', '050S00904063', 'AC 11 SUR 10A 40 GJ 101', '', '2026', '00000000000010066629'],
-	['AAA0001MODE', '050S00904071', 'AC 11 SUR 10A 50 AP 501', '', '2026', '00000000000010066662'],
-	['AAA0001MPKL', '050S40005993', 'KR 11 8 16 SUR AP 201', '', '2026', '00000000000010032869'],
-	['AAA0001YXJH', '050S40258176', 'CL 8B SUR 7 15 GJ 44', '', '2026', '00000000000011037750'],
-	["AAA0248KJTR", "000C00000001", "CL 72 15 38", "", "2026", "00000000000000000001"],
-	["AAA0193HFXP", "000C00000002", "KR 19 104 26", "", "2026", "00000000000000000002"],
-	["AAA0316BNQL", "000C00000003", "CL 45 27 16", "", "2026", "00000000000000000003"],
-	["AAA0274DMSV", "000C00000004", "KR 58 128 43", "", "2026", "00000000000000000004"],
+	['CHIP-DEMO-024', '050S00000040', 'Dirección ficticia 081', '', '2026', '00000000000000000116'],
+	['CHIP-DEMO-025', '050S00000041', 'Dirección ficticia 080', '', '2026', '00000000000000000115'],
+	['CHIP-DEMO-026', '050S00000050', 'Dirección ficticia 079', '', '2026', '00000000000000000117'],
+	['CHIP-DEMO-027', '050S00000049', 'Dirección ficticia 078', '', '2026', '00000000000000000118'],
+	['CHIP-DEMO-028', '050S00000046', 'Dirección ficticia 088', '', '2026', '00000000000000000120'],
+	['CHIP-DEMO-029', '050S00000047', 'Dirección ficticia 089', '', '2026', '00000000000000000114'],
+	['CHIP-DEMO-030', '050S00000042', 'Dirección ficticia 076', '', '2026', '00000000000000000112'],
+	['CHIP-DEMO-031', '050S00000043', 'Dirección ficticia 077', '', '2026', '00000000000000000113'],
+	['CHIP-DEMO-032', '050S00000044', 'Dirección ficticia 086', '', '2026', '00000000000000000111'],
+	['CHIP-DEMO-034', '050S00000048', 'Dirección ficticia 085', '', '2026', '00000000000000000119'],
+	["CHIP-DEMO-037", "000C00000001", "Dirección ficticia 084", "", "2026", "00000000000000000001"],
+	["CHIP-DEMO-036", "000C00000002", "Dirección ficticia 087", "", "2026", "00000000000000000002"],
+	["CHIP-DEMO-039", "000C00000003", "Dirección ficticia 083", "", "2026", "00000000000000000003"],
+	["CHIP-DEMO-038", "000C00000004", "Dirección ficticia 090", "", "2026", "00000000000000000004"],
 ];
 
 const vehicleHeaders = ["Placa", "Marca", "Línea", "Modelo", "Clase", "Carrocería", "No. de puertas", "Blindaje", "Cilindraje"];
@@ -383,8 +383,12 @@ function renderNavigation(activeId) {
 
 function renderBreadcrumb(route) {
 	const crumbs = route.id === "inicio" ? [] : [`<li class="breadcrumb-item">${linkTo("inicio", "Inicio")}</li>`];
-	if (route.group) crumbs.push(`<li class="breadcrumb-item">${route.group.label}</li>`);
-	crumbs.push(`<li class="breadcrumb-item active" aria-current="page">${route.label}</li>`);
+	const isObligationQuery = route.id === "obligaciones-pendientes";
+	const isPaymentPlans = ["obligaciones-facilidades", "pagos-facilidades"].includes(route.id);
+	const title = isPaymentPlans ? "Facilidades de pago" : isObligationQuery ? "Consulta de obligaciones"
+		: route.id === "declaraciones-generar" ? "Generar Declaración" : route.label;
+	if (route.group) crumbs.push(`<li class="breadcrumb-item">${isObligationQuery || isPaymentPlans ? "Consultas" : route.group.label}</li>`);
+	crumbs.push(`<li class="breadcrumb-item active" aria-current="page">${title}</li>`);
 	breadcrumbRoot.innerHTML = crumbs.join("");
 }
 
@@ -434,27 +438,97 @@ function closeAgentLookupAndContinue(modalElement) {
 	}
 }
 
-function table(headers, rows = [], options = {}) {
-	const headerMarkup = headers.map((header) => `<th scope="col">${header}</th>`).join("");
-	const bodyMarkup = rows.length
-		? rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")
-		: `<tr><td class="text-center text-secondary py-4" colspan="${headers.length}">${options.empty ?? "No hay registros disponibles."}</td></tr>`;
-	return `<div class="table-responsive app-table-container mb-3"><table class="table app-table table-hover align-middle mb-0"><thead class="table-light"><tr>${headerMarkup}</tr></thead><tbody>${bodyMarkup}</tbody></table></div>`;
+function tableFrame(headerMarkup, bodyMarkup, { id = '', label = 'Tabla de resultados', tableClass = '', containerClass = 'mb-3' } = {}) {
+	return `<div class="table-responsive app-table-container ${containerClass}" tabindex="0" role="region" aria-label="${label}"><table ${id ? `id="${id}"` : ''} class="table app-table table-hover align-middle mb-0 ${tableClass}"><thead class="table-light"><tr>${headerMarkup}</tr></thead><tbody>${bodyMarkup}</tbody></table></div>`;
 }
 
-function filterForm(fields, buttonText = "Consultar") {
-	const controls = fields.map((field, index) => {
-		const id = `filter-${++filterControlIndex}-${index}`;
-		const options = field.options ? `<select class="form-select" id="${id}"><option ${field.value ? "" : "selected"} value="">Seleccione</option>${field.options.map((option) => `<option${option === field.value ? " selected" : ""}>${option}</option>`).join("")}</select>` : `<input class="form-control" id="${id}" type="${field.type ?? "text"}" placeholder="${field.placeholder ?? ""}">`;
-		return `<div class="col-12 col-md-${field.columns ?? 4}"><label class="form-label" for="${id}">${field.label}</label>${options}</div>`;
+function table(headers, rows = [], options = {}) {
+	const headerMarkup = headers.map((header, index) => `<th scope="col"${options.unsortable?.includes(index) ? ' data-table-sort-ready="true"' : ''}>${header}</th>`).join("");
+	const bodyMarkup = rows.length
+		? rows.map((row, index) => `<tr ${options.rowAttributes?.(index) ?? ''}>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")
+		: `<tr><td class="text-center text-secondary py-4" colspan="${headers.length}">${options.empty ?? "No hay registros disponibles."}</td></tr>`;
+	return tableFrame(headerMarkup, bodyMarkup, options);
+}
+
+function tableBadge(label, tone = 'secondary') {
+	return `<span class="badge rounded-pill bg-${tone}-subtle text-${tone}-emphasis border border-${tone}-subtle text-wrap text-start px-3 py-2">${label}</span>`;
+}
+
+function paginationControls(page, pages, attributes = () => '', visiblePages = Array.from({ length: pages }, (_, index) => index + 1)) {
+	const button = (label, target, disabled = false, active = false) =>
+		`<li class="page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}"><button class="page-link" type="button" ${attributes(target)} ${disabled ? 'disabled' : ''} ${active ? 'aria-current="page"' : ''}>${label}</button></li>`;
+	const numbers = visiblePages.map((number, index) => {
+		const gap = index > 0 && number - visiblePages[index - 1] > 1;
+		return `${gap ? '<li class="page-item disabled"><span class="page-link">…</span></li>' : ''}${button(number, number, false, number === page)}`;
+	}).join('');
+	return button('Anterior', page - 1, page === 1) + numbers + button('Siguiente', page + 1, page === pages);
+}
+
+function showDetailModal({ title, body, trigger, size = '', titleId = 'detail-modal-title' }) {
+	const modal = document.createElement('div');
+	modal.className = 'modal fade';
+	modal.tabIndex = -1;
+	modal.setAttribute('aria-labelledby', titleId);
+	modal.innerHTML = `<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ${size}"><div class="modal-content">
+		<div class="modal-header"><h2 class="modal-title h5" id="${titleId}">${title}</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+		<div class="modal-body">${body}</div>
+		<div class="modal-footer"><button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cerrar</button></div>
+	</div></div>`;
+	document.body.append(modal);
+	const instance = new bootstrap.Modal(modal);
+	modal.addEventListener('hidden.bs.modal', () => {
+		instance.dispose();
+		modal.remove();
+		if (trigger?.isConnected) trigger.focus();
+	}, { once: true });
+	instance.show();
+}
+
+function yearOptions(firstYear, lastYear) {
+	return Array.from({ length: lastYear - firstYear + 1 }, (_, index) => String(lastYear - index));
+}
+
+function renderSelect(id, options, { value = "", prompt = "Selecciona una opción", required = false } = {}) {
+	const placeholder = prompt ? `<option value=""${value ? "" : " selected"}${required ? " disabled" : ""}>${prompt}</option>` : "";
+	const choices = options.map((option) => {
+		const [key, label] = Array.isArray(option) ? option : [option, option];
+		return `<option value="${icaEscape(key)}"${key === value ? " selected" : ""}>${icaEscape(label)}</option>`;
 	}).join("");
-	return `<form class="row g-3 align-items-end mb-4" data-placeholder-form>${controls}<div class="col-12"><button class="btn btn-primary" type="submit">${buttonText}</button></div></form>`;
+	return `<select class="form-select" id="${id}"${required ? " required" : ""}>${placeholder}${choices}</select>`;
+}
+
+function queryActions(buttonText = "Consultar") {
+	return `<div class="d-flex flex-wrap justify-content-end gap-2"><button class="btn btn-outline-secondary" type="reset">Limpiar filtros</button><button class="btn btn-primary" type="submit">${buttonText}</button></div>`;
+}
+
+function filterForm(fields, buttonText = "Consultar", { reset = true, feedback = "" } = {}) {
+	const controls = fields.map((field) => {
+		const id = `filter-${++filterControlIndex}`;
+		const label = field.label.toLocaleLowerCase("es");
+		const control = field.options
+			? renderSelect(id, field.options, { ...field, prompt: field.prompt ?? (label.includes("año") ? "Selecciona un año" : "Selecciona una opción") })
+			: `<input class="form-control" id="${id}" type="${field.type ?? "text"}"${field.required ? " required" : ""}>`;
+		const feedback = field.required ? `<div class="invalid-feedback">${field.options ? "Selecciona" : "Ingresa"} ${label.includes("impuesto") ? "un impuesto" : label.includes("año") ? "un año" : label === "periodo" ? "un periodo" : "un valor"}.</div>` : "";
+		return `<div class="col-12 col-md-${field.columns ?? 4}"><label class="form-label" for="${id}">${field.label}${field.required ? ' <span class="text-danger" aria-hidden="true">*</span>' : ""}</label>${control}${feedback}</div>`;
+	}).join("");
+	const actions = reset ? queryActions(buttonText)
+		: `<div class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">${buttonText}</button></div>`;
+	return `<form data-query-feedback="${feedback}" novalidate><div class="row g-3 mb-3">${controls}</div>${actions}<div data-query-status role="status"></div></form>`;
 }
 
 function stepFlow(steps, fields = []) {
-	const stepMarkup = steps.map((step, index) => `<li class="list-group-item d-flex align-items-center gap-3"><span class="badge ${index === 0 ? "text-bg-primary" : "text-bg-secondary"} rounded-pill">${index + 1}</span><span>${step}</span></li>`).join("");
-	return `<ol class="list-group list-group-numbered mb-4">${stepMarkup}</ol>${fields.length ? filterForm(fields, "Continuar") : ""}${emptyState("El flujo está preparado. Los pasos se habilitarán cuando se conecte el servicio correspondiente.")}`;
+	const stepMarkup = steps.map((step) => `<li class="list-group-item">${step}</li>`).join("");
+	return `<details class="mb-3"><summary class="link-primary">Ver pasos del trámite</summary><ol class="list-group list-group-numbered mt-2">${stepMarkup}</ol></details>${filterForm(fields.map(field => ({ ...field, required: true })), "Continuar")}`;
 }
+
+document.addEventListener("reset", (event) => {
+	const form = event.target;
+	if (!form.matches("[data-query-feedback]")) return;
+	form.classList.remove("was-validated");
+	const status = form.querySelector("[data-query-status]");
+	status.className = "";
+	status.textContent = "";
+});
 
 function vehicleRows() {
 	return vehicles.map((vehicle) => [
@@ -476,7 +550,9 @@ function getTaxpayerIdentity() {
 	const documentNumber = readValue("basic-document-number", taxpayerIdentity.documentNumber);
 	const documentIssueDate = readValue("basic-document-issue-date", taxpayerIdentity.documentIssueDate);
 	const withholdingAgent = document.getElementById("basic-withholding-agent")?.value ?? taxpayerIdentity.withholdingAgent;
-	const fullName = [firstName, firstSurname].filter(Boolean).join(" ");
+	const fullName = firstName === "CONTRIBUYENTE" && firstSurname === "DEMO"
+		? "Contribuyente Demo"
+		: [firstName, firstSurname].filter(Boolean).join(" ");
 	const initials = `${firstName.charAt(0)}${firstSurname.charAt(0)}`.toLocaleUpperCase("es");
 	return { firstName, middleName, firstSurname, secondSurname, fullName, initials, documentType, documentTypeLabel, documentNumber, documentIssueDate, withholdingAgent };
 }
@@ -541,7 +617,7 @@ function saveRitPersonalData() {
 // Empresas de demostración; el selector solo dibuja diez resultados a la vez.
 const representedCompanies = Array.from({ length: 1000 }, (_, index) => ({
 	id: String(index + 1),
-	name: index < 5 ? ["Cafés Altos del Roble S.A.S.", "Comercializadora Sierra Clara S.A.S.", "Inversiones Alameda Norte S.A.S.", "Soluciones Logísticas Arboleda S.A.S.", "Textiles Valle Azul S.A.S."][index] : `Grupo Empresarial Horizonte ${String(index + 1).padStart(4, "0")} S.A.S.`,
+	name: `Empresa ficticia ${String(index + 1).padStart(4, "0")}`,
 	nit: String(900000001 + index),
 }));
 let activeCompany = null;
@@ -605,8 +681,8 @@ function renderStyleGuide() {
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Controles de formulario</h3><fieldset class="mb-3"><legend class="fs-6">Casillas</legend><div class="form-check"><input class="form-check-input" type="checkbox" id="guideCheckOff"><label class="form-check-label" for="guideCheckOff">Sin seleccionar</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="guideCheckOn" checked><label class="form-check-label" for="guideCheckOn">Seleccionada</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="guideCheckDisabled" disabled><label class="form-check-label" for="guideCheckDisabled">Deshabilitada</label></div></fieldset><fieldset class="mb-3"><legend class="fs-6">Opciones únicas</legend><div class="form-check"><input class="form-check-input" type="radio" name="guideRadio" id="guideRadioOn" checked><label class="form-check-label" for="guideRadioOn">Seleccionada</label></div><div class="form-check"><input class="form-check-input" type="radio" name="guideRadio" id="guideRadioOff"><label class="form-check-label" for="guideRadioOff">Sin seleccionar</label></div><div class="form-check"><input class="form-check-input" type="radio" name="guideRadioDisabled" id="guideRadioDisabled" disabled><label class="form-check-label" for="guideRadioDisabled">Deshabilitada</label></div></fieldset><div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" role="switch" id="guideSwitch"><label class="form-check-label" for="guideSwitch">Interruptor apagado</label></div><div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" role="switch" id="guideSwitchOn" checked><label class="form-check-label" for="guideSwitchOn">Interruptor encendido</label></div><label class="form-label" for="guideRange">Rango</label><input type="range" class="form-range" id="guideRange"></div>
 			<div class="col-12"><h3 class="h6 text-secondary">Grupo de entrada</h3><div class="input-group mb-3"><span class="input-group-text">$</span><input class="form-control" aria-label="Valor" placeholder="Valor"><span class="input-group-text">COP</span></div><div class="input-group"><span class="input-group-text">@</span><input class="form-control" aria-label="Usuario" placeholder="Correo o usuario" disabled></div></div>
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Navegación</h3><nav aria-label="Ruta"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="#">Inicio</a></li><li class="breadcrumb-item"><a href="#">Mis impuestos</a></li><li class="breadcrumb-item active" aria-current="page">Detalle</li></ol></nav><ul class="nav nav-tabs mb-3" id="guideTabs" role="tablist"><li class="nav-item" role="presentation"><button class="nav-link active" id="guide-tab-one" data-bs-toggle="tab" data-bs-target="#guide-pane-one" type="button" role="tab" aria-controls="guide-pane-one" aria-selected="true">Activa</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="guide-tab-two" data-bs-toggle="tab" data-bs-target="#guide-pane-two" type="button" role="tab" aria-controls="guide-pane-two" aria-selected="false">Disponible</button></li><li class="nav-item" role="presentation"><button class="nav-link" type="button" disabled>Deshabilitada</button></li></ul><div class="tab-content border rounded p-3 mb-3"><div class="tab-pane fade show active" id="guide-pane-one" role="tabpanel" aria-labelledby="guide-tab-one" tabindex="0">Contenido de la pestaña activa.</div><div class="tab-pane fade" id="guide-pane-two" role="tabpanel" aria-labelledby="guide-tab-two" tabindex="0">Contenido de la segunda pestaña.</div></div><ul class="nav nav-pills mb-3"><li class="nav-item"><a class="nav-link active" href="#">Activa</a></li><li class="nav-item"><a class="nav-link" href="#">Disponible</a></li><li class="nav-item"><a class="nav-link disabled" aria-disabled="true">Deshabilitada</a></li></ul><div class="dropdown"><button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Menú desplegable</button><ul class="dropdown-menu"><li><a class="dropdown-item active" href="#">Opción activa</a></li><li><a class="dropdown-item" href="#">Opción disponible</a></li><li><a class="dropdown-item disabled" aria-disabled="true">Opción deshabilitada</a></li></ul></div></div>
-			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Paginación</h3><nav aria-label="Páginas de ejemplo"><ul class="pagination"><li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a></li><li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li><li class="page-item"><a class="page-link" href="#">2</a></li><li class="page-item"><a class="page-link" href="#">Siguiente</a></li></ul></nav><h3 class="h6 text-secondary mt-4">Lista</h3><div class="list-group"><a href="#" class="list-group-item list-group-item-action active" aria-current="true">Elemento activo</a><a href="#" class="list-group-item list-group-item-action">Elemento disponible</a><button type="button" class="list-group-item list-group-item-action" disabled>Elemento deshabilitado</button></div></div>
-			<div class="col-12"><h3 class="h6 text-secondary">Tarjetas y tabla</h3><div class="row g-3 mb-3"><div class="col-12 col-md-6"><div class="card"><div class="card-header">Encabezado</div><div class="card-body"><h4 class="h6 card-title">Tarjeta estándar</h4><p class="card-text">Superficie para agrupar información y acciones.</p><button class="btn btn-primary btn-sm" type="button">Acción</button></div><div class="card-footer text-secondary">Pie de tarjeta</div></div></div><div class="col-12 col-md-6"><div class="card text-bg-primary"><div class="card-body"><h4 class="h6 card-title">Variante destacada</h4><p class="card-text mb-0">Tarjeta con fondo contextual.</p></div></div></div></div><div class="table-responsive app-table-container mb-3"><table class="table app-table table-hover align-middle mb-0"><thead class="table-light"><tr><th scope="col">Estado</th><th scope="col">Descripción</th><th scope="col">Acción</th></tr></thead><tbody><tr><td><span class="badge text-bg-success">Pagado</span></td><td>Fila normal</td><td><button class="btn btn-outline-primary btn-sm" type="button">Ver</button></td></tr><tr><td><span class="badge text-bg-warning">Pendiente</span></td><td>Fila con hover al pasar el puntero</td><td><button class="btn btn-outline-secondary btn-sm" type="button" disabled>Sin acción</button></td></tr></tbody></table></div></div>
+			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Paginación</h3><nav aria-label="Páginas de ejemplo"><ul class="pagination pagination-sm flex-wrap mb-0">${paginationControls(1, 2)}</ul></nav><h3 class="h6 text-secondary mt-4">Lista</h3><div class="list-group"><a href="#" class="list-group-item list-group-item-action active" aria-current="true">Elemento activo</a><a href="#" class="list-group-item list-group-item-action">Elemento disponible</a><button type="button" class="list-group-item list-group-item-action" disabled>Elemento deshabilitado</button></div></div>
+			<div class="col-12"><h3 class="h6 text-secondary">Tarjetas y tabla</h3><div class="row g-3 mb-3"><div class="col-12 col-md-6"><div class="card"><div class="card-header">Encabezado</div><div class="card-body"><h4 class="h6 card-title">Tarjeta estándar</h4><p class="card-text">Superficie para agrupar información y acciones.</p><button class="btn btn-primary btn-sm" type="button">Acción</button></div><div class="card-footer text-secondary">Pie de tarjeta</div></div></div><div class="col-12 col-md-6"><div class="card text-bg-primary"><div class="card-body"><h4 class="h6 card-title">Variante destacada</h4><p class="card-text mb-0">Tarjeta con fondo contextual.</p></div></div></div></div><div class="table-responsive app-table-container mb-3"><table class="table app-table table-hover align-middle mb-0"><thead class="table-light"><tr><th scope="col">Estado</th><th scope="col">Descripción</th><th scope="col">Acción</th></tr></thead><tbody><tr><td>${tableBadge('Pagado', 'success')}</td><td>Fila normal</td><td><button class="btn btn-outline-primary btn-sm" type="button">Ver</button></td></tr><tr><td>${tableBadge('Pendiente', 'warning')}</td><td>Fila con hover al pasar el puntero</td><td><button class="btn btn-outline-secondary btn-sm" type="button" disabled>Sin acción</button></td></tr></tbody></table></div></div>
 			<div class="col-12"><h3 class="h6 text-secondary">Insignias y alertas</h3><div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-primary">Primaria</span><span class="badge text-bg-secondary">Secundaria</span><span class="badge text-bg-success">Completado</span><span class="badge text-bg-danger">Error</span><span class="badge text-bg-warning">Pendiente</span><span class="badge text-bg-info">Información</span><span class="badge text-bg-light">Neutra</span><span class="badge text-bg-dark">Oscura</span><span class="badge rounded-pill text-bg-primary">Píldora</span></div><div class="alert alert-primary" role="alert"><strong>Información.</strong> Mensaje informativo.</div><div class="alert alert-success" role="alert"><strong>Éxito.</strong> La acción se completó correctamente.</div><div class="alert alert-warning" role="alert"><strong>Atención.</strong> Revisa los datos antes de continuar.</div><div class="alert alert-danger" role="alert"><strong>Error.</strong> No fue posible completar la acción.</div><div class="alert alert-secondary alert-dismissible fade show" role="alert">Alerta descartable: usa el botón de cerrar para ocultarla.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div></div>
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Progreso y carga</h3><div class="progress mb-3" role="progressbar" aria-label="Progreso normal" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" style="width: 25%">25%</div></div><div class="progress mb-3" role="progressbar" aria-label="Progreso completado" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bg-success" style="width: 100%">Completado</div></div><div class="progress mb-3" role="progressbar" aria-label="Progreso activo" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 60%">En curso</div></div><div class="d-flex align-items-center gap-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div><div class="spinner-grow text-secondary" role="status"><span class="visually-hidden">Cargando...</span></div><div class="spinner-border spinner-border-sm text-success" role="status"><span class="visually-hidden">Cargando...</span></div><span class="small text-secondary">Cargando, crecimiento y tamaño pequeño.</span></div></div>
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Paneles expandibles</h3><p><button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse" aria-expanded="false" aria-controls="guideCollapse">Abrir o cerrar detalle</button></p><div class="collapse" id="guideCollapse"><div class="card card-body mb-3">Contenido colapsado: estado abierto.</div></div><div class="accordion" id="guideAccordion"><div class="accordion-item"><h4 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#guideAccordionOpen" aria-expanded="true" aria-controls="guideAccordionOpen">Sección expandida</button></h4><div id="guideAccordionOpen" class="accordion-collapse collapse show" data-bs-parent="#guideAccordion"><div class="accordion-body">Este panel está abierto; pulsa el encabezado para cerrarlo.</div></div></div><div class="accordion-item"><h4 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideAccordionClosed" aria-expanded="false" aria-controls="guideAccordionClosed">Sección contraída</button></h4><div id="guideAccordionClosed" class="accordion-collapse collapse" data-bs-parent="#guideAccordion"><div class="accordion-body">Este panel inicia cerrado.</div></div></div></div></div>
@@ -625,11 +701,11 @@ function renderStyleGuide() {
 function renderDashboard() {
 	const identity = activeCompany ? { fullName: activeCompany.name, documentType: "NIT", documentTypeLabel: "Número de identificación tributaria", documentNumber: activeCompany.nit } : getTaxpayerIdentity();
 	const declarationRows = [
-		{ declaration: "100000047309", tax: "Impuesto Predial", year: "2026", period: "—", status: "Pendiente por firmar" },
-		{ declaration: "100000047428", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
-		{ declaration: "100000047556", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por firmar" },
-		{ declaration: "100000047681", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
-		{ declaration: "100000047809", tax: "Impuestos de Delineación Urbana", year: "2017", period: "—", status: "Pendiente por presentar" },
+		{ declaration: "900000000309", tax: "Impuesto Predial", year: "2026", period: "—", status: "Pendiente por firmar" },
+		{ declaration: "900000000428", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
+		{ declaration: "900000000556", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por firmar" },
+		{ declaration: "900000000681", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
+		{ declaration: "900000000809", tax: "Impuestos de Delineación Urbana", year: "2017", period: "—", status: "Pendiente por presentar" },
 		// Datos de ejemplo para completar 20 declaraciones y probar la paginación.
 		...Array.from({ length: 15 }, (_, index) => ({
 			declaration: String(100000000 + index).padStart(12, "0"),
@@ -648,7 +724,7 @@ function renderDashboard() {
 			<td>${declaration.tax}</td>
 			<td class="text-center">${declaration.year}</td>
 			<td class="text-center">${declaration.period}</td>
-			<td><span class="badge rounded-pill bg-${statusColor}-subtle text-${statusColor}-emphasis border border-${statusColor}-subtle text-wrap text-start px-3 py-2">${declaration.status}</span></td>
+			<td>${tableBadge(declaration.status, statusColor)}</td>
 			<td class="text-center"><a class="btn btn-outline-primary btn-sm px-3" href="?${new URLSearchParams({ impuesto: declaration.tax, vigencia: declaration.year, periodo: declaration.period, declaracion: declaration.declaration })}#declaraciones-generar"><i class="bi bi-eye me-1" aria-hidden="true"></i>Ver</a></td>
 		</tr>`;
 	}).join("");
@@ -666,15 +742,15 @@ function renderDashboard() {
 			</div>
 		</div>
 	</div>
-	<div class="table-responsive app-table-container mb-3"><table class="table app-table table-hover align-middle mb-0" id="pending-declarations-table">
+	<div class="table-responsive app-table-container mb-3" tabindex="0" role="region" aria-label="Declaraciones pendientes"><table class="table app-table table-hover align-middle mb-0" id="pending-declarations-table">
 		<caption class="visually-hidden">Declaraciones tributarias pendientes de firma o presentación</caption>
-		<thead class="table-light"><tr><th scope="col">Declaración</th><th scope="col">Impuesto</th><th scope="col" class="text-center">Año gravable</th><th scope="col" class="text-center">Periodo</th><th scope="col">Estatus</th><th scope="col" class="text-center">Seleccionar</th></tr></thead>
+		<thead class="table-light"><tr><th scope="col">Declaración</th><th scope="col">Impuesto</th><th scope="col" class="text-center">Año gravable</th><th scope="col" class="text-center">Periodo</th><th scope="col">Estado</th><th scope="col" class="text-center">Acciones</th></tr></thead>
 		<tbody>${rows}</tbody>
 	</table></div>
 	<div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
 		<p class="small text-secondary mb-0" id="pendingDeclarationsSummary" aria-live="polite"></p>
 		<nav aria-label="Paginación de declaraciones pendientes">
-			<ul class="pagination pagination-sm mb-0" id="pendingDeclarationsPagination"></ul>
+			<ul class="pagination pagination-sm flex-wrap mb-0" id="pendingDeclarationsPagination"></ul>
 		</nav>
 	</div>`;
 	return `${pageTitle(activeCompany ? `Inicio de ${identity.fullName}` : `Bienvenida, ${identity.fullName}.`)}<section class="bg-white border rounded-3 p-3 p-md-4 mb-4" id="dashboardWelcomeSection" aria-label="Datos del usuario">
@@ -719,11 +795,9 @@ function filterPendingDeclarations(resetPage = false) {
 	const firstResult = matchingRows.length ? firstIndex + 1 : 0;
 	const lastResult = Math.min(firstIndex + pageSize, matchingRows.length);
 	document.getElementById("pendingDeclarationsSummary").textContent = `Mostrando del ${firstResult} al ${lastResult} (Total: ${matchingRows.length} resultados)`;
-	document.getElementById("pendingDeclarationsPagination").innerHTML = [
-		`<li class="page-item${pendingDeclarationsPage === 1 ? " disabled" : ""}"><button class="page-link" type="button" data-pending-page="${pendingDeclarationsPage - 1}" ${pendingDeclarationsPage === 1 ? "disabled" : ""}>Anterior</button></li>`,
-		...Array.from({ length: pageCount }, (_, index) => index + 1).map((page) => `<li class="page-item${page === pendingDeclarationsPage ? " active" : ""}"${page === pendingDeclarationsPage ? ' aria-current="page"' : ""}><button class="page-link" type="button" data-pending-page="${page}"${page === pendingDeclarationsPage ? ' aria-current="page"' : ""}>${page}</button></li>`),
-		`<li class="page-item${pendingDeclarationsPage === pageCount ? " disabled" : ""}"><button class="page-link" type="button" data-pending-page="${pendingDeclarationsPage + 1}" ${pendingDeclarationsPage === pageCount ? "disabled" : ""}>Siguiente</button></li>`,
-	].join("");
+	document.getElementById("pendingDeclarationsPagination").innerHTML = paginationControls(
+		pendingDeclarationsPage, pageCount, page => `data-pending-page="${page}"`
+	);
 }
 
 function renderRitSummary() {
@@ -787,12 +861,12 @@ document.addEventListener("click", (event) => {
 	} else open();
 });
 
-const myVehicle = { plate: 'BMM36', brand: 'AUTECO BAJAJ', line: 'PULSAR', year: '2008', className: 'MOTOCICLETA', body: 'SIN CARROCERIA', doors: '0', armored: 'NO', engine: '180', hasOverdueInvoice: true };
+const myVehicle = { plate: 'DEM362', brand: 'Auteco Bajaj', line: 'Pulsar', year: '2008', className: 'Motocicleta', body: 'Sin carrocería', doors: '0', armored: 'No', engine: '180', hasOverdueInvoice: true };
 
 const myVehicles = [
  myVehicle,
- { plate: 'JWT71D', brand: 'DUCATI', line: '1199 ABS PANIGALE AW B', year: '2013', className: 'MOTOCICLETA', body: 'SIN CARROCERIA', doors: '0', armored: 'NO', engine: '1198' },
- { plate: 'MCU235', brand: 'BMW', line: '328 i', year: '2012', className: 'AUTOMOVIL', body: 'SEDAN', doors: '4', armored: 'NO', engine: '1997' },
+ { plate: 'DEM373', brand: 'Ducati', line: '1199 ABS Panigale AW B', year: '2013', className: 'Motocicleta', body: 'Sin carrocería', doors: '0', armored: 'No', engine: '1198' },
+ { plate: 'DEM374', brand: 'BMW', line: '328 i', year: '2012', className: 'Automóvil', body: 'Sedán', doors: '4', armored: 'No', engine: '1997' },
 ];
 
 function showVehicleOverdueAlert(plate = myVehicle.plate) {
@@ -803,7 +877,7 @@ function showVehicleOverdueAlert(plate = myVehicle.plate) {
  modal.tabIndex = -1;
  modal.setAttribute('aria-labelledby', 'vehicleOverdueModalTitle');
  modal.setAttribute('aria-describedby', 'vehicleOverdueModalDescription');
- modal.innerHTML = `<div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="vehicleOverdueModalTitle">Vehículos</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><div class="modal-body"><div class="d-flex align-items-start gap-3"><i class="bi bi-exclamation-triangle text-warning fs-4" aria-hidden="true"></i><div><p class="small text-secondary mb-2">Placa ${plate}</p><p class="mb-0" id="vehicleOverdueModalDescription">Ya tiene una factura vencida en este periodo, debe pagar por medio de ROP.</p></div></div></div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button></div></div></div>`;
+ modal.innerHTML = `<div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="vehicleOverdueModalTitle">Vehículos</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><div class="modal-body"><div class="d-flex align-items-start gap-3"><i class="bi bi-exclamation-triangle text-warning fs-4" aria-hidden="true"></i><div><p class="small text-secondary mb-2">Placa ${plate}</p><p class="mb-0" id="vehicleOverdueModalDescription">Tienes una factura vencida para este periodo. Genera un Recibo Oficial de Pago (ROP) para pagarla.</p></div></div></div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button></div></div></div>`;
  document.body.appendChild(modal);
  const instance = new bootstrap.Modal(modal);
  modal.addEventListener('hidden.bs.modal', () => { instance.dispose(); modal.remove(); document.querySelector('[data-vehicle-overdue-alert]')?.focus(); }, { once: true });
@@ -822,13 +896,13 @@ function renderMyVehicles() {
 function renderMyVehicleDetail(vehicle = myVehicle) {
 	const missing = '<span aria-label="Sin información">&nbsp;</span>';
 	const row = (values) => values.map((value) => value || missing);
-	return `<header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><h1 class="h3 fw-semibold mb-2">Detalle del vehículo ${vehicle.plate}</h1><p class="text-secondary mb-0">${vehicle.brand} · ${vehicle.line} · Modelo ${vehicle.year}</p></div><div class="d-flex flex-wrap gap-2" role="group" aria-label="Acciones del vehículo"><a class="btn btn-outline-primary" href="documents/00000000000021864114-1002225970.pdf" download="00000000000021864114-1002225970.pdf"><i class="bi bi-download me-2" aria-hidden="true"></i>Descarga para pago en bancos</a><button class="btn btn-primary" type="button" data-vehicle-overdue-alert="${vehicle.plate}">Generar declaración/Corrección vigencia actual</button></div></header>
-		<div class="mb-4">${linkTo('impuestos-vehiculos', '<i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Regresar a mis vehículos', 'btn btn-outline-secondary btn-sm')}</div>
-		${vehicle.hasOverdueInvoice ? '<div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-3" role="alert"><p class="mb-0"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>Ya tiene una factura vencida en este periodo, debe pagar por medio de ROP.</p><button class="btn btn-outline-dark btn-sm" type="button" data-vehicle-overdue-alert>Ver aviso</button></div>' : ''}
-		${section('Detalle', `<div class="row mb-4"><div class="col-sm-4"><label class="form-label" for="myVehiclePlate">Placa</label><input class="form-control" id="myVehiclePlate" value="${vehicle.plate}" readonly></div></div>${table(['ID de servicio', 'ID estado', 'Watts', 'Clásico o Antiguo', 'Tipo de vehículo', 'Capacidad pasajeros', 'Capacidad toneladas', 'Fecha de estado', 'Fecha cambio servicio'], [row(vehicle.plate === myVehicle.plate ? ['PARTICULAR', 'ACTIVO', '', 'NO APLICA', 'MOTOS Y MOTOCICLETAS', '2', '0', '25/03/2014', ''] : vehicle.plate === 'JWT71D' ? ['PARTICULAR', 'ACTIVO', '', 'NO APLICA', 'MOTOS Y MOTOCICLETAS', '2', '0', '14/06/2022', ''] : ['', '', '', '', '', '', '', '', ''])])}`)}
-		${section('Datos jurídicos', table(['Calidad del sujeto', '% propiedad', 'Fecha desde', 'Fecha hasta'], vehicle.plate === myVehicle.plate ? [['PROPIETARIO', '100,00', '25/03/2014', '31/12/9999']] : vehicle.plate === 'JWT71D' ? [['PROPIETARIO', '100,00', '14/06/2022', '31/12/9999']] : [row(['', '', '', ''])]))}
+	return `<header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><h1 class="h3 fw-semibold mb-2">Detalle del vehículo ${vehicle.plate}</h1><p class="text-secondary mb-0">${vehicle.brand} · ${vehicle.line} · Modelo ${vehicle.year}</p></div><div class="d-flex flex-wrap gap-2" role="group" aria-label="Acciones del vehículo"><a class="btn btn-outline-primary" href="output/pdf/recibo-vehiculo-demo.pdf" download="recibo-vehiculo-demo.pdf"><i class="bi bi-download me-2" aria-hidden="true"></i>Descargar recibo de ejemplo</a><button class="btn btn-primary" type="button" data-vehicle-overdue-alert="${vehicle.plate}">Generar o corregir declaración</button></div></header>
+		<div class="mb-4">${linkTo('impuestos-vehiculos', '<i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver a mis vehículos', 'btn btn-outline-secondary btn-sm')}</div>
+		${vehicle.hasOverdueInvoice ? '<div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-3" role="alert"><p class="mb-0"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>Tienes una factura vencida para este periodo. Genera un Recibo Oficial de Pago (ROP) para pagarla.</p><button class="btn btn-outline-dark btn-sm" type="button" data-vehicle-overdue-alert>Ver aviso</button></div>' : ''}
+		${section('Detalle', `<div class="row mb-4"><div class="col-sm-4"><label class="form-label" for="myVehiclePlate">Placa</label><input class="form-control" id="myVehiclePlate" value="${vehicle.plate}" readonly></div></div>${table(['ID de servicio', 'ID de estado', 'Watts', 'Clásico o antiguo', 'Tipo de vehículo', 'Capacidad pasajeros', 'Capacidad toneladas', 'Fecha de estado', 'Fecha cambio servicio'], [row(vehicle.plate === myVehicle.plate ? ['Particular', 'Activo', '', 'No aplica', 'Motos y motocicletas', '2', '0', '25/03/2014', ''] : vehicle.plate === 'DEM373' ? ['Particular', 'Activo', '', 'No aplica', 'Motos y motocicletas', '2', '0', '14/06/2022', ''] : ['', '', '', '', '', '', '', '', ''])])}`)}
+		${section('Datos jurídicos', table(['Calidad del sujeto', '% de propiedad', 'Fecha desde', 'Fecha hasta'], vehicle.plate === myVehicle.plate ? [['Propietario', '100,00', '25/03/2014', '31/12/9999']] : vehicle.plate === 'DEM373' ? [['Propietario', '100,00', '14/06/2022', '31/12/9999']] : [row(['', '', '', ''])]))}
 		${section('Marcas', table(['Código de marca', 'Descripción', '% de exención', 'Valor de exención', 'Fecha desde', 'Fecha hasta'], vehicle.plate === myVehicle.plate ? [] : [row(['', '', '', '', '', ''])], { empty: 'No hay marcas ni exenciones registradas para este vehículo.' }))}
-		${section('Liquidación', table(['Año', 'Avalúo', 'Tarifa'], vehicle.plate === myVehicle.plate ? [['2026', '$ 1.694.000', '1,7'], ['2025', '$ 1.610.000', '1,7'], ['2024', '$ 1.530.000', '1,7'], ['2023', '$ 1.460.000', '1,7'], ['2022', '$ 1.390.000', '1,5']] : vehicle.plate === 'JWT71D' ? [['2026', '$ 26.108.000', '1,7'], ['2025', '$ 24.817.000', '1,7'], ['2024', '$ 23.590.000', '1,7'], ['2023', '$ 21.490.000', '1,7'], ['2022', '$ 19.280.000', '1,5']] : Array.from({ length: 5 }, () => row(['', '', '']))))}
+		${section('Liquidación', table(['Año', 'Avalúo', 'Tarifa'], vehicle.plate === myVehicle.plate ? [['2026', '$ 400.000', '1,7'], ['2025', '$ 400.000', '1,7'], ['2024', '$ 400.000', '1,7'], ['2023', '$ 400.000', '1,7'], ['2022', '$ 400.000', '1,5']] : vehicle.plate === 'DEM373' ? [['2026', '$ 400.000', '1,7'], ['2025', '$ 500.000', '1,7'], ['2024', '$ 600.000', '1,7'], ['2023', '$ 700.000', '1,7'], ['2022', '$ 800.000', '1,5']] : Array.from({ length: 5 }, () => row(['', '', '']))))}
 		`;
 }
 
@@ -840,18 +914,18 @@ function renderTaxList(title, description = "") {
 function renderPredialTax(showDetail = false) {
  const blank = '<span aria-label="Sin información">&nbsp;</span>';
  const blankTable = (headers, count = 1) => table(headers, Array.from({ length: count }, () => headers.map(() => blank)));
- const detail = `<div id="predialDetail"><header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><h1 class="h3 fw-semibold mb-2">Detalle del predio AAA0012MOYN</h1><p class="text-secondary mb-0">CL 18 SUR 29B 61 · Matrícula 050S40156590</p></div><div class="d-flex flex-wrap gap-2" role="group" aria-label="Acciones del predio"><a class="btn btn-primary" href="#predial-declaracion">Generar declaración</a></div></header>
- <div class="mb-4"><a class="btn btn-outline-secondary btn-sm" href="#impuestos-predial"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Regresar a mis predios</a></div>
- ${section('Detalle', `<div class="row g-3"><div class="col-12 col-md-4"><label class="form-label" for="predialChip">CHIP</label><input class="form-control" id="predialChip" value="AAA0012MOYN" readonly></div><div class="col-12 col-md-4"><label class="form-label" for="predialRegistration">Matrícula inmobiliaria</label><input class="form-control" id="predialRegistration" value="050S40156590" readonly></div><div class="col-12 col-md-4"><label class="form-label" for="predialAddress">Dirección del predio</label><input class="form-control" id="predialAddress" value="CL 18 SUR 29B 61" readonly></div></div>`)}
+ const detail = `<div id="predialDetail"><header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><h1 class="h3 fw-semibold mb-2">Detalle del predio CHIP-DEMO-035</h1><p class="text-secondary mb-0">Dirección ficticia 082 · Matrícula 050S00000045</p></div><div class="d-flex flex-wrap gap-2" role="group" aria-label="Acciones del predio"><a class="btn btn-primary" href="#predial-declaracion">Generar declaración</a></div></header>
+ <div class="mb-4"><a class="btn btn-outline-secondary btn-sm" href="#impuestos-predial"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver a mis predios</a></div>
+ ${section('Detalle', `<div class="row g-3"><div class="col-12 col-md-4"><label class="form-label" for="predialChip">CHIP</label><input class="form-control" id="predialChip" value="CHIP-DEMO-035" readonly></div><div class="col-12 col-md-4"><label class="form-label" for="predialRegistration">Matrícula inmobiliaria</label><input class="form-control" id="predialRegistration" value="050S00000045" readonly></div><div class="col-12 col-md-4"><label class="form-label" for="predialAddress">Dirección del predio</label><input class="form-control" id="predialAddress" value="Dirección ficticia 082" readonly></div></div>`)}
  ${section('Datos jurídicos', blankTable(['Tipo de documento','Nombre completo','% de propiedad','Número de documento','Calidad de sujeción','Otros']))}
  ${section('Datos económicos', blankTable(['Base gravable','Avalúo catastral','Avalúo contrato arriendo','Avalúo mejora construcción']))}
  ${section('Datos físicos', blankTable(['Área construida catastro','Área terreno catastro','Código estrato','Área terreno mejora contribuyente','Área terreno matriz mejora','Área terreno mejora catastro']))}
  ${section('Liquidación', blankTable(['Base gravable','Destino hacendario','Tarifa liquidación','Valor impuesto']))}
  ${section('Marcas', blankTable(['Marca','Tipo de marca','% de marca','Valor exención','Conservación histórica'], 2))}</div>`;
  if (showDetail) return detail;
- return `${pageTitle('Impuesto de Predial', 'Consulta los predios asociados y su información tributaria.')}
+ return `${pageTitle('Impuesto predial', 'Consulta los predios asociados y su información tributaria.')}
  ${section('Información del impuesto', `<p class="mb-2">El Impuesto Predial Unificado lo pagan todos los propietarios, poseedores o usufructuarios de bienes inmuebles ubicados dentro del Distrito Capital.</p><div class="collapse" id="predialInformation"><p class="mt-3">La información que se presenta a continuación proviene de la Unidad Administrativa Especial de Catastro Distrital y la oficina de instrumentos públicos. Si encuentra alguna inconsistencia, verifique directamente con la entidad correspondiente.</p><a href="https://www.shd.gov.co/shd/predial" target="_blank" rel="noopener noreferrer">Más información <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a></div><button class="btn btn-link px-0 pb-0" type="button" data-bs-toggle="collapse" data-bs-target="#predialInformation" aria-controls="predialInformation" aria-expanded="false" id="predialInformationToggle">Ver más <i class="bi bi-chevron-down ms-1" aria-hidden="true"></i></button>`)}
- ${section('Predios asociados', registeredTaxTable('my-properties', 'Mis predios', ['CHIP','Matrícula inmobiliaria','Dirección del predio','No. contrato arrendamiento','Acciones'], [['AAA0012MOYN','050S40156590','CL 18 SUR 29B 61','', '<a class="btn btn-outline-primary btn-sm text-nowrap" href="#predio-AAA0012MOYN">Ver detalle</a>']], 'Consulta el detalle de tu predio.'))}`;
+ ${section('Predios asociados', registeredTaxTable('my-properties', 'Mis predios', ['CHIP','Matrícula inmobiliaria','Dirección del predio','No. contrato arrendamiento','Acciones'], [['CHIP-DEMO-035','050S00000045','Dirección ficticia 082','', '<a class="btn btn-outline-primary btn-sm px-3 text-nowrap" href="#predio-CHIP-DEMO-035">Ver detalle</a>']], 'Consulta el detalle de tu predio.'))}`;
 }
 
 function filterPredialProperties() {
@@ -882,10 +956,7 @@ function renderVehicleDetail(plate) {
 	return `${pageTitle(`Vehículo ${vehicle.plate}`, "Información del vehículo asociado al ciudadano.")}${section("Datos del vehículo", details)}${section("Información tributaria", emptyState("La información tributaria del vehículo se consultará cuando esté disponible."))}${section("Obligaciones asociadas", emptyState("No hay obligaciones asociadas para mostrar."))}${linkTo("impuestos-vehiculos", "Volver a vehículos", "btn btn-outline-primary btn-sm")}`;
 }
 
-function renderObligations() {
-	const headers = ["Impuesto", "Vigencia", "Periodo", "Fecha de vencimiento", "Valor", "Estado"];
-	return `${pageTitle("Obligaciones pendientes", "Consulta las obligaciones agrupadas por impuesto.")}${section("Obligaciones", table(headers))}`;
-}
+function renderObligations() { return renderPendingObligations(); }
 
 function renderAccountStatement() {
 	const fields = [{ label: "Nombre", placeholder: "Nombre del contribuyente", columns: 6 }, { label: "Tipo de identificación", options: ["Cédula de ciudadanía", "Cédula de extranjería", "NIT"], columns: 3 }, { label: "Fecha de generación", type: "date", columns: 3 }];
@@ -893,27 +964,28 @@ function renderAccountStatement() {
 }
 
 function renderPaymentPlans() {
-	return `${pageTitle("Facilidades de pago", "Consulta facilidades vigentes, obligaciones asociadas y recibos oficiales de pago.")}${section("Facilidades vigentes", `${table(["Acuerdo", "Fecha", "Estado", "Obligaciones asociadas", "Acción"])}${emptyState("No hay facilidades de pago vigentes para mostrar.")}<button class="btn btn-outline-primary btn-sm mt-3" type="button">Generar recibo oficial de pago</button>`)}`;
+	return renderPendingObligations({ multipleRop: true });
 }
 
 function renderDeclaration(id) {
 	const configs = {
-		"declaraciones-generar": { title: "Generar declaración", steps: ["Seleccionar impuesto", "Seleccionar año gravable", "Seleccionar periodo", "Diligenciar declaración", "Revisar", "Generar declaración"], fields: [{ label: "Impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 4 }, { label: "Año gravable", options: ["2026", "2025", "2024"], columns: 4 }, { label: "Periodo", options: ["Anual", "Primer periodo", "Segundo periodo"], columns: 4 }] },
-		"declaraciones-corregir": { title: "Corregir declaración", steps: ["Seleccionar impuesto", "Seleccionar declaración", "Seleccionar año y periodo", "Realizar corrección", "Revisar", "Generar"], fields: [{ label: "Impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 4 }, { label: "Declaración", options: ["Declaraciones disponibles"], columns: 4 }, { label: "Año y periodo", options: ["Seleccione"], columns: 4 }] },
-		"declaraciones-blanco": { title: "Generar declaración en blanco", steps: ["Seleccionar tipo de impuesto", "Seleccionar año gravable", "Generar declaración en blanco"], fields: [{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: ["2026", "2025", "2024"], columns: 6 }] },
+		"declaraciones-corregir": { title: "Corregir declaración", steps: ["Seleccionar impuesto", "Seleccionar año y periodo", "Seleccionar declaración", "Realizar corrección", "Revisar", "Generar"], fields: [{ label: "Impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 4 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 4 }, { label: "Periodo", options: ["Anual", "Primer periodo", "Segundo periodo"], columns: 4 }] },
+		"declaraciones-blanco": { title: "Generar declaración en blanco", steps: ["Seleccionar tipo de impuesto", "Seleccionar año gravable", "Generar declaración en blanco"], fields: [{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 6 }] },
 	};
 	const context = new URLSearchParams(window.location.search);
 	if (id === "declaraciones-generar") {
 		const selectedTax = context.get("impuesto");
 		const selectedYear = context.get("vigencia");
 		const selectedPeriod = context.get("periodo");
-		const fields = configs[id].fields;
+		const fields = [
+			{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA", "Impuesto de Delineación Urbana"] },
+			{ label: "Año gravable", options: yearOptions(2024, 2026) },
+			{ label: "Periodo", options: ["Anual", "Primer periodo", "Segundo periodo"] },
+		];
 		const taxNames = { "Impuestos de Veh\u00edculos": "Impuesto de Veh\u00edculos", "Impuestos de Delineaci\u00f3n Urbana": "Impuesto de Delineaci\u00f3n Urbana" };
 		const tax = taxNames[selectedTax] || selectedTax;
-		if (!fields[0].options.includes("Impuesto de Delineaci\u00f3n Urbana")) fields[0].options.push("Impuesto de Delineaci\u00f3n Urbana");
 		if (fields[0].options.includes(tax)) {
 			fields[0].value = tax;
-			configs[id].title += ` de ${tax.replace(/^Impuesto(?: de)? /, "")}`;
 		}
 		if (/^\d{4}$/.test(selectedYear || "")) {
 			if (!fields[1].options.includes(selectedYear)) fields[1].options.push(selectedYear);
@@ -923,32 +995,99 @@ function renderDeclaration(id) {
 			fields[2].value = selectedPeriod === "\u2014" ? "Anual" : selectedPeriod;
 			if (!fields[2].options.includes(fields[2].value)) fields[2].options.push(fields[2].value);
 		}
+		const form = filterForm(
+			fields.map(field => ({ ...field, required: true, prompt: "Selecciona una opción" })),
+			"Continuar",
+			{ reset: false, feedback: "El diligenciamiento de la declaración todavía no está disponible en esta sección." }
+		);
+		return `${pageTitle("Generar declaración", "Selecciona el impuesto y la vigencia para continuar.")}
+			<div class="card"><div class="card-body p-3 p-md-4">${form}</div></div>`;
 	}
 	const config = configs[id];
-	if (!config) return `${pageTitle("Declaraciones presentadas", "Consulta el historial de declaraciones presentadas.")}${section("Filtros", `${filterForm([{ label: "Impuesto", options: ["Todos", "Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: ["Todos", "2026", "2025", "2024"], columns: 3 }])}${table(["Impuesto", "Año gravable", "Periodo", "Fecha de presentación", "Estado"])}`)}`;
-	return `${pageTitle(config.title, "Flujo preparado para completar en etapas.")}${section("Pasos", stepFlow(config.steps, config.fields))}`;
+	if (!config) return `${pageTitle("Declaraciones presentadas", "Consulta el historial de declaraciones presentadas.")}${section("Filtros", `${filterForm([{ label: "Impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], prompt: "Todos los impuestos", columns: 6 }, { label: "Año gravable", options: yearOptions(2024, 2026), prompt: "Todos los años", columns: 3 }])}${table(["Impuesto", "Año gravable", "Periodo", "Fecha de presentación", "Estado"])}`)}`;
+	return `${pageTitle(config.title, "Selecciona los datos de la declaración.")}${section("Pasos", stepFlow(config.steps, config.fields))}`;
 }
 
 function renderInvoices() {
-	return `${pageTitle("Facturas", "Consulta, descarga o reexpide facturas por impuesto y año gravable.")}${section("Descargar factura", stepFlow(["Seleccionar tipo de impuesto", "Seleccionar año gravable", "Consultar y descargar factura"], [{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: ["2026", "2025", "2024"], columns: 6 }]))}${section("Reexpedir factura", stepFlow(["Seleccionar tipo de impuesto", "Seleccionar año gravable", "Consultar y generar factura"], [{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: ["2026", "2025", "2024"], columns: 6 }]))}`;
+	return `${pageTitle("Facturas", "Consulta, descarga o reexpide facturas por impuesto y año gravable.")}${section("Descargar factura", stepFlow(["Seleccionar tipo de impuesto", "Seleccionar año gravable", "Consultar y descargar factura"], [{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 6 }]))}${section("Reexpedir factura", stepFlow(["Seleccionar tipo de impuesto", "Seleccionar año gravable", "Consultar y generar factura"], [{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 6 }]))}`;
 }
 
 function renderReceipts() {
-	return `${pageTitle("Recibos de pago", "Accede a la generación de recibos de pago.")}${section("Generar recibo multipago", stepFlow(["Seleccionar impuesto", "Seleccionar periodo de la obligación", "Seleccionar obligaciones", "Revisar obligaciones seleccionadas", "Generar recibo"], [{ label: "Impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 4 }, { label: "Periodo de la obligación", options: ["Seleccione"], columns: 4 }] ))}${section("Generar ROP", emptyState("El flujo de generación del recibo oficial de pago estará disponible al conectar el servicio correspondiente."))}`;
+	return `${pageTitle("Recibos de pago", "Accede a la generación de recibos de pago.")}${section("Generar recibo multipago", stepFlow(["Seleccionar impuesto", "Seleccionar año gravable", "Seleccionar obligaciones", "Revisar obligaciones seleccionadas", "Generar recibo"], [{ label: "Impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 4 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 4 }] ))}${section("Generar ROP", emptyState("La generación de recibos todavía no está disponible."))}`;
 }
 
-function renderPaymentHistory() {
-	return `${pageTitle("Relación de pagos", "Consulta el historial de pagos realizados, declaraciones presentadas y pagos de años anteriores.")}${section("Filtros", `${filterForm([{ label: "Impuesto", options: ["Todos", "Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 4 }, { label: "Año", options: ["Todos", "2026", "2025", "2024"], columns: 4 }])}${table(["Fecha", "Impuesto", "Vigencia", "Referencia", "Valor", "Estado"])}`)}`;
-}
+function renderPaymentHistory() { return renderPaymentHistoryPage(); }
 
-function renderProcedures() {
-	const resultFields = `<dl class="row mb-0"><dt class="col-sm-4">Información del trámite</dt><dd class="col-sm-8">Pendiente de consulta</dd><dt class="col-sm-4">Estado</dt><dd class="col-sm-8">—</dd><dt class="col-sm-4">Fecha de radicación</dt><dd class="col-sm-8">—</dd><dt class="col-sm-4">Última actualización</dt><dd class="col-sm-8">—</dd></dl>`;
-	return `${pageTitle("Trámites", "Consulta y haz seguimiento a tus trámites.")}${section("Buscar trámite", `${filterForm([{ label: "Número de caso", placeholder: "Ingresa el número de caso", columns: 5 }, { label: "Número de radicado", placeholder: "Ingresa el número de radicado", columns: 5 }], "Buscar")}${emptyState("Ingresa un número de caso o de radicado para consultar la información del trámite.")}`)}${section("Resultado de búsqueda", `${resultFields}<h3 class="h6 mt-3">Historial</h3>${emptyState("El historial se mostrará después de realizar una búsqueda.")}<h3 class="h6 mt-3">Documentos asociados</h3>${emptyState("No hay documentos asociados para mostrar.")}`)}`;
+function renderProcedures() { return renderProcedureTracking(); }
+
+function paymentCertificationHeaders(tax) {
+ const common = ["Periodo", "Referencia", "Valor pago", "Moneda", "Seleccionar"];
+ if (tax === 'predial') return ["CHIP", "Matr\u00edcula inmobiliaria", "Referencia pago", "Direcci\u00f3n del predio", "A\u00f1o gravable", "Fecha pago", "Total pago", "Seleccionar"];
+ if (tax === 'ica') return common;
+ return (tax === 'delineacion' ? ["CDU", "Radicado"] : ["Placa", "Marca"]).concat(common);
 }
+function syncPaymentCertificationFields() {
+ const taxInput = document.getElementById('payment-certification-tax');
+ if (!taxInput) return;
+ const tax = taxInput.value;
+ taxInput.form.classList.remove('was-validated');
+ const fields = document.getElementById('payment-certification-extra');
+ const label = tax === 'predial' ? 'CHIP' : tax === 'delineacion' ? 'CDU' : 'Placa';
+ fields.classList.toggle('d-none', tax === 'ica');
+ document.getElementById('payment-certification-identifier-label').textContent = label;
+ document.getElementById('payment-certification-identifier-error').textContent = `Ingresa ${label === 'Placa' ? 'la placa' : `el ${label}`}.`;
+ document.getElementById('payment-certification-property-type').classList.toggle('d-none', tax !== 'predial');
+ document.getElementById('payment-id-chip').checked = true;
+ const input = document.getElementById('payment-certification-identifier');
+ input.required = tax !== 'ica'; input.disabled = tax === 'ica'; input.value = '';
+ document.getElementById('payment-certification-results').innerHTML = table(paymentCertificationHeaders(tax), [], {empty: 'Aún no hay resultados de pagos.'});
+ const status = document.getElementById('payment-certification-status');
+ status.textContent = ''; status.className = 'mt-3';
+}
+document.addEventListener('change', event => {
+ if (event.target.id === 'payment-certification-tax') syncPaymentCertificationFields();
+ if (event.target.name === 'payment-certification-property-type') {
+  document.getElementById('payment-certification-identifier-label').textContent = event.target.value === 'chip' ? 'CHIP' : 'Matr\u00edcula inmobiliaria';
+  const input = document.getElementById('payment-certification-identifier');
+  input.value = '';
+  input.form.classList.remove('was-validated');
+  document.getElementById('payment-certification-identifier-error').textContent = event.target.value === 'chip' ? 'Ingresa el CHIP.' : 'Ingresa la matrícula inmobiliaria.';
+ }
+});
+
+document.addEventListener('reset', event => {
+	if (event.target.id !== 'payment-certification-form') return;
+	const status = document.getElementById('payment-certification-status');
+	status.className = 'mt-3';
+	status.textContent = '';
+	setTimeout(syncPaymentCertificationFields, 0);
+});
 
 function renderDocuments(id) {
+	if (id === "documentos-declaracion") return pageTitle('<span id="declaration-certification-title" class="d-inline-block pe-3">Certificaciones de declaración</span>') + emptyState("La consulta de certificaciones de declaración todavía no está disponible.");
+	if (id === "documentos-multipagos") return renderMultipaymentCertification();
+	if (id === "documentos-pago") {
+		return `${pageTitle('<span id="payment-certification-title" class="d-inline-block pe-3">Certificaciones de pago</span>', "Consulta los pagos para solicitar una certificación.")}
+		
+		<div class="alert alert-info">Si la descarga no se abre, permite las ventanas emergentes en tu navegador.</div>
+		${section("Consultar pagos", `<form id="payment-certification-form" class="mb-0" data-query-feedback="La consulta de pagos todavía no está disponible." novalidate>
+		<div class="row g-3 mb-3">
+		<div class="col-12 col-lg-4"><label class="form-label" for="payment-certification-tax">Impuesto</label><select class="form-select" id="payment-certification-tax" required><option value="vehiculos">Impuesto de vehículos automotores</option><option value="predial">Impuesto Predial Unificado</option><option value="ica">Impuesto de Industria y Comercio</option><option value="delineacion">Impuesto de Delineaci\u00f3n Urbana</option></select></div>
+		<div class="col-12 col-lg-4"><label class="form-label" for="payment-certification-year">Año del pago <span class="text-danger" aria-hidden="true">*</span></label>${renderSelect("payment-certification-year", yearOptions(2019, 2026), { prompt: "Selecciona un año", required: true })}<div class="invalid-feedback">Selecciona un año.</div></div>
+        <div class="col-12 col-lg-4" id="payment-certification-extra">
+        <fieldset id="payment-certification-property-type" class="d-none mb-2"><legend class="visually-hidden">Tipo de identificador del predio</legend><div class="form-check form-check-inline"><input class="form-check-input" type="radio" id="payment-id-chip" name="payment-certification-property-type" value="chip" checked><label class="form-check-label" for="payment-id-chip">CHIP</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" id="payment-id-matricula" name="payment-certification-property-type" value="matricula"><label class="form-check-label" for="payment-id-matricula">Matrícula inmobiliaria</label></div></fieldset>
+        <label class="form-label" id="payment-certification-identifier-label" for="payment-certification-identifier">Placa</label><input class="form-control text-uppercase" id="payment-certification-identifier" required aria-describedby="payment-certification-identifier-error"><div class="invalid-feedback" id="payment-certification-identifier-error">Ingresa el identificador.</div></div>
+		</div>${queryActions()}
+		<div id="payment-certification-status" data-query-status role="status"></div></form>`)}
+		${section("Resultados", `
+        
+        <div id="payment-certification-results">${table(paymentCertificationHeaders('vehiculos'), [], {empty: "Aún no hay resultados de pagos."})}</div>
+        
+		<div class="d-flex justify-content-end gap-2"><button class="btn btn-primary" type="button" disabled>Generar certificado</button></div>
+		`)}`;
+	}
 	if (id === "documentos-retenciones") {
-		return `${pageTitle("Retenciones practicadas", "Selecciona el año gravable para consultar la información.")}${section("Año gravable", `${filterForm([{ label: "Año gravable", options: ["2026", "2025", "2024"], columns: 6 }])}${emptyState("Selecciona un año gravable para consultar las retenciones practicadas.")}`)}`;
+		return `${pageTitle('<span id="withholding-title" class="d-inline-block pe-3">Retenciones practicadas</span>', "Consulta las retenciones por año gravable.")}${section("Año gravable", `${filterForm([{ label: "Año gravable", options: yearOptions(2024, 2026), columns: 6, required: true }])}`)}`;
 	}
 	const config = {
 		"documentos-rit": "Certificación RIT",
@@ -956,29 +1095,29 @@ function renderDocuments(id) {
 		"documentos-multipagos": "Certificación multipagos",
 		"documentos-declaracion": "Certificación de declaración",
 	};
-	return `${pageTitle(config[id], "Pantalla preparada para generar o descargar documentos oficiales.")}${section("Solicitud de certificación", `${filterForm([{ label: "Tipo de certificación", options: [config[id]], columns: 6 }, { label: "Año gravable", options: ["2026", "2025", "2024"], columns: 6 }], "Generar certificación")}${emptyState("Selecciona los criterios para continuar.")}`)}`;
+	return `${pageTitle(config[id], "Pantalla preparada para generar o descargar documentos oficiales.")}${section("Solicitud de certificación", `${filterForm([{ label: "Tipo de certificación", options: [config[id]], columns: 6 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 6 }], "Generar certificación")}${emptyState("Selecciona los criterios para continuar.")}`)}`;
 }
 
 function notificationItems() {
-	const manage = '<a class="btn btn-outline-primary btn-sm" href="https://accstorefront.cpc1y8ebrl-secretari1-s1-public.model-t.cc.commerce.ondemand.com/bogota/es/contribuyentes/presentar-declaracion?impuesto=1&amp;anioGravable=2026" target="_blank" rel="noopener noreferrer" aria-label="Gestionar comunicación en la oficina virtual">Ir <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a>';
+	const manage = '<a class="btn btn-outline-primary btn-sm" href="#declaraciones-generar" aria-label="Consultar declaración en la demo">Ir <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a>';
 	const attachments = (names) => `<ul class="list-unstyled small mb-0">${names.map((name) => `<li class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded-3 p-3 mb-2"><span><i class="bi bi-file-earmark-pdf text-danger me-2" aria-hidden="true"></i>${name}</span><span><a class="btn btn-outline-primary btn-sm" href="output/pdf/anexo-notificacion-prueba.pdf" download="prueba-${name}" aria-label="Descargar ${name} de prueba"><i class="bi bi-download me-1" aria-hidden="true"></i>Descargar PDF</a></span></li>`).join('')}</ul>`;
 	const rows = [
-		['', 'OF. CONTROL MASIVO', 'AUTO DE ARCHIVO', '24.10.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Auto de archivo 105-f-77 puntual y masivo.pdf']), manage],
-		['', 'OF. COBRO GENERAL', 'RESOLUCIÓN QUE RESUELVE LAS EXCEPCIONES AL MANDAMIENTO DE PAGO', '29.08.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Resolucion de excepciones tributario 110-F.27.pdf']), manage],
-		['', 'OF. CONTROL MASIVO', 'REQUERIMIENTO ESPECIAL', '29.04.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Requerimiento Especial Vehicular.pdf']), manage],
-		['', 'OF. LIQUIDACION', 'LIQUIDACIÓN OFICIAL DE REVISIÓN', '12.04.2024 07:00:00', '', manage],
+		['', 'Oficina de Control Masivo', 'Auto de archivo', '24.10.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Auto de archivo 105-f-77 puntual y masivo.pdf']), manage],
+		['', 'Oficina de Cobro General', 'Resolución que resuelve las excepciones al mandamiento de pago', '29.08.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Resolucion de excepciones tributario 110-F.27.pdf']), manage],
+		['', 'Oficina de Control Masivo', 'Requerimiento especial', '29.04.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Requerimiento Especial Vehicular.pdf']), manage],
+		['', 'Oficina de Liquidación', 'Liquidación oficial de revisión', '12.04.2024 07:00:00', '', manage],
 	];
 	const messages = [
-		['', 'OF. CONTROL MASIVO', 'Documentos disponibles: auto de archivo', '25.10.2024 09:15:00', '', '', 'Ya puedes consultar las comunicaciones y los documentos asociados al auto de archivo en la pestaña Notificaciones.'],
-		['', 'OF. COBRO GENERAL', 'Respuesta a tu consulta sobre el mandamiento de pago', '30.08.2024 10:30:00', '', '', 'La respuesta a tu consulta está disponible. Revisa la resolución que resuelve las excepciones y sus anexos en la bandeja de notificaciones.'],
-		['', 'OF. CONTROL MASIVO', 'Información sobre el requerimiento vehicular', '30.04.2024 08:45:00', '', '', 'Se encuentra disponible una comunicación relacionada con el requerimiento especial vehicular. Consulta el documento correspondiente en Notificaciones.'],
-		['', 'OF. LIQUIDACION', 'Confirmación de recepción de tu consulta', '15.04.2024 14:20:00', '', '', 'Recibimos tu consulta relacionada con la liquidación oficial de revisión. Las comunicaciones asociadas se publicarán en este buzón.'],
+		['', 'Oficina de Control Masivo', 'Documentos disponibles: auto de archivo', '25.10.2024 09:15:00', '', '', 'Ya puedes consultar las comunicaciones y los documentos asociados al auto de archivo en la pestaña Notificaciones.'],
+		['', 'Oficina de Cobro General', 'Respuesta a tu consulta sobre el mandamiento de pago', '30.08.2024 10:30:00', '', '', 'La respuesta a tu consulta está disponible. Revisa la resolución que resuelve las excepciones y sus anexos en la bandeja de notificaciones.'],
+		['', 'Oficina de Control Masivo', 'Información sobre el requerimiento vehicular', '30.04.2024 08:45:00', '', '', 'Se encuentra disponible una comunicación relacionada con el requerimiento especial vehicular. Consulta el documento correspondiente en Notificaciones.'],
+		['', 'Oficina de Liquidación', 'Confirmación de recepción de tu consulta', '15.04.2024 14:20:00', '', '', 'Recibimos tu consulta relacionada con la liquidación oficial de revisión. Las comunicaciones asociadas se publicarán en este buzón.'],
 	];
 	return [
-		{ key: 'notice-demo-cobro-attachments', type: 'Notificación', unread: true, row: ['', 'OF. COBRO GENERAL', 'DOCUMENTOS DISPONIBLES DE TU SOLICITUD DE COBRO', '05.11.2026 11:30:00', attachments(['Respuesta a solicitud de cobro.pdf', 'Relación de obligaciones.pdf']), '', 'Consulta la respuesta a tu solicitud y la relación de obligaciones en los documentos adjuntos.'] },
-		{ key: 'notice-demo-liquidacion-attachments', type: 'Notificación', unread: true, row: ['', 'OF. LIQUIDACION', 'SOPORTES DE LA LIQUIDACIÓN DEL IMPUESTO', '05.11.2026 10:45:00', attachments(['Detalle de liquidación.pdf', 'Soporte de cálculo.pdf', 'Comunicación de liquidación.pdf']), '', 'Están disponibles los soportes de la liquidación. Descarga los anexos para consultar el detalle.'] },
-		{ key: 'notice-demo-new-20261105', type: 'Notificación', unread: true, row: ['', 'OF. CONTROL MASIVO', 'NUEVA COMUNICACIÓN SOBRE TU IMPUESTO VEHICULAR', '05.11.2026 09:00:00', attachments(['Comunicación impuesto vehicular.pdf']), '', 'Tienes una nueva comunicación sobre tu impuesto vehicular. Consulta y descarga el documento adjunto.'] },
-		{ key: 'message-demo-new-20261105', type: 'Mensaje', unread: true, row: ['', 'OF. LIQUIDACION', 'RESPUESTA DISPONIBLE A TU SOLICITUD', '05.11.2026 08:30:00', '', '', 'La respuesta a tu solicitud sobre la liquidación del impuesto ya está disponible. Revisa tus comunicaciones en este buzón.'] },
+		{ key: 'notice-demo-cobro-attachments', type: 'Notificación', unread: true, row: ['', 'Oficina de Cobro General', 'Documentos disponibles de tu solicitud de cobro', '05.11.2026 11:30:00', attachments(['Respuesta a solicitud de cobro.pdf', 'Relación de obligaciones.pdf']), '', 'Consulta la respuesta a tu solicitud y la relación de obligaciones en los documentos adjuntos.'] },
+		{ key: 'notice-demo-liquidacion-attachments', type: 'Notificación', unread: true, row: ['', 'Oficina de Liquidación', 'Soportes de la liquidación del impuesto', '05.11.2026 10:45:00', attachments(['Detalle de liquidación.pdf', 'Soporte de cálculo.pdf', 'Comunicación de liquidación.pdf']), '', 'Están disponibles los soportes de la liquidación. Descarga los anexos para consultar el detalle.'] },
+		{ key: 'notice-demo-new-20261105', type: 'Notificación', unread: true, row: ['', 'Oficina de Control Masivo', 'Nueva comunicación sobre tu impuesto vehicular', '05.11.2026 09:00:00', attachments(['Comunicación impuesto vehicular.pdf']), '', 'Tienes una nueva comunicación sobre tu impuesto vehicular. Consulta y descarga el documento adjunto.'] },
+		{ key: 'message-demo-new-20261105', type: 'Mensaje', unread: true, row: ['', 'Oficina de Liquidación', 'Respuesta disponible a tu solicitud', '05.11.2026 08:30:00', '', '', 'La respuesta a tu solicitud sobre la liquidación del impuesto ya está disponible. Revisa tus comunicaciones en este buzón.'] },
 		...rows.map((row, index) => ({ row, key: `notice-${index}`, type: "Notificación", unread: index < 2 })),
 		...messages.map((row, index) => ({ row, key: `message-${index}`, type: "Mensaje", unread: index < 2 })),
 	];
@@ -994,7 +1133,7 @@ function notificationList(items, compact = false) {
  if (!items.length) return '<div class="text-center p-5 text-secondary"><i class="bi bi-inbox fs-2" aria-hidden="true"></i><p class="mb-0 mt-2">No hay comunicaciones en esta bandeja.</p></div>';
  return items.map(item => {
  const row = item.row;
- const title = row[2].charAt(0) + row[2].slice(1).toLocaleLowerCase('es');
+ const title = row[2];
  const detailId = `${compact ? 'preview' : 'page'}-${item.key}`;
  return `<article class="list-group-item border-start-0 border-end-0 p-3 p-md-4 ${!item.read ? 'bg-primary-subtle' : 'bg-body'}" data-inbox-item data-search="${title} ${row[1]} ${row[3]}">
  <div class="d-flex align-items-start gap-3"><span class="rounded-3 bg-body-secondary text-primary p-2 flex-shrink-0 d-inline-flex align-items-center justify-content-center lh-1"><i class="bi ${item.type === 'Mensaje' ? 'bi-chat-left-text' : 'bi-file-earmark-text'}" aria-hidden="true"></i></span>
@@ -1005,14 +1144,56 @@ function notificationList(items, compact = false) {
  <div class="collapse" id="${detailId}"><div class="border rounded-3 bg-body p-3 mt-3"><p class="small">${row[6] || 'Consulta los documentos asociados a esta comunicación.'}</p><div class="d-flex flex-wrap gap-2 mt-3">${row[5] || ''}</div></div></div></div></div></article>`;
  }).join('');
 }
+function notificationTable(items) {
+ const headers = ['Oficina gestora', 'Asunto', 'Tipo', 'Estado de lectura', 'Fecha', 'Anexos', 'Acciones'];
+ const rows = items.map(({ row, type, read, key }) => [
+  row[1],
+  `<span data-inbox-subject class="${read ? '' : 'fw-semibold'}">${row[2]}</span>`,
+  tableBadge(type),
+  `<span data-inbox-read>${tableBadge(read ? 'Leída' : 'No leída', read ? 'secondary' : 'info')}</span>`,
+  `<time class="text-nowrap">${row[3].replaceAll('.', '/')}</time>`,
+  row[4] ? `<button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-inbox-detail="${key}" data-inbox-attachments aria-haspopup="dialog"><i class="bi bi-paperclip me-1" aria-hidden="true"></i>Anexos (${(row[4].match(/<li /g) || []).length})</button>` : '—',
+  `<button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-inbox-detail="${key}" aria-haspopup="dialog"><i class="bi bi-eye me-1" aria-hidden="true"></i>Ver</button>`
+ ]);
+ return table(headers, rows, {
+  id: 'notification-page-list', label: 'Comunicaciones del buzón', containerClass: 'mx-3 mb-3',
+  empty: 'No hay comunicaciones en esta bandeja.', unsortable: [5, 6],
+  rowAttributes: index => {
+   const { row, read } = items[index];
+   return `data-inbox-item class="${read ? '' : 'table-primary'}" data-search="${row[2]} ${row[1]} ${row[3].replaceAll('.', '/')} ${row[3]}"`;
+  }
+ });
+}
+
+document.addEventListener('click', event => {
+ const trigger = event.target.closest('[data-inbox-detail]');
+ if (!trigger) return;
+ const item = currentNotificationItems().find(({ key }) => key === trigger.dataset.inboxDetail);
+ if (!item) return;
+ const { key, row } = item;
+ const rowElement = trigger.closest('tr');
+ notificationState[key] = { ...notificationState[key], read: true };
+ try { localStorage.setItem('hacienda-inbox-v1', JSON.stringify(notificationState)); } catch {}
+ rowElement.classList.remove('table-primary');
+ rowElement.querySelector('[data-inbox-subject]').classList.remove('fw-semibold');
+ const badge = rowElement.querySelector('[data-inbox-read]');
+ badge.innerHTML = tableBadge('Leída');
+ refreshNotificationPreview();
+ showDetailModal({
+  title: trigger.hasAttribute('data-inbox-attachments') ? 'Documentos adjuntos' : row[2],
+  trigger,
+  body: `<p class="small text-secondary">${row[1]} · ${row[3].replaceAll('.', '/')}</p><p>${row[6] || 'Consulta los documentos asociados a esta comunicación.'}</p>${row[4] || ''}${row[5] || ''}`
+ });
+});
+
 function renderNotifications(id) {
  const all = currentNotificationItems();
  const unread = all.filter(item => !item.read && !item.archived).length;
  const emptyDemo = new URLSearchParams(window.location.search).get('demo') === 'empty';
  const items = emptyDemo ? [] : all.filter(item => (id !== 'notificaciones-no-leidas' || !item.read) && (id !== 'notificaciones-notificaciones' || item.type === 'Notificación') && (id !== 'notificaciones-mensajes' || item.type === 'Mensaje'));
- return `<section class="container-fluid py-3 px-0 notification-inbox"><div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3"><div><h1 class="h3 fw-semibold mb-1">Notificaciones <span class="badge rounded-pill text-bg-primary fs-6" data-notification-count>${unread}</span></h1><p class="text-secondary small mb-0">Tu buzón tributario · Oficina Virtual de Bogotá</p></div><button class="btn btn-outline-secondary btn-sm" type="button" data-notification-read-all>Marcar todas como leídas</button></div>
- <div class="card border-0 rounded-3 overflow-hidden"><div class="card-header bg-body px-3 pt-3 pb-0"><nav class="nav nav-tabs border-0 gap-2" aria-label="Filtrar notificaciones">${[['notificaciones-todas','Todas'],['notificaciones-no-leidas','No leídas'],['notificaciones-notificaciones','Notificaciones'],['notificaciones-mensajes','Mensajes']].map(([route,label]) => `<a class="nav-link ${id === route ? 'active' : 'text-secondary'}" href="#${route}" ${id === route ? 'aria-current="page"' : ''}>${label} <span class="badge rounded-pill bg-light text-body border ms-2">${route === 'notificaciones-todas' ? all.length : route === 'notificaciones-no-leidas' ? unread : all.filter(item => item.type === (route === 'notificaciones-mensajes' ? 'Mensaje' : 'Notificación')).length}</span></a>`).join('')}</nav></div>
- <div class="p-4 border-bottom"><div class="row g-3 align-items-end"><div class="col-12 col-md-7"><label class="form-label small" for="notification-search">Buscar comunicaciones</label><div class="input-group"><span class="input-group-text bg-body"><i class="bi bi-search" aria-hidden="true"></i></span><input class="form-control" id="notification-search" type="search" placeholder="Buscar por asunto, oficina o fecha"></div></div><div class="col-12 col-md-auto ms-md-auto"><label class="form-label small" for="notification-page-size">Registros por página</label><select class="form-select" id="notification-page-size"><option>10</option><option>20</option><option>30</option></select></div></div></div><div class="list-group list-group-flush" id="notification-page-list">${notificationList(items)}</div><p class="d-none p-4 text-center text-secondary mb-0" id="notification-no-results">No hay comunicaciones que coincidan con la búsqueda.</p><div class="card-footer bg-body p-4 d-flex flex-wrap align-items-center justify-content-between gap-3"><div class="d-flex flex-wrap align-items-center gap-3"><p class="small text-secondary mb-0" id="notification-page-summary" role="status"></p></div><nav aria-label="Paginación de notificaciones"><ul class="pagination pagination-sm mb-0" id="notification-pagination"></ul></nav></div></div><div class="d-flex justify-content-end mt-3"><a class="small link-secondary" href="${emptyDemo ? '#' + id : '?demo=empty#' + id}" ${emptyDemo ? 'data-demo-reset' : 'data-demo-state="empty"'}>${emptyDemo ? 'Volver a las notificaciones' : 'Ver estado vacío'}</a></div></section>`;
+ return `<section class="container-fluid py-3 px-0 notification-inbox"><a class="btn btn-link px-0 mb-3" href="#inicio">Volver al inicio</a><div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3"><div><h1 class="h3 fw-semibold mb-1">Buzón <span class="badge rounded-pill text-bg-primary fs-6" data-notification-count>${unread}</span></h1><p class="text-secondary small mb-0">Consulta las comunicaciones y actos administrativos asociados a tu identificación.</p></div><button class="btn btn-outline-secondary btn-sm" type="button" data-notification-read-all>Marcar todas como leídas</button></div>
+ <div class="card border-0 rounded-3 overflow-hidden"><div class="card-header bg-body px-3 pt-3 pb-0"><nav class="nav nav-tabs gap-1" aria-label="Filtrar notificaciones">${[['notificaciones-todas','Todas'],['notificaciones-no-leidas','No leídas'],['notificaciones-notificaciones','Notificaciones'],['notificaciones-mensajes','Mensajes']].map(([route,label]) => `<a class="nav-link ${id === route ? 'active' : 'text-secondary'}" href="#${route}" ${id === route ? 'aria-current="page"' : ''}>${label} <span class="badge rounded-pill bg-light text-body border ms-2" ${route === 'notificaciones-no-leidas' ? 'data-notification-count' : ''}>${route === 'notificaciones-todas' ? all.length : route === 'notificaciones-no-leidas' ? unread : all.filter(item => item.type === (route === 'notificaciones-mensajes' ? 'Mensaje' : 'Notificación')).length}</span></a>`).join('')}</nav></div>
+ <div class="p-3 p-md-4"><div class="row g-3 align-items-end"><div class="col-12 col-md-7"><label class="form-label small" for="notification-search">Buscar comunicaciones</label><div class="input-group"><span class="input-group-text bg-body"><i class="bi bi-search" aria-hidden="true"></i></span><input class="form-control" id="notification-search" type="search" placeholder="Buscar por asunto, oficina o fecha"></div></div><div class="col-12 col-md-auto ms-md-auto"><label class="form-label small" for="notification-page-size">Registros por página</label><select class="form-select" id="notification-page-size"><option>10</option><option>20</option><option>30</option></select></div></div></div>${notificationTable(items)}<p class="d-none p-4 text-center text-secondary mb-0" id="notification-no-results">No hay comunicaciones que coincidan con la búsqueda.</p><div class="card-footer bg-body p-4 d-flex flex-wrap align-items-center justify-content-between gap-3"><div class="d-flex flex-wrap align-items-center gap-3"><p class="small text-secondary mb-0" id="notification-page-summary" role="status"></p></div><nav aria-label="Paginación de notificaciones"><ul class="pagination pagination-sm flex-wrap mb-0" id="notification-pagination"></ul></nav></div></div><div class="d-flex justify-content-end mt-3"><a class="small link-secondary" href="${emptyDemo ? '#' + id : '?demo=empty#' + id}" ${emptyDemo ? 'data-demo-reset' : 'data-demo-state="empty"'}>${emptyDemo ? 'Volver a las notificaciones' : 'Ver estado vacío'}</a></div></section>`;
 }
 function refreshNotificationPreview() {
  const items = currentNotificationItems().filter(item => !item.archived);
@@ -1061,8 +1242,7 @@ function paginateNotifications(reset = false) {
  rows.forEach(row => row.classList.toggle('d-none', !visible.has(row)));
  document.getElementById('notification-no-results').classList.toggle('d-none', matches.length > 0 || rows.length === 0);
  document.getElementById('notification-page-summary').textContent = matches.length ? `Mostrando del ${start + 1} al ${Math.min(start + size, matches.length)} (Total: ${matches.length} resultados)` : '0 comunicaciones';
- const button = (label, page, disabled, active = false) => `<li class="page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}"><button type="button" class="page-link" data-notification-page="${page}" ${disabled ? 'disabled' : ''} ${active ? 'aria-current="page"' : ''}>${label}</button></li>`;
- document.getElementById('notification-pagination').innerHTML = button('Anterior', notificationPage - 1, notificationPage === 1) + Array.from({length: pages}, (_, index) => button(index + 1, index + 1, false, notificationPage === index + 1)).join('') + button('Siguiente', notificationPage + 1, notificationPage === pages);
+ document.getElementById('notification-pagination').innerHTML = paginationControls(notificationPage, pages, target => `data-notification-page="${target}"`);
 }
 document.addEventListener('input', event => { if (event.target.id === 'notification-search') paginateNotifications(true); });
 document.addEventListener('change', event => { if (event.target.id === 'notification-page-size') paginateNotifications(true); });
@@ -1088,12 +1268,12 @@ function registeredTaxTable(key, title, headers, rows, description = '') {
 	return `<section data-registered-tax="${key}" aria-labelledby="registered-${key}-title">
 		<div class="mb-4"><h2 class="h5 mb-1" id="registered-${key}-title">${title}</h2><p class="small text-secondary mb-0">${description || (!isVehicle && !isProperty ? 'Consulta los registros asociados a este impuesto.' : isVehicle ? 'Consulta las características de tus vehículos.' : 'Consulta la identificación y ubicación de tus predios registrados.')}</p></div>
 		<div class="row g-3 align-items-end mb-3">
-			<div class="col-12 col-md-7 col-xl-6"><label class="form-label small fw-semibold" for="registered-${key}-search">${!isVehicle && !isProperty ? 'Buscar registro' : isVehicle ? 'Buscar vehículo' : 'Buscar predio'}</label><div class="input-group"><span class="input-group-text bg-white"><i class="bi bi-search" aria-hidden="true"></i></span><input class="form-control" id="registered-${key}-search" type="search" data-registered-search placeholder="${searchHint}" aria-controls="registered-${key}-table">${key === 'my-vehicles' ? '<span class="input-group-text">COP</span>' : ''}</div></div>
+			<div class="col-12 col-md-7 col-xl-6"><label class="form-label small fw-semibold" for="registered-${key}-search">${!isVehicle && !isProperty ? 'Buscar registro' : isVehicle ? 'Buscar vehículo' : 'Buscar predio'}</label><div class="input-group"><span class="input-group-text bg-white"><i class="bi bi-search" aria-hidden="true"></i></span><input class="form-control" id="registered-${key}-search" type="search" data-registered-search placeholder="${searchHint}" aria-controls="registered-${key}-table"></div></div>
 			<div class="col-12 col-md-auto ms-md-auto"><label class="form-label small" for="registered-${key}-size">Registros por página</label><select class="form-select" id="registered-${key}-size" data-registered-size><option>10</option><option>20</option><option>30</option><option>50</option></select></div>
 		</div>
 		<p class="small text-secondary d-lg-none mb-2" id="registered-${key}-scroll"><i class="bi bi-arrow-left-right me-1" aria-hidden="true"></i>Desliza la tabla para consultar todas las columnas.</p>
 		<div class="table-responsive app-table-container registered-tax-scroll mb-3" tabindex="0" role="region" aria-label="Tabla de ${title.toLocaleLowerCase('es')}"><table class="table app-table table-hover align-middle mb-0 registered-tax-table" id="registered-${key}-table"><caption class="visually-hidden">${title}</caption><thead class="table-light"><tr>${headers.map((header) => `<th scope="col">${header}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr data-registered-row>${row.map((cell, index) => index === 0 ? `<th scope="row" class="fw-semibold text-nowrap">${cell || '—'}</th>` : `<td>${cell || '<span class="text-secondary" aria-label="Sin información">—</span>'}</td>`).join('')}</tr>`).join('')}<tr data-registered-empty class="${rows.length ? 'd-none' : ''}"><td colspan="${headers.length}" class="text-center text-secondary py-4">No hay registros disponibles para mostrar.</td></tr></tbody></table></div>
-		<div class="d-flex flex-wrap justify-content-between align-items-center gap-3"><p class="small text-secondary mb-0" data-registered-summary aria-live="polite"></p><nav aria-label="Paginación de ${title.toLocaleLowerCase('es')}"><ul class="pagination pagination-sm mb-0" data-registered-pagination></ul></nav></div>
+		<div class="d-flex flex-wrap justify-content-between align-items-center gap-3"><p class="small text-secondary mb-0" data-registered-summary aria-live="polite"></p><nav aria-label="Paginación de ${title.toLocaleLowerCase('es')}"><ul class="pagination pagination-sm flex-wrap mb-0" data-registered-pagination></ul></nav></div>
 	</section>`;
 }
 
@@ -1113,16 +1293,15 @@ function filterRegisteredTaxes(key, reset = false) {
 	rows.forEach((row) => row.classList.toggle('d-none', !shown.has(row)));
 	root.querySelector('[data-registered-empty]').classList.toggle('d-none', matches.length > 0);
 	root.querySelector('[data-registered-summary]').textContent = matches.length ? `Mostrando del ${start + 1} al ${Math.min(start + size, matches.length)} (Total: ${matches.length} resultados)` : 'Mostrando 0 resultados';
-	const button = (label, target, disabled = false, active = false) => `<li class="page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}"><button class="page-link" type="button" data-registered-page="${target}" ${disabled ? 'disabled' : ''} ${active ? 'aria-current="page"' : ''}>${label}</button></li>`;
 	const visiblePages = [...new Set([1, ...Array.from({ length: 5 }, (_, index) => page - 2 + index).filter((item) => item > 1 && item < pages), pages])];
-	root.querySelector('[data-registered-pagination]').innerHTML = button('Anterior', page - 1, page === 1) + visiblePages.map((item, index) => `${index && item - visiblePages[index - 1] > 1 ? '<li class="page-item disabled"><span class="page-link">…</span></li>' : ''}${button(item, item, false, item === page)}`).join('') + button('Siguiente', page + 1, page === pages);
+	root.querySelector('[data-registered-pagination]').innerHTML = paginationControls(page, pages, target => `data-registered-page="${target}"`, visiblePages);
 }
 
 function renderRegisteredIca() {
 	return `<h2 class="h5 mb-4">Impuesto de Industria y Comercio ICA</h2>
-		${registeredTaxTable('ica-activities', 'Actividades económicas vigentes', ['Código CIIU', 'Nombre actividad económica', 'Tipo', 'Tarifa', 'Fecha inicio Actividad', 'Fecha Fin Actividad'], [
+		${registeredTaxTable('ica-activities', 'Actividades económicas vigentes', ['Código CIIU', 'Nombre de la actividad económica', 'Tipo', 'Tarifa', 'Fecha de inicio de la actividad', 'Fecha de finalización de la actividad'], [
 			['', '', '', '', '00000000', ''],
-			['4732', 'COMERCIO AL POR MENOR DE LUBRICANTES (ACEITES, GRASAS), ADITIVOS Y PRODUCTOS DE LIMPIEZA PARA VEHÍCULOS AUTOMOTORES', '', '', '04/06/2026', '31/12/9999'],
+			['4732', 'Comercio al por menor de lubricantes (aceites, grasas), aditivos y productos de limpieza para vehículos automotores', '', '', '04/06/2026', '31/12/9999'],
 		], 'Actividades económicas vigentes')}
 		<hr class="my-4">
 		${registeredTaxTable('ica-establishments', 'Establecimientos', ['Matrícula', 'Nombre', 'Dirección', 'Teléfono', 'Fecha de apertura', 'Fecha de cierre'], [
@@ -1132,7 +1311,7 @@ function renderRegisteredIca() {
 }
 
 function renderRegisteredTaxes() {
-	const delineationRows = ['CDU0510365', 'CDU0710031', 'CDU0841231', 'CDU0842308', 'CDU0842309', 'CDU0842642', 'CDU0842854', 'CDU0842855', 'CDU0930701', 'CDU1050213'].map((code) => [code]);
+	const delineationRows = ['CDU-DEMO-091', 'CDU-DEMO-092', 'CDU-DEMO-093', 'CDU-DEMO-094', 'CDU-DEMO-095', 'CDU-DEMO-096', 'CDU-DEMO-097', 'CDU-DEMO-098', 'CDU-DEMO-099', 'CDU-DEMO-100'].map((code) => [code]);
 	const renderAdditionalTax = (id, label) => {
 		if (id === 'ica') return renderRegisteredIca();
 		if (id === 'delineacion') return registeredTaxTable(id, 'Impuestos de Delineación Urbana', ['C.D.U'], delineationRows);
@@ -1184,12 +1363,12 @@ document.addEventListener('click', (event) => {
 });
 
 const authorizedAgents = [
-	{ id: '1', name: 'Camila Torres Mendoza', document: '1.000.000.011', quality: 'Representante Legal Suplente', start: '2019-06-27', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
-	{ id: '2', name: 'Santiago Rojas Herrera', document: '1.000.000.012', quality: 'Revisor Fiscal Principal', start: '2021-01-14', end: '9999-12-31', taxes: [], active: true },
-	{ id: '3', name: 'Valeria Duarte Molina', document: '1.000.000.013', quality: 'Revisor Fiscal Principal', start: '2019-06-27', end: '9999-12-31', taxes: [], active: true },
-	{ id: '4', name: 'Andrés Cárdenas Ríos', document: '1.000.000.014', quality: 'Representante Legal Principal', start: '2018-02-22', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
-	{ id: '5', name: 'Daniela Pardo Salcedo', document: '1.000.000.015', quality: 'Revisor Fiscal Suplente', start: '2019-06-27', end: '2021-12-29', taxes: [], active: false },
-	{ id: '6', name: 'Daniela Pardo Salcedo', document: '1.000.000.015', quality: 'Revisor Fiscal Principal', start: '2019-09-19', end: '2021-12-29', taxes: [], active: false },
+	{ id: '1', name: 'Agente Demo Uno', document: '1.000.000.011', quality: 'Representante Legal Suplente', start: '2019-06-27', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
+	{ id: '2', name: 'Agente Demo Dos', document: '1.000.000.012', quality: 'Revisor Fiscal Principal', start: '2021-01-14', end: '9999-12-31', taxes: [], active: true },
+	{ id: '3', name: 'Agente Demo Tres', document: '1.000.000.013', quality: 'Revisor Fiscal Principal', start: '2019-06-27', end: '9999-12-31', taxes: [], active: true },
+	{ id: '4', name: 'Agente Demo Cuatro', document: '1.000.000.014', quality: 'Representante Legal Principal', start: '2018-02-22', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
+	{ id: '5', name: 'Agente Demo Cinco', document: '1.000.000.015', quality: 'Revisor Fiscal Suplente', start: '2019-06-27', end: '2021-12-29', taxes: [], active: false },
+	{ id: '6', name: 'Agente Demo Cinco', document: '1.000.000.015', quality: 'Revisor Fiscal Principal', start: '2019-09-19', end: '2021-12-29', taxes: [], active: false },
 ];
 const authorizedAgentPages = { active: 1, inactive: 1 };
 let authorizedAgentPageSize = 10;
@@ -1205,12 +1384,11 @@ function authorizedAgentsTable(historical = false, query = '') {
  const page = authorizedAgentPages[key] = Math.min(authorizedAgentPages[key], pages);
  const start = (page - 1) * authorizedAgentPageSize;
  const pageRows = rows.slice(start, start + authorizedAgentPageSize);
- const pageButton = (label, target, disabled = false, active = false) => `<li class="page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}"><button class="page-link" type="button" data-agent-page="${target}" data-agent-page-group="${key}" ${disabled ? 'disabled' : ''} ${active ? 'aria-current="page"' : ''}>${label}</button></li>`;
- const pagination = pageButton('Anterior', page - 1, page === 1) + Array.from({ length: pages }, (_, i) => pageButton(i + 1, i + 1, false, page === i + 1)).join('') + pageButton('Siguiente', page + 1, page === pages);
+ const pagination = paginationControls(page, pages, target => `data-agent-page="${target}" data-agent-page-group="${key}"`);
  const date = (value) => value.split('-').reverse().join('/');
-	const headers = [['name', 'Nombre'], ['document', 'Tipo / N.º de documento'], ['quality', 'Calidades'], ['start', 'Vigencia'], ['taxes', 'Impuesto']];
-	return `<div class="table-responsive app-table-container"><table class="table app-table table-hover align-middle mb-0"><caption class="visually-hidden">Agentes autorizados ${historical ? 'inactivos' : 'activos'}</caption><thead class="table-light"><tr>${headers.map(([key, label]) => `<th scope="col" ${authorizedAgentSort.key === key ? `aria-sort="${authorizedAgentSort.direction === 1 ? 'ascending' : 'descending'}"` : ''}><button class="btn btn-link p-0 text-start text-body fw-semibold text-decoration-none d-flex align-items-center gap-2" type="button" data-agent-sort="${key}">${label}<i class="bi bi-${authorizedAgentSort.key === key && authorizedAgentSort.direction === -1 ? 'caret-down-fill' : 'caret-up-fill'} small ${authorizedAgentSort.key === key ? 'text-primary' : 'text-secondary opacity-50'}" aria-hidden="true"></i></button></th>`).join('')}<th scope="col">Estado</th>${historical ? '' : '<th scope="col" class="text-center">Acciones</th>'}</tr></thead><tbody>${pageRows.map((agent) => `<tr><th scope="row" class="fw-semibold">${agent.name}</th><td><span class="d-block">${agent.documentType || 'CC'}</span><span class="text-nowrap">${agent.document}</span></td><td>${agent.quality}</td><td><span class="text-nowrap">${date(agent.start)}</span><span class="d-block text-nowrap">– ${date(agent.end)}</span></td><td>${agent.taxes.join(', ') || '—'}</td><td><span class="badge rounded-pill ${agent.active ? 'bg-success-subtle text-success-emphasis border border-success-subtle' : 'bg-danger-subtle text-danger-emphasis border border-danger-subtle'} text-wrap px-3 py-2">${agent.active ? 'Vigente' : 'Finalizado'}</span></td>${historical ? '' : `<td class="text-center"><button class="btn btn-outline-primary btn-sm" type="button" data-agent-edit="${agent.id}" aria-label="Editar agente ${agent.name}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Editar</button></td>`}</tr>`).join('') || `<tr><td colspan="${historical ? 6 : 7}" class="text-center text-secondary py-4">No se encontraron agentes para esta consulta.</td></tr>`}</tbody></table></div>
-		<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3"><p class="small text-secondary mb-0" role="status">${total ? `Mostrando del ${start + 1} al ${Math.min(start + authorizedAgentPageSize, total)} (Total: ${total} resultados)` : 'Mostrando 0 resultados'}</p><nav aria-label="Paginación de agentes autorizados"><ul class="pagination pagination-sm mb-0">${pagination}</ul></nav></div>`;
+	const headers = [['name', 'Nombre'], ['document', 'Tipo y número de documento'], ['quality', 'Calidades'], ['start', 'Vigencia'], ['taxes', 'Impuesto']];
+	return `<div class="table-responsive app-table-container" tabindex="0" role="region" aria-label="Agentes autorizados"><table class="table app-table table-hover align-middle mb-0"><caption class="visually-hidden">Agentes autorizados ${historical ? 'inactivos' : 'activos'}</caption><thead class="table-light"><tr>${headers.map(([key, label]) => `<th scope="col" ${authorizedAgentSort.key === key ? `aria-sort="${authorizedAgentSort.direction === 1 ? 'ascending' : 'descending'}"` : ''}><button class="btn btn-link p-0 text-start text-body fw-semibold text-decoration-none d-flex align-items-center gap-2" type="button" data-agent-sort="${key}">${label}<i class="bi bi-${authorizedAgentSort.key === key && authorizedAgentSort.direction === -1 ? 'caret-down-fill' : 'caret-up-fill'} small ${authorizedAgentSort.key === key ? 'text-primary' : 'text-secondary opacity-50'}" aria-hidden="true"></i></button></th>`).join('')}<th scope="col">Estado</th>${historical ? '' : '<th scope="col" class="text-center">Acciones</th>'}</tr></thead><tbody>${pageRows.map((agent) => `<tr><th scope="row" class="fw-semibold">${agent.name}</th><td><span class="d-block">${agent.documentType || 'CC'}</span><span class="text-nowrap">${agent.document}</span></td><td>${agent.quality}</td><td><span class="text-nowrap">${date(agent.start)}</span><span class="d-block text-nowrap">– ${date(agent.end)}</span></td><td>${agent.taxes.join(', ') || '—'}</td><td>${tableBadge(agent.active ? 'Vigente' : 'Finalizado', agent.active ? 'success' : 'danger')}</td>${historical ? '' : `<td class="text-center"><button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-agent-edit="${agent.id}" aria-label="Editar agente ${agent.name}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Editar</button></td>`}</tr>`).join('') || `<tr><td colspan="${historical ? 6 : 7}" class="text-center text-secondary py-4">No se encontraron agentes para esta consulta.</td></tr>`}</tbody></table></div>
+		<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3"><p class="small text-secondary mb-0" role="status">${total ? `Mostrando del ${start + 1} al ${Math.min(start + authorizedAgentPageSize, total)} (Total: ${total} resultados)` : 'Mostrando 0 resultados'}</p><nav aria-label="Paginación de agentes autorizados"><ul class="pagination pagination-sm flex-wrap mb-0">${pagination}</ul></nav></div>`;
 }
 
 function renderAuthorizedAgents() {
@@ -1297,10 +1475,10 @@ function renderPayments(id) {
 }
 
 function renderPage(id) {
-	if (id === "predio-AAA0012MOYN") return renderPredialTax(true);
+	if (id === "predio-CHIP-DEMO-035") return renderPredialTax(true);
 	if (id === "predial-rop") return renderPredialRop();
 	if (id === "predial-declaracion") return renderPredialDeclaration();
-	if (isPageContentHidden(id)) return pageTitle(getRouteDetails(id).label);
+	if (isPageContentHidden(id)) return pageTitle(getRouteDetails(id).label) + emptyState("Esta sección todavía no está disponible.");
 	if (id === "inicio") return renderDashboard();
 	if (id === "guia-visual") return renderStyleGuide();
 	if (id.startsWith("rit-")) return renderRitPage(id);
@@ -1325,7 +1503,7 @@ function getCurrentRoute() {
 	const hash = window.location.hash.replace(/^#/, "");
 	if (hash === "documentos-rit") return "rit-certificacion";
 	if (pages.has(hash)) return hash;
-	if (hash.startsWith("vehiculo-") || ["predio-AAA0012MOYN", "predial-declaracion", "predial-rop"].includes(hash)) return hash;
+	if (hash.startsWith("vehiculo-") || ["predio-CHIP-DEMO-035", "predial-declaracion", "predial-rop"].includes(hash)) return hash;
 	return "inicio";
 }
 
@@ -1338,7 +1516,7 @@ const demoStates = [
 ];
 
 function getRouteDetails(routeId) {
-	if (routeId === "predio-AAA0012MOYN") return { id: routeId, label: "Detalle del predio AAA0012MOYN", group: routeGroups.find(group => group.id === "impuestos") };
+	if (routeId === "predio-CHIP-DEMO-035") return { id: routeId, label: "Detalle del predio CHIP-DEMO-035", group: routeGroups.find(group => group.id === "impuestos") };
 	if (routeId === "predial-rop") return { id: routeId, label: "Generar ROP", group: routeGroups.find(group => group.id === "impuestos") };
 	if (routeId === "predial-declaracion") return { id: routeId, label: "Declaraci\u00f3n Predial", group: routeGroups.find(group => group.id === "impuestos") };
 	return pages.get(routeId) ?? (routeId.startsWith("vehiculo-")
@@ -1449,7 +1627,15 @@ function getRelatedRoutes(route) {
 }
 
 function isPageContentHidden(id) {
-	if (id === "predio-AAA0012MOYN") return false;
+	if (id === "declaraciones-generar") return false;
+	if (id === "pagos-relacion") return false;
+	if (id === "documentos-declaracion") return false;
+	if (id === "documentos-multipagos") return false;
+	if (id === "tramites-seguimiento") return false;
+	if (["obligaciones-pendientes", "obligaciones-facilidades", "pagos-facilidades"].includes(id)) return false;
+	if (id === "documentos-pago") return false;
+	if (id === "documentos-retenciones") return false;
+	if (id === "predio-CHIP-DEMO-035") return false;
 	if (id === "predial-rop") return false;
 	if (id === "predial-declaracion") return false;
 	if (id.startsWith('notificaciones-')) return false;
@@ -1642,11 +1828,11 @@ function showRitCertificateList() {
 		<div class="modal-header bg-light"><h2 class="modal-title fs-5" id="ritVehicleListTitle">Impuestos de Vehículos</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
 		<div class="modal-body p-4">
 			<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
-				<label class="d-flex align-items-center gap-2 small">MOSTRANDO <select class="form-select form-select-sm w-auto" aria-label="Datos por página"><option>10</option><option>25</option><option>50</option></select> DATOS POR PÁGINA</label>
-				<label class="d-flex align-items-center gap-2 small">BUSCAR: <input type="search" class="form-control form-control-sm" data-vehicle-search></label>
+				<label class="d-flex align-items-center gap-2 small">Mostrar <select class="form-select form-select-sm w-auto" aria-label="Datos por página"><option>10</option><option>25</option><option>50</option></select> registros por página</label>
+				<label class="d-flex align-items-center gap-2 small">Buscar <input type="search" class="form-control form-control-sm" data-vehicle-search></label>
 			</div>
-			<div class="table-responsive"><table class="table table-borderless align-middle"><thead class="table-light text-center"><tr><th scope="col">Placa</th><th scope="col">Marca</th><th scope="col">Imprimir</th></tr></thead><tbody><tr data-vehicle-row><td>DEM033</td><td></td><td class="text-center"><button type="button" class="btn btn-link py-0" data-vehicle-download aria-label="Descargar certificado del vehículo DEM033"><i class="bi bi-download" aria-hidden="true"></i></button></td></tr><tr data-vehicle-empty hidden><td colspan="3" class="text-center text-secondary">No se encontraron resultados.</td></tr></tbody></table></div>
-			<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3"><p class="mb-0 small" data-vehicle-summary>Mostrando del 1 al 1 (Total: 1 resultados)</p><nav aria-label="Paginación de vehículos"><ul class="pagination pagination-sm mb-0"><li class="page-item disabled"><button class="page-link" disabled>Anterior</button></li><li class="page-item active" aria-current="page"><span class="page-link">1</span></li><li class="page-item disabled"><button class="page-link" disabled>Siguiente</button></li></ul></nav></div>
+			<div class="table-responsive app-table-container mb-3" tabindex="0" role="region" aria-label="Certificados de vehículos"><table class="table app-table table-hover align-middle mb-0"><thead class="table-light"><tr><th scope="col">Placa</th><th scope="col">Marca</th><th scope="col">Acciones</th></tr></thead><tbody><tr data-vehicle-row><td>DEM033</td><td></td><td class="text-center"><button type="button" class="btn btn-outline-primary btn-sm px-3" data-vehicle-download aria-label="Descargar certificado del vehículo DEM033"><i class="bi bi-download" aria-hidden="true"></i></button></td></tr><tr data-vehicle-empty hidden><td colspan="3" class="text-center text-secondary">No se encontraron resultados.</td></tr></tbody></table></div>
+			<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3"><p class="mb-0 small" data-vehicle-summary>Mostrando del 1 al 1 (Total: 1 resultados)</p><nav aria-label="Paginación de vehículos"><ul class="pagination pagination-sm flex-wrap mb-0">${paginationControls(1, 1)}</ul></nav></div>
 			<button type="button" class="btn btn-light w-100 mt-3" data-vehicle-download>Generar</button>
 		</div></div></div>`;
 	document.body.appendChild(modal);
@@ -1676,10 +1862,10 @@ function downloadRitCertificate(vehiclePlate) {
 		ica: "Impuestos de ICA",
 	};
 	const pdfText = [
-		"CERTIFICACION MI RIT",
-		"DOCUMENTO DE PRUEBA - NO ES UN CERTIFICADO OFICIAL",
+		"Certificacion Mi RIT",
+		"Documento de prueba - No es un certificado oficial",
 		`Tipo de certificacion: ${certificateType}`,
-		"Contribuyente: MIGUEL SALAZAR",
+		"Contribuyente: Contribuyente Demo",
 		"Tipo de documento: CC",
 		"Numero de documento: 1000000001",
 		"Impuesto incluido:",
@@ -1738,8 +1924,15 @@ document.addEventListener("submit", (event) => {
 		return;
 	}
 
-	if (event.target.matches("[data-placeholder-form]")) {
+	if (event.target.matches("[data-query-feedback]")) {
 		event.preventDefault();
+		const form = event.target;
+		const status = form.querySelector("[data-query-status]");
+		form.classList.add("was-validated");
+		const valid = form.checkValidity();
+		status.className = valid ? "alert alert-info mt-3 mb-0" : "";
+		status.textContent = valid ? form.dataset.queryFeedback || "Esta consulta todavía no está disponible." : "";
+		if (!valid) form.querySelector(":invalid")?.focus();
 	}
 	if (event.target.matches("[data-agent-search-form]")) {
 		event.preventDefault();
