@@ -1,5 +1,5 @@
 function renderProcedureTracking() {
- return `${pageTitle('<span id="procedure-tracking-title" class="d-inline-block pe-3">Seguimiento de trámite</span>', 'Consulta el estado de un trámite con su número de caso o de radicado.')}
+ return `${pageTitle('<span id="procedure-tracking-title" class="d-inline-block pe-3">Seguimiento de trámites</span>', 'Consulta el estado de un trámite con su número de caso o de radicado.')}
  ${section('Consultar solicitud', `<p class="text-secondary">Completa uno de los dos campos.</p>
  <form id="procedure-tracking-form" novalidate>
  <div class="row g-3 mb-3"><div class="col-12 col-md-5 col-lg-4"><label class="form-label" for="procedure-case-number">Número de caso</label><input class="form-control" id="procedure-case-number" name="caso" type="text" aria-describedby="procedure-tracking-feedback"></div><div class="col-12 col-md-5 col-lg-4"><label class="form-label" for="procedure-filing-number">Número de radicado</label><input class="form-control" id="procedure-filing-number" name="radicado" type="text" aria-describedby="procedure-tracking-feedback"></div></div>

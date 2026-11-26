@@ -1,4 +1,4 @@
-const routeGroups = [
+﻿const routeGroups = [
 	{
 		id: "rit",
 		label: "Mi RIT",
@@ -18,6 +18,8 @@ const routeGroups = [
 			["impuestos-vehiculos", "Vehículos"],
 			["impuestos-predial", "Predial"],
 			["impuestos-ica", "ICA"],
+			["impuestos-publicidad", "Publicidad exterior"],
+			[fuelSurtaxRoute, fuelSurtaxName],
 		],
 	},
 	{
@@ -26,8 +28,8 @@ const routeGroups = [
 		icon: "bi-list-check",
 		items: [
 			["obligaciones-pendientes", "Obligaciones pendientes"],
-			["obligaciones-cuenta", "Estados de cuenta"],
-			["obligaciones-facilidades", "ROP Facilidades de Pago"],
+			["obligaciones-cuenta", "Estado de cuenta"],
+			["obligaciones-facilidades", "ROP Facilidades de pago"],
 		],
 	},
 	{
@@ -35,8 +37,7 @@ const routeGroups = [
 		label: "Declaraciones",
 		icon: "bi-file-earmark-text",
 		items: [
-			["declaraciones-generar", "Generar declaración"],
-			["declaraciones-corregir", "Corregir declaración"],
+			[declarationRoute, declarationTitle],
 			["declaraciones-blanco", "Generar declaración en blanco"],
 			["declaraciones-presentadas", "Declaraciones presentadas"],
 		],
@@ -82,6 +83,21 @@ const routeGroups = [
 	},
 ];
 
+const taxpayerMenuLabels = new Map([
+	["rit-datos", "Mi RIT"],
+	["rit-impuestos", "Gestionar mis Impuestos"],
+	["rit-agentes", "Agentes Autorizados"],
+	["rit-certificacion", "Certificación RIT"],
+	["declaraciones-generar", "Generar declaración / Corrección Vigencia actual"],
+	["pagos-facturas", "Descarga de factura"],
+	["pagos-reexpedicion", "Reexpedición de factura"],
+	["pagos-multipago", "Recibo multipago"],
+	["obligaciones-cuenta", "Estado de cuenta"],
+	["obligaciones-facilidades", "ROP Facilidades de pago"],
+	["documentos-multipagos", "Certificaciones multiplago"],
+	["documentos-declaracion", "Certificaciones de declaración"],
+]);
+
 // Ocultar temporalmente el contenido; conservar todas las opciones del menú.
 const hiddenRouteGroups = new Set(['impuestos', 'obligaciones', 'declaraciones', 'pagos', 'tramites', 'documentos', 'notificaciones']);
 
@@ -91,6 +107,9 @@ const simpleRoutes = [
 ];
 const pages = new Map(simpleRoutes.map((route) => [route.id, route]));
 routeGroups.forEach((group) => group.items.forEach(([id, label]) => pages.set(id, { id, label, group })));
+pages.set("pagos-multipago", { id: "pagos-multipago", label: "Recibo multipago", group: routeGroups.find(group => group.id === "pagos") });
+pages.set("pagos-reexpedicion", { id: "pagos-reexpedicion", label: "Reexpedición de factura", group: routeGroups.find(group => group.id === "pagos") });
+pages.set("rit-actualizacion", { id: "rit-actualizacion", label: "Actualización de datos", group: routeGroups.find(group => group.id === "rit") });
 pages.set("rit-agentes-habilitar", { id: "rit-agentes-habilitar", label: "Habilitar agente autorizado", group: routeGroups[0] });
 
 const contentRoot = document.getElementById("pageContent");
@@ -160,7 +179,7 @@ try {
 }
 try {
 	if (window.localStorage.getItem(currentEmailSeedKey) !== "true") {
-		ritFormValues["current-email"] = { value: "contribuyente.demo@example.com", checked: false };
+		ritFormValues["current-email"] = { value: "miguel.salazar@example.com", checked: false };
 		window.localStorage.setItem(ritFormStorageKey, JSON.stringify(ritFormValues));
 		window.localStorage.setItem(currentEmailSeedKey, "true");
 	}
@@ -257,16 +276,22 @@ function saveContactAddressFromEditor() {
 }
 
 // Update legacy placeholder values without replacing user-entered information.
-Object.entries({ 'basic-first-name': ['PERSONA', 'CONTRIBUYENTE'], 'basic-middle-name': ['DE', 'EJEMPLO'], 'basic-first-surname': ['PRUEBA', 'DEMO'], 'basic-second-surname': ['DEMO', 'FICTICIO'], 'current-email': ['contribuyente.demo@example.com', 'contribuyente.demo@example.com'] }).forEach(([id, [previous, current]]) => {
+Object.entries({ 'basic-first-name': ['PERSONA', 'MIGUEL'], 'basic-middle-name': ['DE', 'ANDRÉS'], 'basic-first-surname': ['PRUEBA', 'SALAZAR'], 'basic-second-surname': ['DEMO', 'RÍOS'], 'current-email': ['contribuyente.demo@example.com', 'miguel.salazar@example.com'] }).forEach(([id, [previous, current]]) => {
  if (ritFormValues[id]?.value === previous) ritFormValues[id].value = current;
 });
 restoreRitFormValues(contentRoot);
 const existingRitPage = contentRoot.innerHTML;
+const corporateTaxpayerIdentity = Object.freeze({
+	fullName: 'CENTRO AUTOMOTOR DIESEL S A CENTRODIESEL', initials: 'CD',
+	documentType: 'NIT', documentTypeLabel: 'Número de Identificación Tributaria', documentNumber: '860032115',
+	checkDigit: '6', legalForm: 'Sociedad anónima', registration: '00000000', liquidationDate: '—',
+	withholdingAgent: 'Agente retenedor', icClass: 'Persona jurídica',
+});
 let taxpayerIdentity = {
-	firstName: "CONTRIBUYENTE",
-	middleName: "EJEMPLO",
-	firstSurname: "DEMO",
-	secondSurname: "FICTICIO",
+	firstName: "MIGUEL",
+	middleName: "ANDRÉS",
+	firstSurname: "SALAZAR",
+	secondSurname: "RÍOS",
 	documentType: "CC",
 	documentNumber: "1000000001",
 	documentIssueDate: "2000-01-01",
@@ -281,31 +306,31 @@ const agentDirectory = [
 		documentNumber: "1000000002",
 		issueDate: "2020-01-01",
 		taxpayerType: "Persona natural",
-		firstName: "Agente",
-		middleName: "Ejemplo",
-		lastName: "Demo",
-		secondLastName: "Ficticio",
-		address: "Dirección ficticia del agente",
-		landline: "",
-		mobile: "",
-		email: "agente.demo@example.com",
+		firstName: "Valentina",
+		middleName: "Isabel",
+		lastName: "Morales",
+		secondLastName: "Castro",
+		address: "Carrera 24 # 63-18, Bogotá, D. C.",
+		landline: "(601) 742 6813",
+		mobile: "315 628 4917",
+		email: "valentina.morales@example.com",
 		socialNetwork: "Instagram",
-		socialUser: "@agente.demo",
+		socialUser: "@valentina.morales",
 	},
 ];
 
 const vehicles = [
 	...[
-		['DEM351', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
-		['DEM352', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
-		['DEM353', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
-		['DEM355', 'Honda', '1980', 'Motocicleta', 'Sin carrocería', '00', 'No', '100'],
-		['DEM356', 'Viasa', '1971', 'Campero', 'Cabinado', '2', 'No', '2800'],
-		['DEM357', 'Fiat', '1993', 'Automóvil', 'Cupé', '2', 'No', '1200'],
-		['DEM358', 'Nissan', '1994', 'Automóvil', 'Sedán', '4', 'No', '1400'],
-		['DEM359', 'Chevrolet', '1995', 'Camioneta', 'Cabinado', '02', 'No', '2300'],
-		['DEM360', 'Peugeot', '1995', 'Automóvil', 'Sedán', '4', 'No', '2000'],
-		['DEM361', 'Chevrolet', '1997', 'Campero', 'Cabinado', '4', 'Sí', '4300'],
+		['865NWX', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
+		['866NWX', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
+		['867NWX', 'Foton', '2026', 'Camioneta', 'Furgón', '02', 'No', '2499'],
+		['ADH93', 'Honda', '1980', 'Motocicleta', 'Sin carrocería', '00', 'No', '100'],
+		['AGI426', 'Viasa', '1971', 'Campero', 'Cabinado', '2', 'No', '2800'],
+		['BCO276', 'Fiat', '1993', 'Automóvil', 'Cupé', '2', 'No', '1200'],
+		['BEE625', 'Nissan', '1994', 'Automóvil', 'Sedán', '4', 'No', '1400'],
+		['BFC507', 'Chevrolet', '1995', 'Camioneta', 'Cabinado', '02', 'No', '2300'],
+		['BGC079', 'Peugeot', '1995', 'Automóvil', 'Sedán', '4', 'No', '2000'],
+		['BHK271', 'Chevrolet', '1997', 'Campero', 'Cabinado', '4', 'Sí', '4300'],
 	].map(([plate, brand, year, className, body, doors, armored, engine]) => ({ plate, brand, line: '', year, className, body, doors, armored, engine })),
 	{"plate":"DEM001","brand":"Citroën","line":"","year":"2020","className":"Camioneta","body":"Wagon","doors":"5","armored":"No","engine":"1598"},
 	{"plate":"DEM002","brand":"RAM","line":"","year":"2019","className":"Camioneta","body":"Doble cabina","doors":"4","armored":"No","engine":"3600"},
@@ -342,20 +367,20 @@ const vehicles = [
 ];
 
 const predialProperties = [
-	['CHIP-DEMO-024', '050S00000040', 'Dirección ficticia 081', '', '2026', '00000000000000000116'],
-	['CHIP-DEMO-025', '050S00000041', 'Dirección ficticia 080', '', '2026', '00000000000000000115'],
-	['CHIP-DEMO-026', '050S00000050', 'Dirección ficticia 079', '', '2026', '00000000000000000117'],
-	['CHIP-DEMO-027', '050S00000049', 'Dirección ficticia 078', '', '2026', '00000000000000000118'],
-	['CHIP-DEMO-028', '050S00000046', 'Dirección ficticia 088', '', '2026', '00000000000000000120'],
-	['CHIP-DEMO-029', '050S00000047', 'Dirección ficticia 089', '', '2026', '00000000000000000114'],
-	['CHIP-DEMO-030', '050S00000042', 'Dirección ficticia 076', '', '2026', '00000000000000000112'],
-	['CHIP-DEMO-031', '050S00000043', 'Dirección ficticia 077', '', '2026', '00000000000000000113'],
-	['CHIP-DEMO-032', '050S00000044', 'Dirección ficticia 086', '', '2026', '00000000000000000111'],
-	['CHIP-DEMO-034', '050S00000048', 'Dirección ficticia 085', '', '2026', '00000000000000000119'],
-	["CHIP-DEMO-037", "000C00000001", "Dirección ficticia 084", "", "2026", "00000000000000000001"],
-	["CHIP-DEMO-036", "000C00000002", "Dirección ficticia 087", "", "2026", "00000000000000000002"],
-	["CHIP-DEMO-039", "000C00000003", "Dirección ficticia 083", "", "2026", "00000000000000000003"],
-	["CHIP-DEMO-038", "000C00000004", "Dirección ficticia 090", "", "2026", "00000000000000000004"],
+	['AAA0000XPTO', '050S00712129', 'CL 13 SUR 6 34 ESTE GJ 14', '', '2026', '00000000000010283338'],
+	['AAA0000XRYX', '050S00712203', 'CL 13 SUR 6 34 ESTE AP 802', '', '2026', '00000000000010232108'],
+	['AAA0001ASYN', '050S40265453', 'CL 13 BIS SUR 5A 65 GJ 10', '', '2026', '00000000000010962652'],
+	['AAA0001AUJZ', '050S40265422', 'CL 13 BIS SUR 5A 65 AP 403', '', '2026', '00000000000010962897'],
+	['AAA0001EUOM', '050S40203487', 'KR 2A 17A 35 SUR IN 14 AP 101', '', '2026', '00000000000011234902'],
+	['AAA0001EXAF', '050S40203531', 'KR 2A 17A 35 SUR IN 16 AP 201', '', '2026', '00000000000010098989'],
+	['AAA0001MNUZ', '050S00904063', 'AC 11 SUR 10A 40 GJ 101', '', '2026', '00000000000010066629'],
+	['AAA0001MODE', '050S00904071', 'AC 11 SUR 10A 50 AP 501', '', '2026', '00000000000010066662'],
+	['AAA0001MPKL', '050S40005993', 'KR 11 8 16 SUR AP 201', '', '2026', '00000000000010032869'],
+	['AAA0001YXJH', '050S40258176', 'CL 8B SUR 7 15 GJ 44', '', '2026', '00000000000011037750'],
+	["AAA0248KJTR", "000C00000001", "CL 72 15 38", "", "2026", "00000000000000000001"],
+	["AAA0193HFXP", "000C00000002", "KR 19 104 26", "", "2026", "00000000000000000002"],
+	["AAA0316BNQL", "000C00000003", "CL 45 27 16", "", "2026", "00000000000000000003"],
+	["AAA0274DMSV", "000C00000004", "KR 58 128 43", "", "2026", "00000000000000000004"],
 ];
 
 const vehicleHeaders = ["Placa", "Marca", "Línea", "Modelo", "Clase", "Carrocería", "No. de puertas", "Blindaje", "Cilindraje"];
@@ -364,13 +389,39 @@ function linkTo(id, label, classes = "") {
 	return `<a class="${classes}" href="#${id}">${label}</a>`;
 }
 
+function consultationProfile(role) {
+	return [notaryRoute, dealerRoute].find((route) => route.role === role);
+}
+
 function renderNavigation(activeId) {
-	const activeMenuId = activeId.startsWith("vehiculo-") ? "impuestos-vehiculos" : activeId === "rit-agentes-habilitar" ? "rit-agentes" : activeId;
+	if (activeId === notaryRoute.id || activeId === dealerRoute.id) {
+		navigationRoot.replaceChildren();
+		return;
+	}
+	const relatedMenuItems = { "rit-agentes-habilitar": "rit-agentes", "rit-actualizacion": "rit-datos" };
+	const activeMenuId = activeId.startsWith("vehiculo-") ? "impuestos-vehiculos"
+		: activeId.startsWith("objeto-publicidad-") ? "impuestos-publicidad" : relatedMenuItems[activeId] ?? activeId;
 	const homeItem = `<li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 ${activeMenuId === "inicio" ? "active" : "text-body"}" href="#inicio" ${activeMenuId === "inicio" ? 'aria-current="page"' : ""}><i class="bi bi-house-door" aria-hidden="true"></i><span>Inicio</span></a></li>`;
+	const activeGroup = pages.get(activeMenuId)?.group;
 	const groupItems = routeGroups.filter((group) => group.id !== "notificaciones").map((group) => {
-		const groupActive = group.items.some(([id]) => id === activeMenuId);
+		const groupActive = group === activeGroup;
+		if (group.id === "tramites") return `<li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 ${groupActive ? "active" : "text-body"}" ${groupActive ? 'aria-current="page"' : ""} href="#tramites-seguimiento"><i class="bi ${group.icon}" aria-hidden="true"></i>Trámites</a></li>`;
 		const collapseId = `nav-${group.id}`;
-		const items = group.items.map(([id, label]) => id === "rit-certificacion" ? `<li class="nav-item"><button class="nav-link small py-2 ps-5 w-100 text-start link-secondary" type="button" data-rit-certificate-open aria-haspopup="dialog"><i class="bi bi-download me-2" aria-hidden="true"></i>${label}</button></li>` : `<li class="nav-item"><a class="nav-link small py-2 ps-5 ${activeMenuId === id ? "active" : "link-secondary"}" href="#${id}" ${activeMenuId === id ? 'aria-current="page"' : ""}>${label}</a></li>`).join("");
+		const visibleItems = group.items.filter(([id]) => id !== "pagos-facilidades" && (id !== "obligaciones-facilidades" || taxpayerSession));
+		const menuItems = taxpayerSession && group.id === "pagos"
+			? visibleItems.flatMap(([id, label]) => [
+				...(id === "pagos-recibos" ? [] : [[id, label]]),
+				...(id === "pagos-facturas" ? [["pagos-reexpedicion", "Reexpedición de factura"]] : []),
+				...(id === "pagos-recibos" ? [["pagos-multipago", "Recibo multipago"]] : []),
+			])
+			: visibleItems;
+		const items = menuItems.map(([id, label]) => {
+			const current = groupActive && activeMenuId === id;
+			const itemLabel = taxpayerSession ? taxpayerMenuLabels.get(id) ?? label : label;
+			return id === "rit-certificacion"
+				? `<li class="nav-item"><button class="nav-link small py-2 ps-5 w-100 text-start link-secondary" type="button" data-rit-certificate-open aria-haspopup="dialog"><i class="bi bi-download me-2" aria-hidden="true"></i>${itemLabel}</button></li>`
+				: `<li class="nav-item"><a class="nav-link small py-2 ps-5 ${current ? "active" : "link-secondary"}" href="#${id}" ${current ? 'aria-current="page"' : ""}>${itemLabel}</a></li>`;
+		}).join("");
 		return `<li class="nav-item">
 			<button class="nav-link w-100 d-flex align-items-center gap-2 text-start ${groupActive ? "bg-primary-subtle text-primary-emphasis" : "text-body"}" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="${groupActive}" aria-controls="${collapseId}" ${groupActive ? 'aria-current="page"' : ""}>
 				<i class="bi ${group.icon}" aria-hidden="true"></i><span>${group.label}</span><i class="bi bi-chevron-down ms-auto" aria-hidden="true"></i>
@@ -383,11 +434,15 @@ function renderNavigation(activeId) {
 
 function renderBreadcrumb(route) {
 	const crumbs = route.id === "inicio" ? [] : [`<li class="breadcrumb-item">${linkTo("inicio", "Inicio")}</li>`];
+	if (route.id === notaryRoute.id) crumbs[0] = '<li class="breadcrumb-item">Terceros autorizados</li>';
+	if (route.id === dealerRoute.id) crumbs[0] = '<li class="breadcrumb-item">Concesionarios</li>';
 	const isObligationQuery = route.id === "obligaciones-pendientes";
 	const isPaymentPlans = ["obligaciones-facilidades", "pagos-facilidades"].includes(route.id);
-	const title = isPaymentPlans ? "Facilidades de pago" : isObligationQuery ? "Consulta de obligaciones"
+	const title = route.id === "tramites-seguimiento" ? "Trámites" : taxpayerSession ? route.label : isPaymentPlans ? "Facilidades de pago" : isObligationQuery ? "Consulta de obligaciones"
 		: route.id === "declaraciones-generar" ? "Generar Declaración" : route.label;
-	if (route.group) crumbs.push(`<li class="breadcrumb-item">${isObligationQuery || isPaymentPlans ? "Consultas" : route.group.label}</li>`);
+	const taxBreadcrumb = route.id === fuelSurtaxRoute || route.id === 'impuestos-publicidad' || route.id.startsWith('objeto-publicidad-');
+	if (route.group && route.id !== "tramites-seguimiento") crumbs.push(`<li class="breadcrumb-item">${taxBreadcrumb ? 'Impuestos' : !taxpayerSession && (isObligationQuery || isPaymentPlans) ? "Consultas" : route.group.label}</li>`);
+	if (route.id.startsWith('objeto-publicidad-')) crumbs.push(`<li class="breadcrumb-item">${linkTo('impuestos-publicidad', 'Publicidad exterior')}</li>`);
 	crumbs.push(`<li class="breadcrumb-item active" aria-current="page">${title}</li>`);
 	breadcrumbRoot.innerHTML = crumbs.join("");
 }
@@ -398,6 +453,11 @@ function pageTitle(title, description = "") {
 
 function section(title, content, extraClass = "") {
 	return `<section class="bg-white border rounded-3 p-3 p-md-4 mb-4 ${extraClass}"><h2 class="h6 fw-semibold border-bottom pb-2 mb-3">${title}</h2>${content}</section>`;
+}
+
+function taxInformationSection(description, officialUrl) {
+	return section('Información del impuesto', `<p class="mb-2">${description}</p>
+		<a class="link-primary" href="${officialUrl}" target="_blank" rel="noopener noreferrer">Más información <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a>`);
 }
 
 function emptyState(message = "No hay información disponible para mostrar en esta sección.") {
@@ -438,15 +498,15 @@ function closeAgentLookupAndContinue(modalElement) {
 	}
 }
 
-function tableFrame(headerMarkup, bodyMarkup, { id = '', label = 'Tabla de resultados', tableClass = '', containerClass = 'mb-3' } = {}) {
-	return `<div class="table-responsive app-table-container ${containerClass}" tabindex="0" role="region" aria-label="${label}"><table ${id ? `id="${id}"` : ''} class="table app-table table-hover align-middle mb-0 ${tableClass}"><thead class="table-light"><tr>${headerMarkup}</tr></thead><tbody>${bodyMarkup}</tbody></table></div>`;
+function tableFrame(headerMarkup, bodyMarkup, { id = '', label = 'Tabla de resultados', tableClass = '', containerClass = 'mb-3', paginationManaged = false } = {}) {
+	return `<div class="table-responsive app-table-container ${containerClass}" tabindex="0" role="region" aria-label="${label}"><table ${paginationManaged ? 'data-pagination-managed' : ''} ${id ? `id="${id}"` : ''} class="table app-table table-hover align-middle mb-0 ${tableClass}"><thead class="table-light"><tr>${headerMarkup}</tr></thead><tbody>${bodyMarkup}</tbody></table></div>`;
 }
 
 function table(headers, rows = [], options = {}) {
 	const headerMarkup = headers.map((header, index) => `<th scope="col"${options.unsortable?.includes(index) ? ' data-table-sort-ready="true"' : ''}>${header}</th>`).join("");
 	const bodyMarkup = rows.length
 		? rows.map((row, index) => `<tr ${options.rowAttributes?.(index) ?? ''}>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")
-		: `<tr><td class="text-center text-secondary py-4" colspan="${headers.length}">${options.empty ?? "No hay registros disponibles."}</td></tr>`;
+		: `<tr data-pagination-empty><td class="text-center text-secondary py-4" colspan="${headers.length}">${options.empty ?? "No hay registros disponibles."}</td></tr>`;
 	return tableFrame(headerMarkup, bodyMarkup, options);
 }
 
@@ -454,17 +514,7 @@ function tableBadge(label, tone = 'secondary') {
 	return `<span class="badge rounded-pill bg-${tone}-subtle text-${tone}-emphasis border border-${tone}-subtle text-wrap text-start px-3 py-2">${label}</span>`;
 }
 
-function paginationControls(page, pages, attributes = () => '', visiblePages = Array.from({ length: pages }, (_, index) => index + 1)) {
-	const button = (label, target, disabled = false, active = false) =>
-		`<li class="page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}"><button class="page-link" type="button" ${attributes(target)} ${disabled ? 'disabled' : ''} ${active ? 'aria-current="page"' : ''}>${label}</button></li>`;
-	const numbers = visiblePages.map((number, index) => {
-		const gap = index > 0 && number - visiblePages[index - 1] > 1;
-		return `${gap ? '<li class="page-item disabled"><span class="page-link">…</span></li>' : ''}${button(number, number, false, number === page)}`;
-	}).join('');
-	return button('Anterior', page - 1, page === 1) + numbers + button('Siguiente', page + 1, page === pages);
-}
-
-function showDetailModal({ title, body, trigger, size = '', titleId = 'detail-modal-title' }) {
+function showDetailModal({ title, body, trigger, size = '', titleId = 'detail-modal-title', actions = '<button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>' }) {
 	const modal = document.createElement('div');
 	modal.className = 'modal fade';
 	modal.tabIndex = -1;
@@ -472,7 +522,7 @@ function showDetailModal({ title, body, trigger, size = '', titleId = 'detail-mo
 	modal.innerHTML = `<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ${size}"><div class="modal-content">
 		<div class="modal-header"><h2 class="modal-title h5" id="${titleId}">${title}</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
 		<div class="modal-body">${body}</div>
-		<div class="modal-footer"><button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cerrar</button></div>
+		<div class="modal-footer">${actions}</div>
 	</div></div>`;
 	document.body.append(modal);
 	const instance = new bootstrap.Modal(modal);
@@ -482,23 +532,24 @@ function showDetailModal({ title, body, trigger, size = '', titleId = 'detail-mo
 		if (trigger?.isConnected) trigger.focus();
 	}, { once: true });
 	instance.show();
+	return { modal, instance };
 }
 
 function yearOptions(firstYear, lastYear) {
 	return Array.from({ length: lastYear - firstYear + 1 }, (_, index) => String(lastYear - index));
 }
 
-function renderSelect(id, options, { value = "", prompt = "Selecciona una opción", required = false } = {}) {
+function renderSelect(id, options, { value = "", prompt = "Selecciona una opción", required = false, name, describedBy } = {}) {
 	const placeholder = prompt ? `<option value=""${value ? "" : " selected"}${required ? " disabled" : ""}>${prompt}</option>` : "";
 	const choices = options.map((option) => {
 		const [key, label] = Array.isArray(option) ? option : [option, option];
 		return `<option value="${icaEscape(key)}"${key === value ? " selected" : ""}>${icaEscape(label)}</option>`;
 	}).join("");
-	return `<select class="form-select" id="${id}"${required ? " required" : ""}>${placeholder}${choices}</select>`;
+	return `<select class="form-select" id="${id}"${name ? ` name="${name}"` : ""}${describedBy ? ` aria-describedby="${describedBy}"` : ""}${required ? " required" : ""}>${placeholder}${choices}</select>`;
 }
 
-function queryActions(buttonText = "Consultar") {
-	return `<div class="d-flex flex-wrap justify-content-end gap-2"><button class="btn btn-outline-secondary" type="reset">Limpiar filtros</button><button class="btn btn-primary" type="submit">${buttonText}</button></div>`;
+function queryActions(buttonText = "Consultar", resetText = "Limpiar filtros") {
+	return `<div class="d-flex flex-wrap justify-content-end gap-2"><button class="btn btn-outline-secondary" type="reset">${resetText}</button><button class="btn btn-primary" type="submit">${buttonText}</button></div>`;
 }
 
 function filterForm(fields, buttonText = "Consultar", { reset = true, feedback = "" } = {}) {
@@ -537,9 +588,10 @@ function vehicleRows() {
 }
 
 function getTaxpayerIdentity() {
+	if (taxpayerSession?.requiresObject) return corporateTaxpayerIdentity;
 	const readValue = (id, fallback) => {
 		const field = document.getElementById(id);
-		return field ? field.value.trim() : fallback;
+		return field && !field.closest("[data-invoice-rit]") ? field.value.trim() : fallback;
 	};
 	const firstName = readValue("basic-first-name", taxpayerIdentity.firstName);
 	const middleName = readValue("basic-middle-name", taxpayerIdentity.middleName);
@@ -550,16 +602,16 @@ function getTaxpayerIdentity() {
 	const documentNumber = readValue("basic-document-number", taxpayerIdentity.documentNumber);
 	const documentIssueDate = readValue("basic-document-issue-date", taxpayerIdentity.documentIssueDate);
 	const withholdingAgent = document.getElementById("basic-withholding-agent")?.value ?? taxpayerIdentity.withholdingAgent;
-	const fullName = firstName === "CONTRIBUYENTE" && firstSurname === "DEMO"
-		? "Contribuyente Demo"
+	const fullName = firstName === "MIGUEL" && firstSurname === "SALAZAR"
+		? "Miguel Salazar"
 		: [firstName, firstSurname].filter(Boolean).join(" ");
 	const initials = `${firstName.charAt(0)}${firstSurname.charAt(0)}`.toLocaleUpperCase("es");
 	return { firstName, middleName, firstSurname, secondSurname, fullName, initials, documentType, documentTypeLabel, documentNumber, documentIssueDate, withholdingAgent };
 }
 
 function syncTaxpayerProfile() {
-	taxpayerIdentity = getTaxpayerIdentity();
-	const identity = taxpayerIdentity;
+	const identity = getTaxpayerIdentity();
+	if (!taxpayerSession?.requiresObject) taxpayerIdentity = identity;
 	const profileName = document.getElementById("profileName");
 	const profileInitials = document.getElementById("profileInitials");
 	const profileButton = document.getElementById("profileMenuButton");
@@ -585,18 +637,26 @@ function restoreTaxpayerIdentityFields() {
 	});
 }
 
+function persistRitFormValues(values) {
+	window.localStorage.setItem(ritFormStorageKey, JSON.stringify(values));
+	ritFormValues = values;
+}
+
+function readRitFormValues(root) {
+	const values = {};
+	root.querySelectorAll("input[id], select[id], textarea[id]").forEach(field => {
+		if (field.type !== "password" && field.type !== "file") values[field.id] = { value: field.value, checked: field.checked };
+	});
+	return values;
+}
+
 function saveRitPersonalData() {
 	const personalDataForm = contentRoot.querySelector('form[aria-label="Formulario Mi RIT"]');
 	if (!personalDataForm) return;
-	const nextValues = {};
-	personalDataForm.querySelectorAll("input[id], select[id], textarea[id]").forEach((field) => {
-		if (field.type === "password" || field.type === "file") return;
-		nextValues[field.id] = { value: field.value, checked: field.checked };
-	});
+	const nextValues = readRitFormValues(personalDataForm);
 	const status = document.getElementById("ritSaveStatus");
 	try {
-		window.localStorage.setItem(ritFormStorageKey, JSON.stringify(nextValues));
-		ritFormValues = nextValues;
+		persistRitFormValues(nextValues);
 		taxpayerIdentity = getTaxpayerIdentity();
 		syncTaxpayerProfile();
 		if (status) {
@@ -617,7 +677,7 @@ function saveRitPersonalData() {
 // Empresas de demostración; el selector solo dibuja diez resultados a la vez.
 const representedCompanies = Array.from({ length: 1000 }, (_, index) => ({
 	id: String(index + 1),
-	name: `Empresa ficticia ${String(index + 1).padStart(4, "0")}`,
+	name: index < 5 ? ["Cafés Altos del Roble S.A.S.", "Comercializadora Sierra Clara S.A.S.", "Inversiones Alameda Norte S.A.S.", "Soluciones Logísticas Arboleda S.A.S.", "Textiles Valle Azul S.A.S."][index] : `Grupo Empresarial Horizonte ${String(index + 1).padStart(4, "0")} S.A.S.`,
 	nit: String(900000001 + index),
 }));
 let activeCompany = null;
@@ -681,12 +741,12 @@ function renderStyleGuide() {
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Controles de formulario</h3><fieldset class="mb-3"><legend class="fs-6">Casillas</legend><div class="form-check"><input class="form-check-input" type="checkbox" id="guideCheckOff"><label class="form-check-label" for="guideCheckOff">Sin seleccionar</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="guideCheckOn" checked><label class="form-check-label" for="guideCheckOn">Seleccionada</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="guideCheckDisabled" disabled><label class="form-check-label" for="guideCheckDisabled">Deshabilitada</label></div></fieldset><fieldset class="mb-3"><legend class="fs-6">Opciones únicas</legend><div class="form-check"><input class="form-check-input" type="radio" name="guideRadio" id="guideRadioOn" checked><label class="form-check-label" for="guideRadioOn">Seleccionada</label></div><div class="form-check"><input class="form-check-input" type="radio" name="guideRadio" id="guideRadioOff"><label class="form-check-label" for="guideRadioOff">Sin seleccionar</label></div><div class="form-check"><input class="form-check-input" type="radio" name="guideRadioDisabled" id="guideRadioDisabled" disabled><label class="form-check-label" for="guideRadioDisabled">Deshabilitada</label></div></fieldset><div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" role="switch" id="guideSwitch"><label class="form-check-label" for="guideSwitch">Interruptor apagado</label></div><div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" role="switch" id="guideSwitchOn" checked><label class="form-check-label" for="guideSwitchOn">Interruptor encendido</label></div><label class="form-label" for="guideRange">Rango</label><input type="range" class="form-range" id="guideRange"></div>
 			<div class="col-12"><h3 class="h6 text-secondary">Grupo de entrada</h3><div class="input-group mb-3"><span class="input-group-text">$</span><input class="form-control" aria-label="Valor" placeholder="Valor"><span class="input-group-text">COP</span></div><div class="input-group"><span class="input-group-text">@</span><input class="form-control" aria-label="Usuario" placeholder="Correo o usuario" disabled></div></div>
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Navegación</h3><nav aria-label="Ruta"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="#">Inicio</a></li><li class="breadcrumb-item"><a href="#">Mis impuestos</a></li><li class="breadcrumb-item active" aria-current="page">Detalle</li></ol></nav><ul class="nav nav-tabs mb-3" id="guideTabs" role="tablist"><li class="nav-item" role="presentation"><button class="nav-link active" id="guide-tab-one" data-bs-toggle="tab" data-bs-target="#guide-pane-one" type="button" role="tab" aria-controls="guide-pane-one" aria-selected="true">Activa</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="guide-tab-two" data-bs-toggle="tab" data-bs-target="#guide-pane-two" type="button" role="tab" aria-controls="guide-pane-two" aria-selected="false">Disponible</button></li><li class="nav-item" role="presentation"><button class="nav-link" type="button" disabled>Deshabilitada</button></li></ul><div class="tab-content border rounded p-3 mb-3"><div class="tab-pane fade show active" id="guide-pane-one" role="tabpanel" aria-labelledby="guide-tab-one" tabindex="0">Contenido de la pestaña activa.</div><div class="tab-pane fade" id="guide-pane-two" role="tabpanel" aria-labelledby="guide-tab-two" tabindex="0">Contenido de la segunda pestaña.</div></div><ul class="nav nav-pills mb-3"><li class="nav-item"><a class="nav-link active" href="#">Activa</a></li><li class="nav-item"><a class="nav-link" href="#">Disponible</a></li><li class="nav-item"><a class="nav-link disabled" aria-disabled="true">Deshabilitada</a></li></ul><div class="dropdown"><button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Menú desplegable</button><ul class="dropdown-menu"><li><a class="dropdown-item active" href="#">Opción activa</a></li><li><a class="dropdown-item" href="#">Opción disponible</a></li><li><a class="dropdown-item disabled" aria-disabled="true">Opción deshabilitada</a></li></ul></div></div>
-			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Paginación</h3><nav aria-label="Páginas de ejemplo"><ul class="pagination pagination-sm flex-wrap mb-0">${paginationControls(1, 2)}</ul></nav><h3 class="h6 text-secondary mt-4">Lista</h3><div class="list-group"><a href="#" class="list-group-item list-group-item-action active" aria-current="true">Elemento activo</a><a href="#" class="list-group-item list-group-item-action">Elemento disponible</a><button type="button" class="list-group-item list-group-item-action" disabled>Elemento deshabilitado</button></div></div>
+			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Paginación</h3><nav aria-label="Páginas de la guía visual"><ul class="pagination pagination-sm flex-wrap mb-0">${paginationControls(1, 2)}</ul></nav><h3 class="h6 text-secondary mt-4">Lista</h3><div class="list-group"><a href="#" class="list-group-item list-group-item-action active" aria-current="true">Elemento activo</a><a href="#" class="list-group-item list-group-item-action">Elemento disponible</a><button type="button" class="list-group-item list-group-item-action" disabled>Elemento deshabilitado</button></div></div>
 			<div class="col-12"><h3 class="h6 text-secondary">Tarjetas y tabla</h3><div class="row g-3 mb-3"><div class="col-12 col-md-6"><div class="card"><div class="card-header">Encabezado</div><div class="card-body"><h4 class="h6 card-title">Tarjeta estándar</h4><p class="card-text">Superficie para agrupar información y acciones.</p><button class="btn btn-primary btn-sm" type="button">Acción</button></div><div class="card-footer text-secondary">Pie de tarjeta</div></div></div><div class="col-12 col-md-6"><div class="card text-bg-primary"><div class="card-body"><h4 class="h6 card-title">Variante destacada</h4><p class="card-text mb-0">Tarjeta con fondo contextual.</p></div></div></div></div><div class="table-responsive app-table-container mb-3"><table class="table app-table table-hover align-middle mb-0"><thead class="table-light"><tr><th scope="col">Estado</th><th scope="col">Descripción</th><th scope="col">Acción</th></tr></thead><tbody><tr><td>${tableBadge('Pagado', 'success')}</td><td>Fila normal</td><td><button class="btn btn-outline-primary btn-sm" type="button">Ver</button></td></tr><tr><td>${tableBadge('Pendiente', 'warning')}</td><td>Fila con hover al pasar el puntero</td><td><button class="btn btn-outline-secondary btn-sm" type="button" disabled>Sin acción</button></td></tr></tbody></table></div></div>
 			<div class="col-12"><h3 class="h6 text-secondary">Insignias y alertas</h3><div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-primary">Primaria</span><span class="badge text-bg-secondary">Secundaria</span><span class="badge text-bg-success">Completado</span><span class="badge text-bg-danger">Error</span><span class="badge text-bg-warning">Pendiente</span><span class="badge text-bg-info">Información</span><span class="badge text-bg-light">Neutra</span><span class="badge text-bg-dark">Oscura</span><span class="badge rounded-pill text-bg-primary">Píldora</span></div><div class="alert alert-primary" role="alert"><strong>Información.</strong> Mensaje informativo.</div><div class="alert alert-success" role="alert"><strong>Éxito.</strong> La acción se completó correctamente.</div><div class="alert alert-warning" role="alert"><strong>Atención.</strong> Revisa los datos antes de continuar.</div><div class="alert alert-danger" role="alert"><strong>Error.</strong> No fue posible completar la acción.</div><div class="alert alert-secondary alert-dismissible fade show" role="alert">Alerta descartable: usa el botón de cerrar para ocultarla.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div></div>
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Progreso y carga</h3><div class="progress mb-3" role="progressbar" aria-label="Progreso normal" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" style="width: 25%">25%</div></div><div class="progress mb-3" role="progressbar" aria-label="Progreso completado" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bg-success" style="width: 100%">Completado</div></div><div class="progress mb-3" role="progressbar" aria-label="Progreso activo" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 60%">En curso</div></div><div class="d-flex align-items-center gap-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div><div class="spinner-grow text-secondary" role="status"><span class="visually-hidden">Cargando...</span></div><div class="spinner-border spinner-border-sm text-success" role="status"><span class="visually-hidden">Cargando...</span></div><span class="small text-secondary">Cargando, crecimiento y tamaño pequeño.</span></div></div>
 			<div class="col-12 col-lg-6"><h3 class="h6 text-secondary">Paneles expandibles</h3><p><button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse" aria-expanded="false" aria-controls="guideCollapse">Abrir o cerrar detalle</button></p><div class="collapse" id="guideCollapse"><div class="card card-body mb-3">Contenido colapsado: estado abierto.</div></div><div class="accordion" id="guideAccordion"><div class="accordion-item"><h4 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#guideAccordionOpen" aria-expanded="true" aria-controls="guideAccordionOpen">Sección expandida</button></h4><div id="guideAccordionOpen" class="accordion-collapse collapse show" data-bs-parent="#guideAccordion"><div class="accordion-body">Este panel está abierto; pulsa el encabezado para cerrarlo.</div></div></div><div class="accordion-item"><h4 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideAccordionClosed" aria-expanded="false" aria-controls="guideAccordionClosed">Sección contraída</button></h4><div id="guideAccordionClosed" class="accordion-collapse collapse" data-bs-parent="#guideAccordion"><div class="accordion-body">Este panel inicia cerrado.</div></div></div></div></div>
-			<div class="col-12"><h3 class="h6 text-secondary">Ventana modal</h3><p class="mb-0"><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#guideComponentModal">Abrir modal de ejemplo</button></p><div class="modal fade" id="guideComponentModal" tabindex="-1" aria-labelledby="guideComponentModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h4 class="modal-title fs-5" id="guideComponentModalLabel">Modal de ejemplo</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><div class="modal-body">Estado abierto. Puedes cerrar esta ventana con el botón, con Escape o pulsando fuera del cuadro.</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button></div></div></div></div></div>
+			<div class="col-12"><h3 class="h6 text-secondary">Ventana modal</h3><p class="mb-0"><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#guideComponentModal">Abrir ventana modal</button></p><div class="modal fade" id="guideComponentModal" tabindex="-1" aria-labelledby="guideComponentModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h4 class="modal-title fs-5" id="guideComponentModalLabel">Ventana modal</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><div class="modal-body">Estado abierto. Puedes cerrar esta ventana con el botón, con Escape o pulsando fuera del cuadro.</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button></div></div></div></div></div>
 		</div>`;
 	return `${pageTitle("Guía visual", "Referencia de tokens Bootstrap, tipografía y variantes que utiliza la Oficina Virtual.")}
 		${section("Colores y tokens", `<div class="row g-3">${colorTokens}</div><p class="small text-secondary mt-3 mb-0">Valores de la paleta predeterminada de Bootstrap 5.</p>`)}
@@ -698,14 +758,13 @@ function renderStyleGuide() {
 	`;
 }
 
-function renderDashboard() {
-	const identity = activeCompany ? { fullName: activeCompany.name, documentType: "NIT", documentTypeLabel: "Número de identificación tributaria", documentNumber: activeCompany.nit } : getTaxpayerIdentity();
-	const declarationRows = [
-		{ declaration: "900000000309", tax: "Impuesto Predial", year: "2026", period: "—", status: "Pendiente por firmar" },
-		{ declaration: "900000000428", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
-		{ declaration: "900000000556", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por firmar" },
-		{ declaration: "900000000681", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
-		{ declaration: "900000000809", tax: "Impuestos de Delineación Urbana", year: "2017", period: "—", status: "Pendiente por presentar" },
+function dashboardDeclarations() {
+	const rows = [
+		{ declaration: "100000047309", tax: "Impuesto Predial", year: "2026", period: "—", status: "Pendiente por firmar" },
+		{ declaration: "100000047428", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
+		{ declaration: "100000047556", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por firmar" },
+		{ declaration: "100000047681", tax: "Impuestos de Vehículos", year: "2026", period: "—", status: "Pendiente por presentar" },
+		{ declaration: "100000047809", tax: "Impuestos de Delineación Urbana", year: "2017", period: "—", status: "Pendiente por presentar" },
 		// Datos de ejemplo para completar 20 declaraciones y probar la paginación.
 		...Array.from({ length: 15 }, (_, index) => ({
 			declaration: String(100000000 + index).padStart(12, "0"),
@@ -715,44 +774,45 @@ function renderDashboard() {
 			status: index % 2 === 0 ? "Pendiente por firmar" : "Pendiente por presentar",
 		})),
 	];
-	const rows = declarationRows.map((declaration, index) => {
-		if (activeCompany) declaration.declaration = String(300000000000 + Number(activeCompany.id) * 100 + index);
+	const taxByLabel = {
+		'Impuesto Predial': 'predial', 'Impuestos de Vehículos': 'vehiculos',
+		ICA: 'ica', 'Impuestos de Delineación Urbana': 'delineacion',
+	};
+	return rows.map((declaration, index) => {
+		const tax = taxByLabel[declaration.tax];
+		const object = tax === 'vehiculos' ? taxpayerHomeObjects.vehiculos[index % taxpayerHomeObjects.vehiculos.length]
+			: tax === 'ica' ? getTaxpayerIdentity().documentNumber : taxpayerHomeObjects[tax];
+		if (taxpayerSession && taxpayerObjectRules[tax] && !taxpayerCanConsult(taxpayerSession, tax, object)) return null;
+		const reference = activeCompany ? String(300000000000 + Number(activeCompany.id) * 100 + index) : declaration.declaration;
+		return { ...declaration, declaration: reference, taxId: tax, object };
+	}).filter(Boolean);
+}
+
+function renderDashboard() {
+	const identity = activeCompany ? { fullName: activeCompany.name, documentType: "NIT", documentTypeLabel: "Número de identificación tributaria", documentNumber: activeCompany.nit } : getTaxpayerIdentity();
+	const pendingRows = dashboardDeclarations().map(declaration => {
 		const statusColor = declaration.status === "Pendiente por firmar" ? "info" : "warning";
 		const searchText = Object.values(declaration).join(" ").toLocaleLowerCase("es");
-		return `<tr data-pending-declaration-row data-search-text="${searchText}">
-			<td><span class="fw-semibold text-nowrap">${declaration.declaration}</span></td>
+		const params = new URLSearchParams({ impuesto: declaration.tax, vigencia: declaration.year, declaracion: declaration.declaration, origen: 'inicio' });
+		if (declaration.object) params.set('objeto', declaration.object);
+		if (declaration.period !== '—') params.set('periodo', declaration.period);
+		return `<tr data-pending-declaration-row data-search-text="${icaEscape(searchText)}">
+			<td><span class="fw-semibold text-nowrap">${declaration.declaration}</span>${declaration.object ? `<span class="d-block small text-secondary">${icaEscape(declaration.object)}</span>` : ''}</td>
 			<td>${declaration.tax}</td>
 			<td class="text-center">${declaration.year}</td>
 			<td class="text-center">${declaration.period}</td>
 			<td>${tableBadge(declaration.status, statusColor)}</td>
-			<td class="text-center"><a class="btn btn-outline-primary btn-sm px-3" href="?${new URLSearchParams({ impuesto: declaration.tax, vigencia: declaration.year, periodo: declaration.period, declaracion: declaration.declaration })}#declaraciones-generar"><i class="bi bi-eye me-1" aria-hidden="true"></i>Ver</a></td>
+			<td class="text-center"><a class="btn btn-outline-primary btn-sm px-3" href="?${icaEscape(params.toString())}#declaraciones-generar"><i class="bi bi-eye me-1" aria-hidden="true"></i>Ver</a></td>
 		</tr>`;
-	}).join("");
-	const content = `<div class="row g-3 align-items-center mb-4">
-		<div class="col-12 col-md-auto d-flex align-items-center gap-2">
-			<label class="form-label small fw-semibold text-secondary mb-0" for="pendingDeclarationsPageSize">Mostrar</label>
-			<select class="form-select form-select-sm w-auto" id="pendingDeclarationsPageSize" aria-label="Datos por página"><option>10</option><option>20</option><option>30</option></select>
-			<span class="small text-secondary">registros por página</span>
-		</div>
-		<div class="col-12 col-md-5 ms-md-auto d-flex align-items-center gap-2">
-			<label class="form-label small fw-semibold text-secondary mb-0" for="pendingDeclarationsSearch">Buscar</label>
-			<div class="input-group input-group-sm">
-				<span class="input-group-text bg-white"><i class="bi bi-search" aria-hidden="true"></i></span>
-				<input class="form-control" type="search" id="pendingDeclarationsSearch" aria-label="Buscar declaraciones" placeholder="Número o impuesto">
-			</div>
-		</div>
-	</div>
-	<div class="table-responsive app-table-container mb-3" tabindex="0" role="region" aria-label="Declaraciones pendientes"><table class="table app-table table-hover align-middle mb-0" id="pending-declarations-table">
+	}).filter(Boolean);
+	const rows = pendingRows.join('');
+	const content = `${tableToolbar({ sizeId: "pendingDeclarationsPageSize", searchId: "pendingDeclarationsSearch", placeholder: "Número o impuesto", searchLabel: "Buscar declaraciones" })}
+	<div class="table-responsive app-table-container mb-3" tabindex="0" role="region" aria-label="Declaraciones pendientes"><table class="table app-table table-hover align-middle mb-0" id="pending-declarations-table" data-pagination-managed>
 		<caption class="visually-hidden">Declaraciones tributarias pendientes de firma o presentación</caption>
 		<thead class="table-light"><tr><th scope="col">Declaración</th><th scope="col">Impuesto</th><th scope="col" class="text-center">Año gravable</th><th scope="col" class="text-center">Periodo</th><th scope="col">Estado</th><th scope="col" class="text-center">Acciones</th></tr></thead>
 		<tbody>${rows}</tbody>
 	</table></div>
-	<div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
-		<p class="small text-secondary mb-0" id="pendingDeclarationsSummary" aria-live="polite"></p>
-		<nav aria-label="Paginación de declaraciones pendientes">
-			<ul class="pagination pagination-sm flex-wrap mb-0" id="pendingDeclarationsPagination"></ul>
-		</nav>
-	</div>`;
+	${tablePaginationFooter({ label: "declaraciones pendientes", summaryAttributes: 'id="pendingDeclarationsSummary"', paginationAttributes: 'id="pendingDeclarationsPagination"' })}`;
 	return `${pageTitle(activeCompany ? `Inicio de ${identity.fullName}` : `Bienvenida, ${identity.fullName}.`)}<section class="bg-white border rounded-3 p-3 p-md-4 mb-4" id="dashboardWelcomeSection" aria-label="Datos del usuario">
 		<h2 class="h6 fw-semibold mb-3">${activeCompany ? 'Datos de la empresa' : 'Datos de tu cuenta'}</h2>
 		<dl class="row mb-0">
@@ -792,9 +852,7 @@ function filterPendingDeclarations(resetPage = false) {
 	}
 	if (emptyRow) emptyRow.classList.toggle("d-none", matchingRows.length > 0);
 
-	const firstResult = matchingRows.length ? firstIndex + 1 : 0;
-	const lastResult = Math.min(firstIndex + pageSize, matchingRows.length);
-	document.getElementById("pendingDeclarationsSummary").textContent = `Mostrando del ${firstResult} al ${lastResult} (Total: ${matchingRows.length} resultados)`;
+	document.getElementById("pendingDeclarationsSummary").textContent = tablePageSummary(matchingRows.length, firstIndex, pageSize);
 	document.getElementById("pendingDeclarationsPagination").innerHTML = paginationControls(
 		pendingDeclarationsPage, pageCount, page => `data-pending-page="${page}"`
 	);
@@ -805,68 +863,55 @@ function renderRitSummary() {
 	return `${pageTitle("Resumen del RIT", "Consulta la información principal registrada en tu Registro de Información Tributaria.")}${content}`;
 }
 
-function renderRitCertificateForm() {
-	return `<form id="ritCertificateForm" class="row g-3 align-items-end" novalidate>
-		<div class="col-12">
-			<label class="form-label" for="ritCertificateType">Tipo de certificación <span class="text-danger">*</span></label>
-			<select class="form-select" id="ritCertificateType" required>
-				<option value="Impuesto" selected>Impuesto</option>
-			</select>
-			<div class="invalid-feedback">Selecciona el tipo de certificación.</div>
-		</div>
-		<div class="col-12">
-			<label class="form-label" for="ritCertificateTax">Impuesto <span class="text-danger">*</span></label>
-			<select class="form-select" id="ritCertificateTax" required>
-				<option value="" selected disabled>Selecciona un impuesto</option>
-				<option value="vehiculos">Impuestos de Vehículos</option>
-				<option value="ica">Impuestos de ICA</option>
-				<option value="rete-ica">Impuestos de Rete ICA</option>
-			</select>
-			<div class="invalid-feedback">Selecciona un impuesto.</div>
-		</div>
-		<div class="col-12 d-flex justify-content-end gap-2"><button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary" type="submit">Descargar certificado</button></div>
-	</form><p class="small text-success mt-3 mb-0 d-none" id="ritCertificateDownloadStatus" role="status">El PDF se descargó correctamente.</p>`;
+function corporateRitFields() {
+	const identity = corporateTaxpayerIdentity;
+	return [['Tipo de documento', `${identity.documentType} – ${identity.documentTypeLabel}`], ['Número de documento', identity.documentNumber],
+		['DV', identity.checkDigit], ['Nombre o razón social', identity.fullName], ['Forma jurídica', identity.legalForm],
+		['Número de matrícula mercantil', identity.registration], ['Fecha de liquidación', identity.liquidationDate],
+		['Tipo de retenedor', identity.withholdingAgent], ['Clase IC', identity.icClass]];
 }
+
+function renderCorporateRit() {
+	return pageTitle('Mi RIT', 'Consulta la información registrada de la persona jurídica.')
+		+ section('Datos básicos de la persona jurídica', `<dl class="row g-3 mb-0">${corporateRitFields().map(([label, value]) =>
+			`<div class="col-12 col-sm-6 col-xl-3"><dt class="small text-secondary fw-semibold">${label}</dt><dd class="mb-0 text-break">${icaEscape(value)}</dd></div>`).join('')}</dl>`)
+		+ section('Datos de contacto', emptyState('No hay datos de contacto registrados para esta persona jurídica.'))
+		+ section('Autorizaciones', linkTo('rit-agentes', 'Consultar agentes autorizados', 'btn btn-outline-primary btn-sm'))
+		+ section('Mis roles tributarios', tableBadge('Gran contribuyente', 'primary') + ' ' + tableBadge('Agente retenedor', 'primary'));
+}
+
+
+
+const ritCertificateTaxes = [['vehiculos', 'Impuestos de Vehículos', 'vehicles'], ['ica', 'ICA', 'ica'], ['reteica', 'RETEICA', 'reteica']];
 
 function renderRitCertification() {
-	return `${pageTitle("Certificado RIT", "Descarga la certificación de tu Registro de Información Tributaria.")}<button class="btn btn-primary" type="button" data-rit-certificate-open aria-haspopup="dialog"><i class="bi bi-download me-2" aria-hidden="true"></i>Descargar certificado RIT</button>`;
+	const availability = registeredTaxAvailability();
+	const taxes = ritCertificateTaxes.filter(([, , key]) => availability[key]).map(([id, label]) => [id, label]);
+	const button = '<i class="bi bi-download me-2" aria-hidden="true"></i>Descargar certificado';
+	return pageTitle('Certificación RIT')
+		+ section('Certificado de inscripción al RIT', `<p>Descargue el certificado que acredita su inscripción en el Registro de Información Tributaria (RIT).</p>
+			<button class="btn btn-primary" type="button" data-rit-registration-download>${button}</button>`)
+		+ section('Certificado por impuesto', `<p>Consulte y descargue el certificado correspondiente a uno de sus impuestos registrados.</p>
+			<form id="ritCertificateForm" class="row g-3 align-items-end"><div class="col-12 col-md-5">
+			<label class="form-label" for="ritCertificateTax">Tipo de impuesto</label>
+			${renderSelect('ritCertificateTax', taxes, { prompt: 'Seleccione un impuesto', required: true })}
+			</div><div class="col-12 col-md-auto"><button class="btn btn-primary" type="submit" disabled>${button}</button></div>
+			<div class="col-12" id="ritVehicleCertificateOption" hidden><button type="button" class="btn btn-outline-primary btn-sm" data-rit-vehicle-list>Consultar certificado por vehículo</button></div></form>`)
+		+ '<p class="small text-success d-none" id="ritCertificateDownloadStatus" role="status">El PDF se descargó correctamente.</p>';
 }
 
-document.addEventListener("click", (event) => {
-	const trigger = event.target.closest("[data-rit-certificate-open]");
-	if (!trigger || document.getElementById("ritCertificateModal")) return;
-	const open = () => {
-		const modal = document.createElement("div");
-		modal.className = "modal fade";
-		modal.id = "ritCertificateModal";
-		modal.tabIndex = -1;
-		modal.setAttribute("aria-labelledby", "ritCertificateModalTitle");
-		modal.setAttribute("aria-describedby", "ritCertificateModalDescription");
-		modal.innerHTML = `<div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="ritCertificateModalTitle">Descargar certificado RIT</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><div class="modal-body p-4"><p class="text-secondary" id="ritCertificateModalDescription">Selecciona el tipo de certificación y el impuesto que necesitas incluir.</p>${renderRitCertificateForm()}</div></div></div>`;
-		document.body.appendChild(modal);
-		const instance = new bootstrap.Modal(modal);
-		modal.addEventListener("shown.bs.modal", () => document.getElementById("ritCertificateType").focus());
-		modal.addEventListener("hidden.bs.modal", () => {
-			instance.dispose();
-			modal.remove();
-			if (trigger.isConnected) trigger.focus();
-		}, { once: true });
-		instance.show();
-	};
-	const navigation = document.getElementById("primaryNavigation");
-	const offcanvas = bootstrap.Offcanvas.getInstance(navigation);
-	if (window.innerWidth < 992 && navigation.classList.contains("show")) {
-		navigation.addEventListener("hidden.bs.offcanvas", open, { once: true });
-		offcanvas?.hide();
-	} else open();
+document.addEventListener('click', event => {
+	if (event.target.closest('[data-rit-certificate-open]')) location.hash = 'rit-certificacion';
+	if (event.target.closest('[data-rit-vehicle-list]')) showRitCertificateList();
+	if (event.target.closest('[data-rit-registration-download]')) downloadRitCertificate(undefined, true);
 });
 
-const myVehicle = { plate: 'DEM362', brand: 'Auteco Bajaj', line: 'Pulsar', year: '2008', className: 'Motocicleta', body: 'Sin carrocería', doors: '0', armored: 'No', engine: '180', hasOverdueInvoice: true };
+const myVehicle = { plate: 'BMM36', brand: 'Auteco Bajaj', line: 'Pulsar', year: '2008', className: 'Motocicleta', body: 'Sin carrocería', doors: '0', armored: 'No', engine: '180', hasOverdueInvoice: true };
 
 const myVehicles = [
  myVehicle,
- { plate: 'DEM373', brand: 'Ducati', line: '1199 ABS Panigale AW B', year: '2013', className: 'Motocicleta', body: 'Sin carrocería', doors: '0', armored: 'No', engine: '1198' },
- { plate: 'DEM374', brand: 'BMW', line: '328 i', year: '2012', className: 'Automóvil', body: 'Sedán', doors: '4', armored: 'No', engine: '1997' },
+ { plate: 'JWT71D', brand: 'Ducati', line: '1199 ABS Panigale AW B', year: '2013', className: 'Motocicleta', body: 'Sin carrocería', doors: '0', armored: 'No', engine: '1198' },
+ { plate: 'MCU235', brand: 'BMW', line: '328 i', year: '2012', className: 'Automóvil', body: 'Sedán', doors: '4', armored: 'No', engine: '1997' },
 ];
 
 function showVehicleOverdueAlert(plate = myVehicle.plate) {
@@ -883,49 +928,26 @@ function showVehicleOverdueAlert(plate = myVehicle.plate) {
  modal.addEventListener('hidden.bs.modal', () => { instance.dispose(); modal.remove(); document.querySelector('[data-vehicle-overdue-alert]')?.focus(); }, { once: true });
  instance.show();
 }
-document.addEventListener('click', event => { const trigger = event.target.closest('[data-vehicle-overdue-alert]'); if (trigger) showVehicleOverdueAlert(trigger.dataset.vehicleOverdueAlert || document.getElementById('myVehiclePlate')?.value); });
+document.addEventListener('click', event => { const trigger = event.target.closest('[data-vehicle-overdue-alert]'); if (trigger) showVehicleOverdueAlert(trigger.dataset.vehicleOverdueAlert || undefined); });
 
 function renderMyVehicles() {
-	const rows = myVehicles.map(vehicle => [vehicle.plate, vehicle.brand, vehicle.line, vehicle.year, vehicle.className, vehicle.body, vehicle.doors, vehicle.armored, vehicle.engine, linkTo(`vehiculo-${vehicle.plate}`, '<i class="bi bi-eye me-1" aria-hidden="true"></i>Ver', 'btn btn-outline-primary btn-sm text-nowrap')]);
+	const consultation = taxpayerSession ? taxpayerQueryForm('my-object', { tax: 'vehiculos' })
+		: registeredTaxTable('my-vehicles', 'Mis vehículos', [...vehicleHeaders, 'Acciones'], myVehicleRows(), 'Consulta las características y el detalle de tu vehículo.');
 	return `${pageTitle('Mis vehículos')}
 		${section('Información del impuesto', `<p class="mb-2">Consulta los vehículos asociados y gestiona tu impuesto anual.</p><div class="collapse" id="vehicleTaxInformation"><div class="pt-2"><p>El impuesto sobre vehículos automotores grava la propiedad o posesión de los vehículos matriculados en Bogotá. Los propietarios y poseedores lo deben declarar y pagar una vez al año.</p><p>La información sobre las características que se presentan a continuación proviene de la Secretaría Distrital de Movilidad de Bogotá. Si encuentra alguna inconsistencia, por favor verifique directamente con esta entidad, a través del Consorcio Circulemos Digital.</p><a href="https://www.shd.gov.co/shd/vehiculos" target="_blank" rel="noopener noreferrer">Más información <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a></div></div><button class="btn btn-link px-0 pb-0" type="button" data-bs-toggle="collapse" data-bs-target="#vehicleTaxInformation" aria-expanded="false" aria-controls="vehicleTaxInformation" id="vehicleTaxInformationToggle">Ver más <i class="bi bi-chevron-down ms-1" aria-hidden="true"></i></button>`)}
-		<div class="bg-white border rounded-3 p-3 p-md-4 mb-4">${registeredTaxTable('my-vehicles', 'Mis vehículos', [...vehicleHeaders, 'Acciones'], rows, 'Consulta las características y el detalle de tu vehículo.')}</div>
+		<div class="bg-white border rounded-3 p-3 p-md-4 mb-4">${consultation}</div>
 		<div class="alert alert-info" role="note"><h2 class="h6 fw-semibold">Nota</h2><p class="mb-0">Para generar una declaración de corrección o una declaración inicial de una vigencia diferente a la actual, ingresa a ${linkTo('declaraciones-generar', 'Declaraciones', 'alert-link')}.</p></div>`;
-}
-
-function renderMyVehicleDetail(vehicle = myVehicle) {
-	const missing = '<span aria-label="Sin información">&nbsp;</span>';
-	const row = (values) => values.map((value) => value || missing);
-	return `<header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><h1 class="h3 fw-semibold mb-2">Detalle del vehículo ${vehicle.plate}</h1><p class="text-secondary mb-0">${vehicle.brand} · ${vehicle.line} · Modelo ${vehicle.year}</p></div><div class="d-flex flex-wrap gap-2" role="group" aria-label="Acciones del vehículo"><a class="btn btn-outline-primary" href="output/pdf/recibo-vehiculo-demo.pdf" download="recibo-vehiculo-demo.pdf"><i class="bi bi-download me-2" aria-hidden="true"></i>Descargar recibo de ejemplo</a><button class="btn btn-primary" type="button" data-vehicle-overdue-alert="${vehicle.plate}">Generar o corregir declaración</button></div></header>
-		<div class="mb-4">${linkTo('impuestos-vehiculos', '<i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver a mis vehículos', 'btn btn-outline-secondary btn-sm')}</div>
-		${vehicle.hasOverdueInvoice ? '<div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-3" role="alert"><p class="mb-0"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>Tienes una factura vencida para este periodo. Genera un Recibo Oficial de Pago (ROP) para pagarla.</p><button class="btn btn-outline-dark btn-sm" type="button" data-vehicle-overdue-alert>Ver aviso</button></div>' : ''}
-		${section('Detalle', `<div class="row mb-4"><div class="col-sm-4"><label class="form-label" for="myVehiclePlate">Placa</label><input class="form-control" id="myVehiclePlate" value="${vehicle.plate}" readonly></div></div>${table(['ID de servicio', 'ID de estado', 'Watts', 'Clásico o antiguo', 'Tipo de vehículo', 'Capacidad pasajeros', 'Capacidad toneladas', 'Fecha de estado', 'Fecha cambio servicio'], [row(vehicle.plate === myVehicle.plate ? ['Particular', 'Activo', '', 'No aplica', 'Motos y motocicletas', '2', '0', '25/03/2014', ''] : vehicle.plate === 'DEM373' ? ['Particular', 'Activo', '', 'No aplica', 'Motos y motocicletas', '2', '0', '14/06/2022', ''] : ['', '', '', '', '', '', '', '', ''])])}`)}
-		${section('Datos jurídicos', table(['Calidad del sujeto', '% de propiedad', 'Fecha desde', 'Fecha hasta'], vehicle.plate === myVehicle.plate ? [['Propietario', '100,00', '25/03/2014', '31/12/9999']] : vehicle.plate === 'DEM373' ? [['Propietario', '100,00', '14/06/2022', '31/12/9999']] : [row(['', '', '', ''])]))}
-		${section('Marcas', table(['Código de marca', 'Descripción', '% de exención', 'Valor de exención', 'Fecha desde', 'Fecha hasta'], vehicle.plate === myVehicle.plate ? [] : [row(['', '', '', '', '', ''])], { empty: 'No hay marcas ni exenciones registradas para este vehículo.' }))}
-		${section('Liquidación', table(['Año', 'Avalúo', 'Tarifa'], vehicle.plate === myVehicle.plate ? [['2026', '$ 400.000', '1,7'], ['2025', '$ 400.000', '1,7'], ['2024', '$ 400.000', '1,7'], ['2023', '$ 400.000', '1,7'], ['2022', '$ 400.000', '1,5']] : vehicle.plate === 'DEM373' ? [['2026', '$ 400.000', '1,7'], ['2025', '$ 500.000', '1,7'], ['2024', '$ 600.000', '1,7'], ['2023', '$ 700.000', '1,7'], ['2022', '$ 800.000', '1,5']] : Array.from({ length: 5 }, () => row(['', '', '']))))}
-		`;
 }
 
 function renderTaxList(title, description = "") {
 	const rows = vehicleRows();
-	return `${pageTitle(title, description)}${section("Vehículos asociados", `<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3"><label class="small d-flex align-items-center gap-2">Mostrar <select class="form-select form-select-sm w-auto"><option>10</option><option>25</option></select> registros</label><label class="small d-flex align-items-center gap-2">Buscar <input class="form-control form-control-sm" type="search" aria-label="Buscar impuestos"></label></div>${table(vehicleHeaders, rows)}`)}`;
+	return `${pageTitle(title, description)}${section("Vehículos asociados", table(vehicleHeaders, rows, { label: "Vehículos asociados" }))}`;
 }
 
-function renderPredialTax(showDetail = false) {
- const blank = '<span aria-label="Sin información">&nbsp;</span>';
- const blankTable = (headers, count = 1) => table(headers, Array.from({ length: count }, () => headers.map(() => blank)));
- const detail = `<div id="predialDetail"><header class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><h1 class="h3 fw-semibold mb-2">Detalle del predio CHIP-DEMO-035</h1><p class="text-secondary mb-0">Dirección ficticia 082 · Matrícula 050S00000045</p></div><div class="d-flex flex-wrap gap-2" role="group" aria-label="Acciones del predio"><a class="btn btn-primary" href="#predial-declaracion">Generar declaración</a></div></header>
- <div class="mb-4"><a class="btn btn-outline-secondary btn-sm" href="#impuestos-predial"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver a mis predios</a></div>
- ${section('Detalle', `<div class="row g-3"><div class="col-12 col-md-4"><label class="form-label" for="predialChip">CHIP</label><input class="form-control" id="predialChip" value="CHIP-DEMO-035" readonly></div><div class="col-12 col-md-4"><label class="form-label" for="predialRegistration">Matrícula inmobiliaria</label><input class="form-control" id="predialRegistration" value="050S00000045" readonly></div><div class="col-12 col-md-4"><label class="form-label" for="predialAddress">Dirección del predio</label><input class="form-control" id="predialAddress" value="Dirección ficticia 082" readonly></div></div>`)}
- ${section('Datos jurídicos', blankTable(['Tipo de documento','Nombre completo','% de propiedad','Número de documento','Calidad de sujeción','Otros']))}
- ${section('Datos económicos', blankTable(['Base gravable','Avalúo catastral','Avalúo contrato arriendo','Avalúo mejora construcción']))}
- ${section('Datos físicos', blankTable(['Área construida catastro','Área terreno catastro','Código estrato','Área terreno mejora contribuyente','Área terreno matriz mejora','Área terreno mejora catastro']))}
- ${section('Liquidación', blankTable(['Base gravable','Destino hacendario','Tarifa liquidación','Valor impuesto']))}
- ${section('Marcas', blankTable(['Marca','Tipo de marca','% de marca','Valor exención','Conservación histórica'], 2))}</div>`;
- if (showDetail) return detail;
+function renderPredialTax() {
  return `${pageTitle('Impuesto predial', 'Consulta los predios asociados y su información tributaria.')}
  ${section('Información del impuesto', `<p class="mb-2">El Impuesto Predial Unificado lo pagan todos los propietarios, poseedores o usufructuarios de bienes inmuebles ubicados dentro del Distrito Capital.</p><div class="collapse" id="predialInformation"><p class="mt-3">La información que se presenta a continuación proviene de la Unidad Administrativa Especial de Catastro Distrital y la oficina de instrumentos públicos. Si encuentra alguna inconsistencia, verifique directamente con la entidad correspondiente.</p><a href="https://www.shd.gov.co/shd/predial" target="_blank" rel="noopener noreferrer">Más información <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a></div><button class="btn btn-link px-0 pb-0" type="button" data-bs-toggle="collapse" data-bs-target="#predialInformation" aria-controls="predialInformation" aria-expanded="false" id="predialInformationToggle">Ver más <i class="bi bi-chevron-down ms-1" aria-hidden="true"></i></button>`)}
- ${section('Predios asociados', registeredTaxTable('my-properties', 'Mis predios', ['CHIP','Matrícula inmobiliaria','Dirección del predio','No. contrato arrendamiento','Acciones'], [['CHIP-DEMO-035','050S00000045','Dirección ficticia 082','', '<a class="btn btn-outline-primary btn-sm px-3 text-nowrap" href="#predio-CHIP-DEMO-035">Ver detalle</a>']], 'Consulta el detalle de tu predio.'))}`;
+ ${section('Predios asociados', taxpayerSession ? taxpayerQueryForm('my-object', { tax: 'predial' }) : registeredTaxTable('my-properties', 'Mis predios', taxpayerPropertyHeaders, taxpayerPredialRows.slice(0, 1), 'Consulta el detalle de tu predio.'))}`;
 }
 
 function filterPredialProperties() {
@@ -947,40 +969,44 @@ function filterPredialProperties() {
 		: "No se encontraron predios.";
 }
 
-function renderVehicleDetail(plate) {
-	const personalVehicle = myVehicles.find(item => item.plate === plate);
-	if (personalVehicle) return renderMyVehicleDetail(personalVehicle);
-	const vehicle = [...myVehicles, ...vehicles].find((item) => item.plate === plate);
-	if (!vehicle) return `${pageTitle("Detalle del vehículo")}${emptyState("No se encontró el vehículo solicitado.")}`;
-	const details = `<dl class="row mb-0"><dt class="col-sm-4">Placa</dt><dd class="col-sm-8">${vehicle.plate}</dd><dt class="col-sm-4">Marca</dt><dd class="col-sm-8">${vehicle.brand}</dd><dt class="col-sm-4">Línea</dt><dd class="col-sm-8">${vehicle.line || "—"}</dd><dt class="col-sm-4">Modelo</dt><dd class="col-sm-8">${vehicle.year}</dd><dt class="col-sm-4">Clase</dt><dd class="col-sm-8">${vehicle.className}</dd><dt class="col-sm-4">Carrocería</dt><dd class="col-sm-8">${vehicle.body}</dd><dt class="col-sm-4">Número de puertas</dt><dd class="col-sm-8">${vehicle.doors}</dd><dt class="col-sm-4">Blindaje</dt><dd class="col-sm-8">${vehicle.armored}</dd><dt class="col-sm-4">Cilindraje</dt><dd class="col-sm-8">${vehicle.engine}</dd></dl>`;
-	return `${pageTitle(`Vehículo ${vehicle.plate}`, "Información del vehículo asociado al ciudadano.")}${section("Datos del vehículo", details)}${section("Información tributaria", emptyState("La información tributaria del vehículo se consultará cuando esté disponible."))}${section("Obligaciones asociadas", emptyState("No hay obligaciones asociadas para mostrar."))}${linkTo("impuestos-vehiculos", "Volver a vehículos", "btn btn-outline-primary btn-sm")}`;
-}
-
-function renderObligations() { return renderPendingObligations(); }
-
-function renderAccountStatement() {
-	const fields = [{ label: "Nombre", placeholder: "Nombre del contribuyente", columns: 6 }, { label: "Tipo de identificación", options: ["Cédula de ciudadanía", "Cédula de extranjería", "NIT"], columns: 3 }, { label: "Fecha de generación", type: "date", columns: 3 }];
-	return `${pageTitle("Estados de cuenta", "Consulta la situación de cuenta tributaria.")}${section("Datos de consulta", `${filterForm(fields)}<p class="small text-secondary">Tasas de interés e información del estado de cuenta.</p>${emptyState("Ingresa los criterios y consulta para ver el estado de cuenta.")}`)}`;
-}
-
 function renderPaymentPlans() {
 	return renderPendingObligations({ multipleRop: true });
 }
 
 function renderDeclaration(id) {
 	const configs = {
-		"declaraciones-corregir": { title: "Corregir declaración", steps: ["Seleccionar impuesto", "Seleccionar año y periodo", "Seleccionar declaración", "Realizar corrección", "Revisar", "Generar"], fields: [{ label: "Impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 4 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 4 }, { label: "Periodo", options: ["Anual", "Primer periodo", "Segundo periodo"], columns: 4 }] },
 		"declaraciones-blanco": { title: "Generar declaración en blanco", steps: ["Seleccionar tipo de impuesto", "Seleccionar año gravable", "Generar declaración en blanco"], fields: [{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA"], columns: 6 }, { label: "Año gravable", options: yearOptions(2024, 2026), columns: 6 }] },
 	};
 	const context = new URLSearchParams(window.location.search);
 	if (id === "declaraciones-generar") {
+		if (context.get('origen') === 'inicio') {
+			const record = dashboardDeclarations().find(row => row.declaration === context.get('declaracion'));
+			if (!record) return pageTitle('Detalle de la declaración') + emptyState('No se encontró la declaración solicitada.');
+			const detail = declarationDetailContext(new URLSearchParams({ impuesto: record.tax, vigencia: record.year, objeto: record.object }));
+			if (detail) return renderUnifiedDeclaration({ ...detail, backToDashboard: true });
+			const fields = [['Número de declaración', record.declaration], ['Impuesto', record.tax], ['Objeto tributario', record.object],
+				['Año gravable', record.year], ...(record.period !== '—' ? [['Periodo', record.period]] : []), ['Estado', record.status]];
+			return '<a href="?#inicio" class="btn btn-outline-secondary btn-sm mb-3">Volver a Inicio</a>'
+				+ pageTitle('Detalle de la declaración') + taxDetailGroup('Datos de la declaración', fields);
+		}
+		const consultation = declarationSearchContext(context);
+		if (taxpayerSession && (consultation.tax || !context.get('impuesto'))) {
+			if (!context.has('objeto')) return renderDeclarationConsultation();
+			const declaration = declarationDetailContext(context);
+			return declaration ? renderUnifiedDeclaration(declaration)
+				: pageTitle(declarationTitle) + emptyState('La declaración no está disponible para el objeto y la vigencia seleccionados.')
+					+ `<a class="btn btn-outline-primary mt-3" href="${icaEscape(declarationUrl(consultation))}">Volver a la consulta</a>`;
+		}
+		const objectContext = taxObjectDeclarationContext(context);
+		if (objectContext) return renderTaxObjectDeclarationEntry(objectContext);
 		const selectedTax = context.get("impuesto");
 		const selectedYear = context.get("vigencia");
 		const selectedPeriod = context.get("periodo");
+		const fuelSurtax = selectedTax === fuelSurtaxName;
 		const fields = [
-			{ label: "Tipo de impuesto", options: ["Impuesto Predial", "Impuesto de Vehículos", "ICA", "Impuesto de Delineación Urbana"] },
+			{ label: "Tipo de impuesto", options: fuelSurtax ? [fuelSurtaxName] : ["Impuesto Predial", "Impuesto de Vehículos", "ICA", "Impuesto de Delineación Urbana"] },
 			{ label: "Año gravable", options: yearOptions(2024, 2026) },
-			{ label: "Periodo", options: ["Anual", "Primer periodo", "Segundo periodo"] },
+			{ label: "Periodo", options: fuelSurtax ? fuelSurtaxMonths.map(([, month]) => month) : ["Anual", "Primer periodo", "Segundo periodo"] },
 		];
 		const taxNames = { "Impuestos de Veh\u00edculos": "Impuesto de Veh\u00edculos", "Impuestos de Delineaci\u00f3n Urbana": "Impuesto de Delineaci\u00f3n Urbana" };
 		const tax = taxNames[selectedTax] || selectedTax;
@@ -991,7 +1017,9 @@ function renderDeclaration(id) {
 			if (!fields[1].options.includes(selectedYear)) fields[1].options.push(selectedYear);
 			fields[1].value = selectedYear;
 		}
-		if (selectedPeriod) {
+		if (fuelSurtax && fields[2].options.includes(selectedPeriod)) {
+			fields[2].value = selectedPeriod;
+		} else if (!fuelSurtax && selectedPeriod) {
 			fields[2].value = selectedPeriod === "\u2014" ? "Anual" : selectedPeriod;
 			if (!fields[2].options.includes(fields[2].value)) fields[2].options.push(fields[2].value);
 		}
@@ -1064,7 +1092,7 @@ document.addEventListener('reset', event => {
 });
 
 function renderDocuments(id) {
-	if (id === "documentos-declaracion") return pageTitle('<span id="declaration-certification-title" class="d-inline-block pe-3">Certificaciones de declaración</span>') + emptyState("La consulta de certificaciones de declaración todavía no está disponible.");
+	if (id === "documentos-declaracion") return pageTitle('<span id="declaration-certification-title" class="d-inline-block pe-3">Certificaciones de declaración</span>');
 	if (id === "documentos-multipagos") return renderMultipaymentCertification();
 	if (id === "documentos-pago") {
 		return `${pageTitle('<span id="payment-certification-title" class="d-inline-block pe-3">Certificaciones de pago</span>', "Consulta los pagos para solicitar una certificación.")}
@@ -1099,8 +1127,8 @@ function renderDocuments(id) {
 }
 
 function notificationItems() {
-	const manage = '<a class="btn btn-outline-primary btn-sm" href="#declaraciones-generar" aria-label="Consultar declaración en la demo">Ir <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a>';
-	const attachments = (names) => `<ul class="list-unstyled small mb-0">${names.map((name) => `<li class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded-3 p-3 mb-2"><span><i class="bi bi-file-earmark-pdf text-danger me-2" aria-hidden="true"></i>${name}</span><span><a class="btn btn-outline-primary btn-sm" href="output/pdf/anexo-notificacion-prueba.pdf" download="prueba-${name}" aria-label="Descargar ${name} de prueba"><i class="bi bi-download me-1" aria-hidden="true"></i>Descargar PDF</a></span></li>`).join('')}</ul>`;
+	const manage = '<a class="btn btn-outline-primary btn-sm" href="https://accstorefront.cpc1y8ebrl-secretari1-s1-public.model-t.cc.commerce.ondemand.com/bogota/es/contribuyentes/presentar-declaracion?impuesto=1&amp;anioGravable=2026" target="_blank" rel="noopener noreferrer" aria-label="Gestionar comunicación en la oficina virtual">Ir <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a>';
+	const attachments = (names) => `<ul class="list-unstyled small mb-0">${names.map((name) => `<li class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded-3 p-3 mb-2"><span><i class="bi bi-file-earmark-pdf text-danger me-2" aria-hidden="true"></i>${name}</span><span><a class="btn btn-outline-primary btn-sm" href="output/pdf/anexo-notificacion-prueba.pdf" download="${name}" aria-label="Descargar ${name}"><i class="bi bi-download me-1" aria-hidden="true"></i>Descargar PDF</a></span></li>`).join('')}</ul>`;
 	const rows = [
 		['', 'Oficina de Control Masivo', 'Auto de archivo', '24.10.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Auto de archivo 105-f-77 puntual y masivo.pdf']), manage],
 		['', 'Oficina de Cobro General', 'Resolución que resuelve las excepciones al mandamiento de pago', '29.08.2024 07:00:00', attachments(['Comunicaciones oficiales enviadas.pdf', 'Resolucion de excepciones tributario 110-F.27.pdf']), manage],
@@ -1145,19 +1173,18 @@ function notificationList(items, compact = false) {
  }).join('');
 }
 function notificationTable(items) {
- const headers = ['Oficina gestora', 'Asunto', 'Tipo', 'Estado de lectura', 'Fecha', 'Anexos', 'Acciones'];
+ const headers = ['Oficina gestora', 'Asunto', 'Tipo', 'Estado de lectura', 'Fecha', 'Acciones'];
  const rows = items.map(({ row, type, read, key }) => [
   row[1],
   `<span data-inbox-subject class="${read ? '' : 'fw-semibold'}">${row[2]}</span>`,
   tableBadge(type),
   `<span data-inbox-read>${tableBadge(read ? 'Leída' : 'No leída', read ? 'secondary' : 'info')}</span>`,
   `<time class="text-nowrap">${row[3].replaceAll('.', '/')}</time>`,
-  row[4] ? `<button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-inbox-detail="${key}" data-inbox-attachments aria-haspopup="dialog"><i class="bi bi-paperclip me-1" aria-hidden="true"></i>Anexos (${(row[4].match(/<li /g) || []).length})</button>` : '—',
-  `<button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-inbox-detail="${key}" aria-haspopup="dialog"><i class="bi bi-eye me-1" aria-hidden="true"></i>Ver</button>`
+  `<div class="d-inline-flex align-items-center flex-nowrap gap-2 text-nowrap">${row[4] ? `<button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-inbox-detail="${key}" data-inbox-attachments aria-haspopup="dialog"><i class="bi bi-paperclip me-1" aria-hidden="true"></i>Anexos (${(row[4].match(/<li /g) || []).length})</button>` : ''}<button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-inbox-detail="${key}" aria-haspopup="dialog"><i class="bi bi-eye me-1" aria-hidden="true"></i>Ver</button></div>`
  ]);
  return table(headers, rows, {
-  id: 'notification-page-list', label: 'Comunicaciones del buzón', containerClass: 'mx-3 mb-3',
-  empty: 'No hay comunicaciones en esta bandeja.', unsortable: [5, 6],
+  id: 'notification-page-list', paginationManaged: true, label: 'Comunicaciones del buzón', containerClass: 'mx-3 mb-3',
+  empty: 'No hay comunicaciones en esta bandeja.', unsortable: [5],
   rowAttributes: index => {
    const { row, read } = items[index];
    return `data-inbox-item class="${read ? '' : 'table-primary'}" data-search="${row[2]} ${row[1]} ${row[3].replaceAll('.', '/')} ${row[3]}"`;
@@ -1193,7 +1220,7 @@ function renderNotifications(id) {
  const items = emptyDemo ? [] : all.filter(item => (id !== 'notificaciones-no-leidas' || !item.read) && (id !== 'notificaciones-notificaciones' || item.type === 'Notificación') && (id !== 'notificaciones-mensajes' || item.type === 'Mensaje'));
  return `<section class="container-fluid py-3 px-0 notification-inbox"><div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3"><div><h1 class="h3 fw-semibold mb-1">Notificaciones <span class="badge rounded-pill text-bg-primary fs-6" data-notification-count>${unread}</span></h1><p class="text-secondary small mb-0">Consulta las comunicaciones y actos administrativos asociados a tu identificación.</p></div><button class="btn btn-outline-secondary btn-sm" type="button" data-notification-read-all>Marcar todas como leídas</button></div>
  <div class="card border-0 rounded-3 overflow-hidden"><div class="card-header bg-body px-3 pt-3 pb-0"><nav class="nav nav-tabs gap-1" aria-label="Filtrar notificaciones">${[['notificaciones-todas','Todas'],['notificaciones-no-leidas','No leídas'],['notificaciones-notificaciones','Notificaciones'],['notificaciones-mensajes','Mensajes']].map(([route,label]) => `<a class="nav-link ${id === route ? 'active' : 'text-secondary'}" href="#${route}" ${id === route ? 'aria-current="page"' : ''}>${label} <span class="badge rounded-pill bg-light text-body border ms-2" ${route === 'notificaciones-no-leidas' ? 'data-notification-count' : ''}>${route === 'notificaciones-todas' ? all.length : route === 'notificaciones-no-leidas' ? unread : all.filter(item => item.type === (route === 'notificaciones-mensajes' ? 'Mensaje' : 'Notificación')).length}</span></a>`).join('')}</nav></div>
- <div class="p-3 p-md-4"><div class="row g-3 align-items-end"><div class="col-12 col-md-7"><label class="form-label small" for="notification-search">Buscar comunicaciones</label><div class="input-group"><span class="input-group-text bg-body"><i class="bi bi-search" aria-hidden="true"></i></span><input class="form-control" id="notification-search" type="search" placeholder="Buscar por asunto, oficina o fecha"></div></div><div class="col-12 col-md-auto ms-md-auto"><label class="form-label small" for="notification-page-size">Registros por página</label><select class="form-select" id="notification-page-size"><option>10</option><option>20</option><option>30</option></select></div></div></div>${notificationTable(items)}<p class="d-none p-4 text-center text-secondary mb-0" id="notification-no-results">No hay comunicaciones que coincidan con la búsqueda.</p><div class="card-footer bg-body p-4 d-flex flex-wrap align-items-center justify-content-between gap-3"><div class="d-flex flex-wrap align-items-center gap-3"><p class="small text-secondary mb-0" id="notification-page-summary" role="status"></p></div><nav aria-label="Paginación de notificaciones"><ul class="pagination pagination-sm flex-wrap mb-0" id="notification-pagination"></ul></nav></div></div><div class="d-flex justify-content-end mt-3"><a class="small link-secondary" href="${emptyDemo ? '#' + id : '?demo=empty#' + id}" ${emptyDemo ? 'data-demo-reset' : 'data-demo-state="empty"'}>${emptyDemo ? 'Volver a las notificaciones' : 'Ver estado vacío'}</a></div></section>`;
+ <div class="p-3 p-md-4">${tableToolbar({ sizeId: "notification-page-size", searchId: "notification-search", placeholder: "Buscar por asunto, oficina o fecha", searchLabel: "Buscar comunicaciones" })}</div>${notificationTable(items)}<p class="d-none p-4 text-center text-secondary mb-0" id="notification-no-results">No hay comunicaciones que coincidan con la búsqueda.</p><div class="card-footer bg-body p-4">${tablePaginationFooter({ label: "notificaciones", summaryAttributes: 'id="notification-page-summary"', paginationAttributes: 'id="notification-pagination"' })}</div></div></section>`;
 }
 function refreshNotificationPreview() {
  const items = currentNotificationItems().filter(item => !item.archived);
@@ -1241,7 +1268,7 @@ function paginateNotifications(reset = false) {
  const visible = new Set(matches.slice(start, start + size));
  rows.forEach(row => row.classList.toggle('d-none', !visible.has(row)));
  document.getElementById('notification-no-results').classList.toggle('d-none', matches.length > 0 || rows.length === 0);
- document.getElementById('notification-page-summary').textContent = matches.length ? `Mostrando del ${start + 1} al ${Math.min(start + size, matches.length)} (Total: ${matches.length} resultados)` : '0 comunicaciones';
+ document.getElementById('notification-page-summary').textContent = tablePageSummary(matches.length, start, size);
  document.getElementById('notification-pagination').innerHTML = paginationControls(notificationPage, pages, target => `data-notification-page="${target}"`);
 }
 document.addEventListener('input', event => { if (event.target.id === 'notification-search') paginateNotifications(true); });
@@ -1261,19 +1288,16 @@ function renderAgentEnablement() {
 
 const registeredTaxPages = { vehicles: 1, properties: 1 };
 
-function registeredTaxTable(key, title, headers, rows, description = '') {
+function registeredTaxTable(key, title, headers, rows, description = '', { searchHint, noMatches } = {}) {
 	const isVehicle = key === 'vehicles' || key === 'my-vehicles';
 	const isProperty = key === 'properties';
-	const searchHint = !isVehicle && !isProperty ? 'Buscar en los registros' : isVehicle ? 'Placa, marca o modelo' : 'CHIP, matrícula o dirección';
+	searchHint ??= !isVehicle && !isProperty ? 'Buscar en los registros' : isVehicle ? 'Placa, marca o modelo' : 'CHIP, matrícula o dirección';
 	return `<section data-registered-tax="${key}" aria-labelledby="registered-${key}-title">
 		<div class="mb-4"><h2 class="h5 mb-1" id="registered-${key}-title">${title}</h2><p class="small text-secondary mb-0">${description || (!isVehicle && !isProperty ? 'Consulta los registros asociados a este impuesto.' : isVehicle ? 'Consulta las características de tus vehículos.' : 'Consulta la identificación y ubicación de tus predios registrados.')}</p></div>
-		<div class="row g-3 align-items-end mb-3">
-			<div class="col-12 col-md-7 col-xl-6"><label class="form-label small fw-semibold" for="registered-${key}-search">${!isVehicle && !isProperty ? 'Buscar registro' : isVehicle ? 'Buscar vehículo' : 'Buscar predio'}</label><div class="input-group"><span class="input-group-text bg-white"><i class="bi bi-search" aria-hidden="true"></i></span><input class="form-control" id="registered-${key}-search" type="search" data-registered-search placeholder="${searchHint}" aria-controls="registered-${key}-table"></div></div>
-			<div class="col-12 col-md-auto ms-md-auto"><label class="form-label small" for="registered-${key}-size">Registros por página</label><select class="form-select" id="registered-${key}-size" data-registered-size><option>10</option><option>20</option><option>30</option><option>50</option></select></div>
-		</div>
+		${tableToolbar({ sizeId: `registered-${key}-size`, searchId: `registered-${key}-search`, placeholder: searchHint, sizes: [10, 20, 30, 50], sizeAttributes: 'data-registered-size', searchAttributes: `data-registered-search aria-controls="registered-${key}-table"` })}
 		<p class="small text-secondary d-lg-none mb-2" id="registered-${key}-scroll"><i class="bi bi-arrow-left-right me-1" aria-hidden="true"></i>Desliza la tabla para consultar todas las columnas.</p>
-		<div class="table-responsive app-table-container registered-tax-scroll mb-3" tabindex="0" role="region" aria-label="Tabla de ${title.toLocaleLowerCase('es')}"><table class="table app-table table-hover align-middle mb-0 registered-tax-table" id="registered-${key}-table"><caption class="visually-hidden">${title}</caption><thead class="table-light"><tr>${headers.map((header) => `<th scope="col">${header}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr data-registered-row>${row.map((cell, index) => index === 0 ? `<th scope="row" class="fw-semibold text-nowrap">${cell || '—'}</th>` : `<td>${cell || '<span class="text-secondary" aria-label="Sin información">—</span>'}</td>`).join('')}</tr>`).join('')}<tr data-registered-empty class="${rows.length ? 'd-none' : ''}"><td colspan="${headers.length}" class="text-center text-secondary py-4">No hay registros disponibles para mostrar.</td></tr></tbody></table></div>
-		<div class="d-flex flex-wrap justify-content-between align-items-center gap-3"><p class="small text-secondary mb-0" data-registered-summary aria-live="polite"></p><nav aria-label="Paginación de ${title.toLocaleLowerCase('es')}"><ul class="pagination pagination-sm flex-wrap mb-0" data-registered-pagination></ul></nav></div>
+		<div class="table-responsive app-table-container registered-tax-scroll mb-3" tabindex="0" role="region" aria-label="Tabla de ${title.toLocaleLowerCase('es')}"><table class="table app-table table-hover align-middle mb-0 registered-tax-table" id="registered-${key}-table" data-pagination-managed><caption class="visually-hidden">${title}</caption><thead class="table-light"><tr>${headers.map(header => `<th scope="col">${header}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr data-registered-row>${row.map((cell, index) => index === 0 ? `<th scope="row" class="fw-semibold text-nowrap">${cell || '—'}</th>` : `<td>${cell || '<span class="text-secondary" aria-label="Sin información">—</span>'}</td>`).join('')}</tr>`).join('')}<tr data-registered-empty class="${rows.length ? 'd-none' : ''}"><td colspan="${headers.length}" class="text-center text-secondary py-4">${rows.length && noMatches ? noMatches : 'No hay registros disponibles para mostrar.'}</td></tr></tbody></table></div>
+		${tablePaginationFooter({ label: title.toLocaleLowerCase('es'), summaryAttributes: 'data-registered-summary', paginationAttributes: 'data-registered-pagination' })}
 	</section>`;
 }
 
@@ -1292,13 +1316,14 @@ function filterRegisteredTaxes(key, reset = false) {
 	const shown = new Set(matches.slice(start, start + size));
 	rows.forEach((row) => row.classList.toggle('d-none', !shown.has(row)));
 	root.querySelector('[data-registered-empty]').classList.toggle('d-none', matches.length > 0);
-	root.querySelector('[data-registered-summary]').textContent = matches.length ? `Mostrando del ${start + 1} al ${Math.min(start + size, matches.length)} (Total: ${matches.length} resultados)` : 'Mostrando 0 resultados';
+	root.querySelector('[data-registered-summary]').textContent = tablePageSummary(matches.length, start, size);
 	const visiblePages = [...new Set([1, ...Array.from({ length: 5 }, (_, index) => page - 2 + index).filter((item) => item > 1 && item < pages), pages])];
 	root.querySelector('[data-registered-pagination]').innerHTML = paginationControls(page, pages, target => `data-registered-page="${target}"`, visiblePages);
 }
 
 function renderRegisteredIca() {
 	return `<h2 class="h5 mb-4">Impuesto de Industria y Comercio ICA</h2>
+		${taxpayerSession ? '<div class="mb-3">' + linkToTaxDetail('objeto-ica-' + encodeURIComponent(getTaxpayerIdentity().documentNumber), 'ica') + '</div>' : ''}
 		${registeredTaxTable('ica-activities', 'Actividades económicas vigentes', ['Código CIIU', 'Nombre de la actividad económica', 'Tipo', 'Tarifa', 'Fecha de inicio de la actividad', 'Fecha de finalización de la actividad'], [
 			['', '', '', '', '00000000', ''],
 			['4732', 'Comercio al por menor de lubricantes (aceites, grasas), aditivos y productos de limpieza para vehículos automotores', '', '', '04/06/2026', '31/12/9999'],
@@ -1310,33 +1335,50 @@ function renderRegisteredIca() {
 		], 'Establecimientos activos')}`;
 }
 
-function renderRegisteredTaxes() {
-	const delineationRows = ['CDU-DEMO-091', 'CDU-DEMO-092', 'CDU-DEMO-093', 'CDU-DEMO-094', 'CDU-DEMO-095', 'CDU-DEMO-096', 'CDU-DEMO-097', 'CDU-DEMO-098', 'CDU-DEMO-099', 'CDU-DEMO-100'].map((code) => [code]);
-	const renderAdditionalTax = (id, label) => {
-		if (id === 'ica') return renderRegisteredIca();
-		if (id === 'delineacion') return registeredTaxTable(id, 'Impuestos de Delineación Urbana', ['C.D.U'], delineationRows);
-		return registeredTaxTable(id, label, ['Registro', 'Año gravable', 'Periodo', 'Estado'], []);
+function registeredTaxAvailability() {
+	const hasObjects = tax => taxpayerObjects[tax] && [...taxpayerObjects[tax].keys()].some(object => taxpayerCanConsult(taxpayerSession, tax, object));
+	return {
+		vehicles: !taxpayerSession || hasObjects('vehiculos'),
+		properties: !taxpayerSession || hasObjects('predial'),
+		delineacion: !taxpayerSession || hasObjects('delineacion'),
+		sobretasa: Object.keys(fuelSurtaxProfile().periods).length > 0,
+		publicidad: publicityElementsFor(taxpayerSession).length > 0,
+		ica: Boolean(taxpayerSession && icaData.activities.length),
+		reteica: Boolean(taxpayerSession?.requiresObject),
 	};
-	const additionalTaxes = [
-		{ id: 'delineacion', label: 'Delineación Urbana' },
-		{ id: 'sobretasa', label: 'Gasolina Motor y ACPM' },
-		{ id: 'publicidad', label: 'Publicidad Exterior' },
-		{ id: 'ica', label: 'ICA' },
-		{ id: 'reteica', label: 'RETEICA' },
+}
+
+function renderRegisteredTaxes() {
+	const availability = registeredTaxAvailability();
+	const listing = (key, tax, title, headers) => registeredTaxTable(key, title, headers,
+		taxpayerPropertyRows(tax, key).filter(([object]) => taxpayerCanConsult(taxpayerSession, tax, object)));
+	const tabs = [
+		['vehicles', 'Vehículos', () => taxpayerSession ? listing('vehicles', 'vehiculos', 'Impuestos de vehículos', [...vehicleHeaders, 'Acciones']) : registeredTaxTable('vehicles', 'Impuestos de vehículos', vehicleHeaders, vehicleRows())],
+		['properties', 'Predial Unificado', () => taxpayerSession ? listing('properties', 'predial', 'Impuesto predial', taxpayerPropertyHeaders) : registeredTaxTable('properties', 'Impuesto predial', ['CHIP', 'Matrícula inmobiliaria', 'Dirección', 'Contrato', 'Año gravable', 'Número de objeto'], predialProperties)],
+		['delineacion', 'Delineación Urbana', () => registeredTaxTable('delineacion', 'Impuestos de Delineación Urbana', ['CDU', 'Acciones'],
+			paymentHistoryExamples.delineacion.rows.filter(([object]) => taxpayerCanConsult(taxpayerSession, 'delineacion', object))
+				.map(([object]) => [object, linkToTaxDetail('delineacion-' + object, 'delineacion')]))],
+		['sobretasa', fuelSurtaxTitle, renderFuelSurtaxRegistration],
+		['publicidad', 'Publicidad Exterior', () => registeredTaxTable('publicidad-rit', publicityTaxTitle, [...publicityHeaders, 'Acciones'],
+			publicityElementsFor(taxpayerSession).map(element => [element.resolution, publicityTypeLabel(element), linkToTaxDetail('objeto-publicidad-' + element.resolution, 'publicidad')]))],
+		['ica', 'ICA', renderRegisteredIca],
+		['reteica', 'RETEICA', () => {
+			const { documentType, documentNumber } = getTaxpayerIdentity();
+			return registeredTaxTable('reteica', 'RETEICA', ['Tipo de identificación', 'Número de identificación', 'Acciones'],
+				[[icaEscape(documentType), icaEscape(documentNumber), linkToTaxDetail('objeto-reteica-' + encodeURIComponent(documentNumber), 'reteica')]]);
+		}],
 	];
-	return `${pageTitle('Impuestos registrados', 'Consulta los impuestos asociados a tu Registro de Información Tributaria.')}
-		<div class="card border-0 shadow-sm registered-taxes">
+	const enabled = id => availability[id] || (id === 'sobretasa' && taxpayerSession?.requiresObject);
+	const active = tabs.find(([id]) => enabled(id))?.[0];
+	return pageTitle('Impuestos registrados', 'Consulta los impuestos asociados a tu Registro de Informaci?n Tributaria.')
+		+ `<div class="card border-0 shadow-sm registered-taxes">
 			<div class="card-header bg-white px-3 px-md-4 pt-3 pb-0"><ul class="nav nav-tabs card-header-tabs gap-2" role="tablist" aria-label="Tipo de impuesto">
-				<li class="nav-item" role="presentation"><button class="nav-link active d-flex align-items-center gap-2 px-3 py-3" id="registered-vehicles-tab" data-bs-toggle="tab" data-bs-target="#registered-vehicles-pane" type="button" role="tab" aria-controls="registered-vehicles-pane" aria-selected="true">Vehículos<span class="badge rounded-pill text-bg-light border">${vehicles.length}<span class="visually-hidden"> vehículos registrados</span></span></button></li>
-				<li class="nav-item" role="presentation"><button class="nav-link d-flex align-items-center gap-2 px-3 py-3" id="registered-properties-tab" data-bs-toggle="tab" data-bs-target="#registered-properties-pane" type="button" role="tab" aria-controls="registered-properties-pane" aria-selected="false">Predial Unificado<span class="badge rounded-pill text-bg-light border">${predialProperties.length}<span class="visually-hidden"> predios registrados</span></span></button></li>
-				${additionalTaxes.map(({ id, label }) => `<li class="nav-item" role="presentation"><button class="nav-link px-3 py-3" id="registered-${id}-tab" data-bs-toggle="tab" data-bs-target="#registered-${id}-pane" type="button" role="tab" aria-controls="registered-${id}-pane" aria-selected="false">${label}</button></li>`).join('')}
-			</ul></div>
-			<div class="card-body p-3 p-md-4 tab-content">
-				<div class="tab-pane show active" id="registered-vehicles-pane" role="tabpanel" aria-labelledby="registered-vehicles-tab" tabindex="0">${registeredTaxTable('vehicles', 'Impuestos de vehículos', vehicleHeaders, vehicleRows())}</div>
-				<div class="tab-pane" id="registered-properties-pane" role="tabpanel" aria-labelledby="registered-properties-tab" tabindex="0">${registeredTaxTable('properties', 'Impuesto predial', ['CHIP', 'Matrícula inmobiliaria', 'Dirección del predio', 'Contrato de arrendamiento', 'Año gravable', 'Número de objeto'], predialProperties)}</div>
-				${additionalTaxes.map(({ id, label }) => `<div class="tab-pane" id="registered-${id}-pane" role="tabpanel" aria-labelledby="registered-${id}-tab" tabindex="0">${renderAdditionalTax(id, label)}</div>`).join('')}
-			</div>
-		</div>`;
+			${tabs.map(([id, label]) => `<li class="nav-item" role="presentation"><button class="nav-link px-3 py-3${id === active ? ' active' : ''}" id="registered-${id}-tab"
+				type="button" role="tab" data-bs-toggle="tab" data-bs-target="#registered-${id}-pane" aria-controls="registered-${id}-pane"
+				aria-selected="${id === active}"${enabled(id) ? '' : ' disabled aria-disabled="true"'}>${label}${enabled(id) ? '' : ' <span class="small">(Sin registro)</span>'}</button></li>`).join('')}
+			</ul></div><div class="card-body p-3 p-md-4 tab-content">
+			${tabs.map(([id, , render]) => `<div class="tab-pane${id === active ? ' show active' : ''}" id="registered-${id}-pane" role="tabpanel" aria-labelledby="registered-${id}-tab" tabindex="0">${enabled(id) ? render() : ''}</div>`).join('')}
+			</div></div>`;
 }
 
 document.addEventListener('input', (event) => {
@@ -1363,12 +1405,12 @@ document.addEventListener('click', (event) => {
 });
 
 const authorizedAgents = [
-	{ id: '1', name: 'Agente Demo Uno', document: '1.000.000.011', quality: 'Representante Legal Suplente', start: '2019-06-27', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
-	{ id: '2', name: 'Agente Demo Dos', document: '1.000.000.012', quality: 'Revisor Fiscal Principal', start: '2021-01-14', end: '9999-12-31', taxes: [], active: true },
-	{ id: '3', name: 'Agente Demo Tres', document: '1.000.000.013', quality: 'Revisor Fiscal Principal', start: '2019-06-27', end: '9999-12-31', taxes: [], active: true },
-	{ id: '4', name: 'Agente Demo Cuatro', document: '1.000.000.014', quality: 'Representante Legal Principal', start: '2018-02-22', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
-	{ id: '5', name: 'Agente Demo Cinco', document: '1.000.000.015', quality: 'Revisor Fiscal Suplente', start: '2019-06-27', end: '2021-12-29', taxes: [], active: false },
-	{ id: '6', name: 'Agente Demo Cinco', document: '1.000.000.015', quality: 'Revisor Fiscal Principal', start: '2019-09-19', end: '2021-12-29', taxes: [], active: false },
+	{ id: '1', name: 'Camila Torres Mendoza', document: '1.000.000.011', quality: 'Representante Legal Suplente', start: '2019-06-27', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
+	{ id: '2', name: 'Santiago Rojas Herrera', document: '1.000.000.012', quality: 'Revisor Fiscal Principal', start: '2021-01-14', end: '9999-12-31', taxes: [], active: true },
+	{ id: '3', name: 'Valeria Duarte Molina', document: '1.000.000.013', quality: 'Revisor Fiscal Principal', start: '2019-06-27', end: '9999-12-31', taxes: [], active: true },
+	{ id: '4', name: 'Andrés Cárdenas Ríos', document: '1.000.000.014', quality: 'Representante Legal Principal', start: '2018-02-22', end: '9999-12-31', taxes: ['Predial', 'Vehicular'], active: true },
+	{ id: '5', name: 'Daniela Pardo Salcedo', document: '1.000.000.015', quality: 'Revisor Fiscal Suplente', start: '2019-06-27', end: '2021-12-29', taxes: [], active: false },
+	{ id: '6', name: 'Daniela Pardo Salcedo', document: '1.000.000.015', quality: 'Revisor Fiscal Principal', start: '2019-09-19', end: '2021-12-29', taxes: [], active: false },
 ];
 const authorizedAgentPages = { active: 1, inactive: 1 };
 let authorizedAgentPageSize = 10;
@@ -1387,8 +1429,8 @@ function authorizedAgentsTable(historical = false, query = '') {
  const pagination = paginationControls(page, pages, target => `data-agent-page="${target}" data-agent-page-group="${key}"`);
  const date = (value) => value.split('-').reverse().join('/');
 	const headers = [['name', 'Nombre'], ['document', 'Tipo y número de documento'], ['quality', 'Calidades'], ['start', 'Vigencia'], ['taxes', 'Impuesto']];
-	return `<div class="table-responsive app-table-container" tabindex="0" role="region" aria-label="Agentes autorizados"><table class="table app-table table-hover align-middle mb-0"><caption class="visually-hidden">Agentes autorizados ${historical ? 'inactivos' : 'activos'}</caption><thead class="table-light"><tr>${headers.map(([key, label]) => `<th scope="col" ${authorizedAgentSort.key === key ? `aria-sort="${authorizedAgentSort.direction === 1 ? 'ascending' : 'descending'}"` : ''}><button class="btn btn-link p-0 text-start text-body fw-semibold text-decoration-none d-flex align-items-center gap-2" type="button" data-agent-sort="${key}">${label}<i class="bi bi-${authorizedAgentSort.key === key && authorizedAgentSort.direction === -1 ? 'caret-down-fill' : 'caret-up-fill'} small ${authorizedAgentSort.key === key ? 'text-primary' : 'text-secondary opacity-50'}" aria-hidden="true"></i></button></th>`).join('')}<th scope="col">Estado</th>${historical ? '' : '<th scope="col" class="text-center">Acciones</th>'}</tr></thead><tbody>${pageRows.map((agent) => `<tr><th scope="row" class="fw-semibold">${agent.name}</th><td><span class="d-block">${agent.documentType || 'CC'}</span><span class="text-nowrap">${agent.document}</span></td><td>${agent.quality}</td><td><span class="text-nowrap">${date(agent.start)}</span><span class="d-block text-nowrap">– ${date(agent.end)}</span></td><td>${agent.taxes.join(', ') || '—'}</td><td>${tableBadge(agent.active ? 'Vigente' : 'Finalizado', agent.active ? 'success' : 'danger')}</td>${historical ? '' : `<td class="text-center"><button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-agent-edit="${agent.id}" aria-label="Editar agente ${agent.name}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Editar</button></td>`}</tr>`).join('') || `<tr><td colspan="${historical ? 6 : 7}" class="text-center text-secondary py-4">No se encontraron agentes para esta consulta.</td></tr>`}</tbody></table></div>
-		<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3"><p class="small text-secondary mb-0" role="status">${total ? `Mostrando del ${start + 1} al ${Math.min(start + authorizedAgentPageSize, total)} (Total: ${total} resultados)` : 'Mostrando 0 resultados'}</p><nav aria-label="Paginación de agentes autorizados"><ul class="pagination pagination-sm flex-wrap mb-0">${pagination}</ul></nav></div>`;
+	return `<div class="table-responsive app-table-container" tabindex="0" role="region" aria-label="Agentes autorizados"><table data-pagination-managed class="table app-table table-hover align-middle mb-0"><caption class="visually-hidden">Agentes autorizados ${historical ? 'inactivos' : 'activos'}</caption><thead class="table-light"><tr>${headers.map(([key, label]) => `<th scope="col" ${authorizedAgentSort.key === key ? `aria-sort="${authorizedAgentSort.direction === 1 ? 'ascending' : 'descending'}"` : ''}><button class="btn btn-link p-0 text-start text-body fw-semibold text-decoration-none d-flex align-items-center gap-2" type="button" data-agent-sort="${key}">${label}<i class="bi bi-${authorizedAgentSort.key === key && authorizedAgentSort.direction === -1 ? 'caret-down-fill' : 'caret-up-fill'} small ${authorizedAgentSort.key === key ? 'text-primary' : 'text-secondary opacity-50'}" aria-hidden="true"></i></button></th>`).join('')}<th scope="col">Estado</th>${historical ? '' : '<th scope="col" class="text-center">Acciones</th>'}</tr></thead><tbody>${pageRows.map((agent) => `<tr><th scope="row" class="fw-semibold">${agent.name}</th><td><span class="d-block">${agent.documentType || 'CC'}</span><span class="text-nowrap">${agent.document}</span></td><td>${agent.quality}</td><td><span class="text-nowrap">${date(agent.start)}</span><span class="d-block text-nowrap">– ${date(agent.end)}</span></td><td>${agent.taxes.join(', ') || '—'}</td><td>${tableBadge(agent.active ? 'Vigente' : 'Finalizado', agent.active ? 'success' : 'danger')}</td>${historical ? '' : `<td class="text-center"><button class="btn btn-outline-primary btn-sm px-3 text-nowrap" type="button" data-agent-edit="${agent.id}" aria-label="Editar agente ${agent.name}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Editar</button></td>`}</tr>`).join('') || `<tr><td colspan="${historical ? 6 : 7}" class="text-center text-secondary py-4">No se encontraron agentes para esta consulta.</td></tr>`}</tbody></table></div>
+		<div class="mt-3">${tablePaginationFooter({ label: "agentes autorizados", summary: tablePageSummary(total, start, authorizedAgentPageSize), controls: pagination })}</div>`;
 }
 
 function renderAuthorizedAgents() {
@@ -1406,10 +1448,7 @@ function renderAuthorizedAgents() {
 				</ul>
 			</div>
 			<div class="card-body p-3 p-md-4">
-			<div class="row g-3 align-items-end mb-3">
- <div class="col-12 col-md-7 col-xl-6"><label class="form-label small fw-semibold" for="authorizedAgentSearch">Buscar agente</label><div class="input-group"><span class="input-group-text bg-white"><i class="bi bi-search" aria-hidden="true"></i></span><input class="form-control" id="authorizedAgentSearch" type="search" placeholder="Nombre, documento o calidad" aria-controls="authorizedAgentsResults"></div></div>
- <div class="col-12 col-md-auto ms-md-auto"><label class="form-label small" for="authorizedAgentPageSize">Registros por página</label><select class="form-select" id="authorizedAgentPageSize">${[10, 20, 30, 50].map((size) => `<option ${size === authorizedAgentPageSize ? 'selected' : ''}>${size}</option>`).join('')}</select></div>
- </div>
+			${tableToolbar({ sizeId: "authorizedAgentPageSize", searchId: "authorizedAgentSearch", placeholder: "Nombre, documento o calidad", selected: authorizedAgentPageSize, sizes: [10, 20, 30, 50], searchAttributes: 'aria-controls="authorizedAgentsResults"' })}
 			<p class="small text-success d-none" id="authorizedAgentSaveStatus" role="status">Cambios guardados.</p>
 			<div class="tab-content" id="authorizedAgentsResults">
 				<div class="tab-pane show active" id="agents-active-pane" role="tabpanel" aria-labelledby="agents-active-tab" tabindex="0">${authorizedAgentsTable()}</div>
@@ -1459,7 +1498,8 @@ document.addEventListener('click', (event) => {
 });
 
 function renderRitPage(id) {
-	if (id === "rit-datos") return existingRitPage;
+	if (id === "rit-actualizacion") return renderInvoiceRit();
+	if (id === "rit-datos") return taxpayerSession?.requiresObject ? renderCorporateRit() : existingRitPage;
 	if (id === "rit-resumen") return renderRitSummary();
 	if (id === "rit-impuestos") return renderRegisteredTaxes();
 	if (id === "rit-agentes") return renderAuthorizedAgents() + renderAgentLookupModal();
@@ -1475,8 +1515,11 @@ function renderPayments(id) {
 }
 
 function renderPage(id) {
-	if (id === "predio-CHIP-DEMO-035") return renderPredialTax(true);
+	if (taxpayerSession && Object.hasOwn(taxpayerDocumentRoutes, id)) return renderTaxpayerDocuments(id);
+	if (id.startsWith("predio-")) return renderPredialObjectDetail(id.slice("predio-".length));
 	if (id === "predial-rop") return renderPredialRop();
+	if (id.startsWith("delineacion-")) return renderDelineationObjectDetail(id.slice("delineacion-".length));
+	if (id.startsWith("objeto-")) return renderAccountTaxObjectShell();
 	if (id === "predial-declaracion") return renderPredialDeclaration();
 	if (isPageContentHidden(id)) return pageTitle(getRouteDetails(id).label) + emptyState("Esta sección todavía no está disponible.");
 	if (id === "inicio") return renderDashboard();
@@ -1486,11 +1529,13 @@ function renderPage(id) {
 	if (id === "impuestos-vehiculos") return renderMyVehicles();
 	if (id === "impuestos-predial") return renderPredialTax();
 	if (id === "impuestos-ica") return renderIca();
+	if (id === "impuestos-publicidad") return renderPublicityTax();
+	if (id === fuelSurtaxRoute) return renderFuelSurtaxTax();
 	if (id === "impuestos-otros") return `${pageTitle("Otros impuestos", "Consulta otros impuestos asociados al ciudadano.")}${section("Impuestos", emptyState())}`;
 	if (id.startsWith("vehiculo-")) return renderVehicleDetail(id.replace("vehiculo-", ""));
 	if (id === "obligaciones-pendientes") return renderObligations();
 	if (id === "obligaciones-cuenta") return renderAccountStatement();
-	if (id === "obligaciones-facilidades") return renderPaymentPlans();
+	if (id === "obligaciones-facilidades") return renderPaymentPlanRop();
 	if (id.startsWith("declaraciones-")) return renderDeclaration(id);
 	if (id.startsWith("pagos-")) return renderPayments(id);
 	if (id === "tramites-seguimiento") return renderProcedures();
@@ -1503,7 +1548,7 @@ function getCurrentRoute() {
 	const hash = window.location.hash.replace(/^#/, "");
 	if (hash === "documentos-rit") return "rit-certificacion";
 	if (pages.has(hash)) return hash;
-	if (hash.startsWith("vehiculo-") || ["predio-CHIP-DEMO-035", "predial-declaracion", "predial-rop"].includes(hash)) return hash;
+	if (/^(vehiculo|predio|delineacion|objeto-ica|objeto-reteica|objeto-publicidad)-/.test(hash) || ["predial-declaracion", "predial-rop"].includes(hash)) return hash;
 	return "inicio";
 }
 
@@ -1516,11 +1561,18 @@ const demoStates = [
 ];
 
 function getRouteDetails(routeId) {
-	if (routeId === "predio-CHIP-DEMO-035") return { id: routeId, label: "Detalle del predio CHIP-DEMO-035", group: routeGroups.find(group => group.id === "impuestos") };
+	if (taxpayerSession && taxpayerMenuLabels.has(routeId)) return { ...pages.get(routeId), label: taxpayerMenuLabels.get(routeId) };
+	if (taxpayerSession && routeId === "pagos-recibos") return { ...pages.get(routeId), label: taxpayerDocumentRoutes[routeId].title };
+	if (routeId === notaryRoute.id) return notaryRoute;
+	if (routeId === dealerRoute.id) return dealerRoute;
+	if (routeId.startsWith("predio-")) return taxObjectRouteDetails(routeId, "Detalle del predio");
+	if (routeId.startsWith("delineacion-")) return taxObjectRouteDetails(routeId, "Detalle de Delineación Urbana", true);
+	if (routeId.startsWith("objeto-publicidad-")) return { id: routeId, label: "Detalle", group: pages.get('impuestos-publicidad').group };
+	if (routeId.startsWith("objeto-")) return taxObjectRouteDetails(routeId, "Detalle del objeto tributario");
 	if (routeId === "predial-rop") return { id: routeId, label: "Generar ROP", group: routeGroups.find(group => group.id === "impuestos") };
 	if (routeId === "predial-declaracion") return { id: routeId, label: "Declaraci\u00f3n Predial", group: routeGroups.find(group => group.id === "impuestos") };
 	return pages.get(routeId) ?? (routeId.startsWith("vehiculo-")
-		? { id: routeId, label: `Vehículo ${routeId.replace("vehiculo-", "")}`, group: routeGroups.find((group) => group.id === "impuestos") }
+		? taxObjectRouteDetails(routeId, "Detalle del vehículo")
 		: pages.get("inicio"));
 }
 
@@ -1587,7 +1639,7 @@ function applyPageState(routeId, stateId) {
 				: "No hay registros disponibles para mostrar.";
 		});
 		const summary = document.getElementById("pendingDeclarationsSummary");
-		if (summary) summary.textContent = "Mostrando del 0 al 0 (Total: 0 resultados)";
+		if (summary) summary.textContent = tablePageSummary(0, 0, 10);
 		if (!tables.length) insertPageStateMessage("No hay registros disponibles para mostrar en esta sección.", "secondary");
 		return;
 	}
@@ -1627,6 +1679,9 @@ function getRelatedRoutes(route) {
 }
 
 function isPageContentHidden(id) {
+	if (taxpayerSession && id === "obligaciones-cuenta") return false;
+	if (taxpayerSession && id === "declaraciones-blanco") return false;
+	if (taxpayerSession && Object.hasOwn(taxpayerDocumentRoutes, id)) return false;
 	if (id === "declaraciones-generar") return false;
 	if (id === "pagos-relacion") return false;
 	if (id === "documentos-declaracion") return false;
@@ -1635,27 +1690,56 @@ function isPageContentHidden(id) {
 	if (["obligaciones-pendientes", "obligaciones-facilidades", "pagos-facilidades"].includes(id)) return false;
 	if (id === "documentos-pago") return false;
 	if (id === "documentos-retenciones") return false;
-	if (id === "predio-CHIP-DEMO-035") return false;
+	if (/^(predio|delineacion|objeto)-/.test(id)) return false;
 	if (id === "predial-rop") return false;
 	if (id === "predial-declaracion") return false;
 	if (id.startsWith('notificaciones-')) return false;
-	if (id === 'impuestos-predial' || id === 'impuestos-ica' || id === 'impuestos-vehiculos' || id.startsWith('vehiculo-')) return false;
+	if (['impuestos-predial', 'impuestos-ica', 'impuestos-vehiculos', 'impuestos-publicidad', fuelSurtaxRoute].includes(id) || id.startsWith('vehiculo-')) return false;
 	return hiddenRouteGroups.has(getRouteDetails(id).group?.id);
 }
 
+let lastRenderedUrl;
+
 function renderRoute() {
-	const routeId = activeCompany && getCurrentRoute() !== "declaraciones-generar" ? "inicio" : getCurrentRoute();
+	const consultation = consultationProfile(profileCurrentRole.textContent);
+	const requestedRoute = getCurrentRoute();
+	const localRoute = taxpayerSession && requestedRoute === "pagos-facilidades" ? "obligaciones-facilidades" : requestedRoute;
+	const routeId = consultation?.id ?? (activeCompany && localRoute !== "declaraciones-generar" ? "inicio" : localRoute);
 	if (window.location.hash !== `#${routeId}`) {
 		const normalizedUrl = new URL(window.location.href);
 		normalizedUrl.hash = routeId;
 		window.history.replaceState(null, "", normalizedUrl);
 	}
+	lastRenderedUrl = window.location.href;
 	const route = getRouteDetails(routeId);
 	const requestedDemoState = new URLSearchParams(window.location.search).get("demo");
 	const activeDemoState = demoStates.some((state) => state.id === requestedDemoState) ? requestedDemoState : null;
 	renderNavigation(routeId);
 	renderBreadcrumb(route);
+	if (consultation) {
+		pageFooterRoot.innerHTML = '';
+		bootstrap.Offcanvas.getInstance(document.getElementById("primaryNavigation"))?.hide();
+		if (contentRoot.firstElementChild?.dataset.consultationRoute !== routeId) {
+			const renderModule = routeId === notaryRoute.id ? renderNotaryModule : renderDealerModule;
+			renderModule(contentRoot, requestedDemoState);
+			contentRoot.firstElementChild.dataset.consultationRoute = routeId;
+		}
+		document.title = `${route.label} | Oficina Virtual de Bogotá`;
+		return;
+	}
 	contentRoot.innerHTML = renderPage(routeId);
+	if (routeId === declarationRoute && taxpayerSession) mountDeclarationConsultation();
+	if (routeId === "pagos-facilidades") mountLegacyRopSelection(contentRoot);
+	if (routeId === "impuestos-publicidad") mountPublicityList(contentRoot.querySelector('[data-publicity-list]'));
+	if (routeId === fuelSurtaxRoute) mountFuelSurtax();
+	if (routeId.startsWith('objeto-publicidad-')) mountPublicityDetail(routeId.slice('objeto-publicidad-'.length));
+	else if (routeId.startsWith("objeto-")) mountAccountTaxObjectDetail(routeId);
+	if (routeId === "rit-impuestos") {
+		restoreTaxDetailTab();
+	}
+	if (routeId === "obligaciones-cuenta") mountAccountStatement(requestedDemoState);
+	if (routeId === "obligaciones-facilidades") mountPaymentPlanRop(requestedDemoState);
+	mountTaxpayerPage(routeId);
 	if (routeId.startsWith('notificaciones-')) paginateNotifications(true);
 	if (routeId === "rit-impuestos" || routeId === "impuestos-ica" || routeId.startsWith('notificaciones-')) {
 		contentRoot.querySelectorAll('[data-registered-tax]').forEach((table) => filterRegisteredTaxes(table.dataset.registeredTax, true));
@@ -1664,6 +1748,7 @@ function renderRoute() {
 	if (routeId === 'impuestos-predial') filterRegisteredTaxes('my-properties', true);
 	restoreRitFormValues(contentRoot);
 	restoreTaxpayerIdentityFields();
+	if (routeId === "rit-actualizacion") mountInvoiceRit();
 	if (activeDemoState && !isPageContentHidden(routeId)) applyPageState(routeId, activeDemoState);
 	if (routeId === "inicio") filterPendingDeclarations(true);
 	pageFooterRoot.innerHTML = '';
@@ -1675,12 +1760,12 @@ function renderRoute() {
 	}
 }
 
-window.addEventListener("hashchange", () => {
-	renderRoute();
-});
-window.addEventListener("popstate", () => {
-	renderRoute();
-});
+function renderChangedRoute() {
+	if (window.location.href !== lastRenderedUrl) renderRoute();
+}
+
+window.addEventListener("hashchange", renderChangedRoute);
+window.addEventListener("popstate", renderChangedRoute);
 
 document.addEventListener("click", (event) => {
 	const stateLink = event.target.closest("[data-demo-state]");
@@ -1716,10 +1801,17 @@ function setActiveProfile(role, persist = false) {
 	const selectedButton = [...profileRoleButtons].find((button) => button.dataset.profileRole === role);
 	if (!selectedButton) return;
 	if (role === "Agente autorizado" && !activeCompany) return;
-	if (role === "Contribuyente") {
+	taxpayerSession = Object.hasOwn(taxpayerSessions, role) ? taxpayerSessions[role] : undefined;
+	selectIcaProfile();
+	if (role !== "Agente autorizado") {
 		activeCompany = null;
 		sessionStorage.removeItem("demo-active-company");
 	}
+	const isConsultation = Boolean(consultationProfile(role));
+	document.body.classList.toggle("consultation-profile", isConsultation);
+	const notificationButton = document.getElementById("notificationMenuButton");
+	notificationButton.classList.toggle("d-none", isConsultation);
+	notificationButton.classList.toggle("d-inline-flex", !isConsultation);
 	document.body.classList.toggle("representing-company", Boolean(activeCompany));
 	document.getElementById("companySwitcher").classList.toggle("d-none", !activeCompany);
 	if (activeCompany) {
@@ -1731,7 +1823,7 @@ function setActiveProfile(role, persist = false) {
 
 	profileActiveBadge.textContent = role;
 	profileCurrentRole.textContent = role;
-	profileButton.setAttribute("aria-label", `Cuenta de ${getTaxpayerIdentity().fullName}, ${role}`);
+	syncTaxpayerProfile();
 
 	profileRoleButtons.forEach((button) => {
 		const isActive = button === selectedButton;
@@ -1746,7 +1838,8 @@ function setActiveProfile(role, persist = false) {
 if (profileRoleButtons.length) {
 	const savedRole = sessionStorage.getItem("demo-active-profile-role")?.replace("Agentes Autorizados", "Agente autorizado");
 	if (savedRole === "Agente autorizado") activeCompany = representedCompanies.find((company) => company.id === sessionStorage.getItem("demo-active-company")) || null;
-	setActiveProfile(activeCompany ? "Agente autorizado" : "Contribuyente");
+	const restoredRole = Object.hasOwn(taxpayerSessions, savedRole) ? savedRole : consultationProfile(savedRole)?.role;
+	setActiveProfile(activeCompany ? "Agente autorizado" : restoredRole ?? "Contribuyente");
 
 	profileRoleButtons.forEach((button) => {
 		button.addEventListener("click", () => {
@@ -1755,6 +1848,7 @@ if (profileRoleButtons.length) {
 			else {
 				setActiveProfile(button.dataset.profileRole, true);
 				renderRoute();
+				if (consultationProfile(button.dataset.profileRole)) profileButton.focus();
 			}
 		});
 	});
@@ -1824,55 +1918,73 @@ function showRitCertificateList() {
 	modal.className = "modal fade";
 	modal.tabIndex = -1;
 	modal.setAttribute("aria-labelledby", "ritVehicleListTitle");
+	const vehicleList = `
+			${tableToolbar({ sizeId: "rit-vehicle-size", searchId: "rit-vehicle-search", placeholder: "Buscar por placa", searchAttributes: "data-vehicle-search" })}
+			<div class="table-responsive app-table-container mb-3" tabindex="0" role="region" aria-label="Certificados de vehículos"><table data-pagination-managed class="table app-table table-hover align-middle mb-0"><thead class="table-light"><tr><th scope="col">Placa</th><th scope="col">Marca</th><th scope="col">Acciones</th></tr></thead><tbody><tr data-vehicle-row><td>DEM033</td><td></td><td class="text-center"><button type="button" class="btn btn-outline-primary btn-sm px-3" data-vehicle-download aria-label="Descargar certificado del vehículo DEM033">Descargar certificado</button></td></tr><tr data-vehicle-empty hidden><td colspan="3" class="text-center text-secondary">No se encontraron resultados.</td></tr></tbody></table></div>
+			${tablePaginationFooter({ label: "vehículos", summary: tablePageSummary(1, 0, 10), controls: paginationControls(1, 1), summaryAttributes: "data-vehicle-summary" })}
+			<button type="button" class="btn btn-light w-100 mt-3" data-vehicle-download>Generar</button>`;
 	modal.innerHTML = `<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
 		<div class="modal-header bg-light"><h2 class="modal-title fs-5" id="ritVehicleListTitle">Impuestos de Vehículos</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
 		<div class="modal-body p-4">
-			<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
-				<label class="d-flex align-items-center gap-2 small">Mostrar <select class="form-select form-select-sm w-auto" aria-label="Datos por página"><option>10</option><option>25</option><option>50</option></select> registros por página</label>
-				<label class="d-flex align-items-center gap-2 small">Buscar <input type="search" class="form-control form-control-sm" data-vehicle-search></label>
-			</div>
-			<div class="table-responsive app-table-container mb-3" tabindex="0" role="region" aria-label="Certificados de vehículos"><table class="table app-table table-hover align-middle mb-0"><thead class="table-light"><tr><th scope="col">Placa</th><th scope="col">Marca</th><th scope="col">Acciones</th></tr></thead><tbody><tr data-vehicle-row><td>DEM033</td><td></td><td class="text-center"><button type="button" class="btn btn-outline-primary btn-sm px-3" data-vehicle-download aria-label="Descargar certificado del vehículo DEM033"><i class="bi bi-download" aria-hidden="true"></i></button></td></tr><tr data-vehicle-empty hidden><td colspan="3" class="text-center text-secondary">No se encontraron resultados.</td></tr></tbody></table></div>
-			<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3"><p class="mb-0 small" data-vehicle-summary>Mostrando del 1 al 1 (Total: 1 resultados)</p><nav aria-label="Paginación de vehículos"><ul class="pagination pagination-sm flex-wrap mb-0">${paginationControls(1, 1)}</ul></nav></div>
-			<button type="button" class="btn btn-light w-100 mt-3" data-vehicle-download>Generar</button>
+			${taxpayerSession ? taxpayerQueryForm('rit-vehicle-certificate', { tax: 'vehiculos' }) : vehicleList}
 		</div></div></div>`;
 	document.body.appendChild(modal);
+	if (taxpayerSession) {
+		mountTaxpayerQuery('rit-vehicle-certificate', query =>
+			myVehicles.filter(vehicle => taxpayerHomeObjects.vehiculos.includes(vehicle.plate) && matchesTaxpayerQuery(query, 'vehiculos', vehicle.plate)), (target, vehicles) => {
+			renderQueryResults(target, {
+				id: 'rit-vehicle-results', title: 'Certificados de vehículos', headers: ['Placa', 'Marca', 'Acciones'],
+				rows: vehicles.map(vehicle => [vehicle.plate, vehicle.brand, vehicle.plate]), unsortable: [2],
+				formatCell: (cell, index) => index === 2
+					? `<button type="button" class="btn btn-outline-primary btn-sm" data-vehicle-download="${cell}" aria-label="Descargar certificado del vehículo ${cell}">Descargar certificado</button>`
+					: cell,
+			});
+		}, { initial: true });
+	}
 	const instance = new bootstrap.Modal(modal);
 	modal.addEventListener("input", (event) => {
 		if (!event.target.matches("[data-vehicle-search]")) return;
 		const matches = "dem033".includes(event.target.value.trim().toLowerCase());
 		modal.querySelector("[data-vehicle-row]").hidden = !matches;
 		modal.querySelector("[data-vehicle-empty]").hidden = matches;
-		modal.querySelector("[data-vehicle-summary]").textContent = matches ? "Mostrando del 1 al 1 (Total: 1 resultados)" : "Mostrando del 0 al 0 (Total: 0 resultados)";
+		modal.querySelector("[data-vehicle-summary]").textContent = tablePageSummary(matches ? 1 : 0, 0, 10);
 		modal.querySelector(".btn-light").disabled = !matches;
 	});
 	modal.addEventListener("click", (event) => {
-		if (!event.target.closest("[data-vehicle-download]")) return;
-		downloadRitCertificate("DEM033");
+		const action = event.target.closest("[data-vehicle-download]");
+		if (!action) return;
+		downloadRitCertificate(action.dataset.vehicleDownload || "DEM033");
 		instance.hide();
 	});
 	modal.addEventListener("hidden.bs.modal", () => { instance.dispose(); modal.remove(); }, { once: true });
 	instance.show();
 }
 
-function downloadRitCertificate(vehiclePlate) {
-	const certificateType = document.getElementById("ritCertificateType").value;
-	const selectedTax = document.getElementById("ritCertificateTax").value;
-	const taxLabels = {
-		vehiculos: "Impuestos de Vehiculos",
-		ica: "Impuestos de ICA",
-	};
+function downloadRitCertificate(vehiclePlate, registration = false) {
+	const selectedTax = document.getElementById('ritCertificateTax')?.value;
+	const tax = ritCertificateTaxes.find(([id, , key]) => id === selectedTax && registeredTaxAvailability()[key]);
+	if (!registration && !tax) return;
+	const identity = getTaxpayerIdentity();
+	const fields = taxpayerSession?.requiresObject ? corporateRitFields() : [
+		['Tipo de documento', identity.documentType], ['Número de documento', identity.documentNumber], ['Nombre', identity.fullName],
+	];
 	const pdfText = [
-		"Certificacion Mi RIT",
-		"Documento de prueba - No es un certificado oficial",
-		`Tipo de certificacion: ${certificateType}`,
-		"Contribuyente: Contribuyente Demo",
-		"Tipo de documento: CC",
-		"Numero de documento: 1000000001",
-		"Impuesto incluido:",
-		`- ${taxLabels[selectedTax]}`,
+		registration ? 'Certificado de inscripción al RIT' : 'Certificado RIT por impuesto',
+		"Documento sin validez oficial",
+		...fields.map(([label, value]) => `${label}: ${value === '—' ? 'Sin información' : value}`),
+		...(!registration ? [`Impuesto: ${tax[1]}`] : []),
 		...(vehiclePlate ? [`Placa: ${vehiclePlate}`] : []),
 		`Fecha de generacion: ${new Date().toLocaleDateString("es-CO")}`,
 	];
+	downloadLocalPdf(registration ? 'inscripcion-rit.pdf' : `certificado-rit-${selectedTax}.pdf`, pdfText);
+	document.getElementById("ritCertificateDownloadStatus").classList.remove("d-none");
+}
+
+function downloadLocalPdf(filename, pdfText) {
+	downloadLocalDocument(filename, createLocalPdf(pdfText));
+}
+
+function createLocalPdf(pdfText) {
 	const escapePdfText = (text) => text.normalize("NFD")
 		.replace(/[\u0300-\u036f]/g, "")
 		.replace(/[^\x20-\x7E]/g, "")
@@ -1904,13 +2016,19 @@ function downloadRitCertificate(vehiclePlate) {
 	});
 	pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
 
-	const pdfUrl = URL.createObjectURL(new Blob([pdf], { type: "application/pdf" }));
+	return new Blob([pdf], { type: "application/pdf" });
+}
+
+function downloadLocalDocument(filename, documentBlob) {
+	const pdfUrl = URL.createObjectURL(documentBlob);
 	const downloadLink = document.createElement("a");
 	downloadLink.href = pdfUrl;
-	downloadLink.download = "certificacion-mi-rit-ejemplo.pdf";
-	downloadLink.click();
-	window.setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
-	document.getElementById("ritCertificateDownloadStatus").classList.remove("d-none");
+	downloadLink.download = filename;
+	try {
+		downloadLink.click();
+	} finally {
+		window.setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+	}
 }
 
 document.addEventListener("submit", (event) => {
@@ -1919,8 +2037,7 @@ document.addEventListener("submit", (event) => {
 		const form = event.target;
 		form.classList.add("was-validated");
 		if (!form.checkValidity()) return;
-		if (form.closest("#ritCertificateModal")) downloadRitCertificate();
-		else showRitCertificateList();
+		downloadRitCertificate();
 		return;
 	}
 
@@ -1942,7 +2059,9 @@ document.addEventListener("submit", (event) => {
 });
 
 document.addEventListener("change", (event) => {
-	if (event.target.id === "ritCertificateType" || event.target.id === "ritCertificateTax") {
+	if (event.target.id === "ritCertificateTax") {
+		event.target.form.querySelector('[type="submit"]').disabled = !event.target.checkValidity();
+		document.getElementById('ritVehicleCertificateOption').hidden = event.target.value !== 'vehiculos';
 		document.getElementById("ritCertificateDownloadStatus")?.classList.add("d-none");
 	}
 	if (event.target.matches("[name='documentNumber']")) {
@@ -2313,6 +2432,7 @@ document.addEventListener("change", (event) => {
 syncTaxpayerProfile();
 if (!window.location.hash) window.location.hash = "inicio";
 renderRoute();
+observeTablePagination();
 
 refreshNotificationPreview();
 
@@ -2364,7 +2484,4 @@ document.addEventListener('show.bs.collapse', event => {
 });
 document.addEventListener('hide.bs.collapse', event => {
  if (event.target.id === 'predialInformation') document.getElementById('predialInformationToggle').innerHTML = 'Ver más <i class="bi bi-chevron-down ms-1" aria-hidden="true"></i>';
-});
-document.addEventListener('shown.bs.collapse', event => {
- if (event.target.id === 'predialDetail') { event.target.scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('predialChip').focus({ preventScroll: true }); }
 });

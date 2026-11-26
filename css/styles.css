@@ -1,11 +1,23 @@
-.representing-company nav[aria-label="Navegación principal"],
-.representing-company [data-bs-target="#primaryNavigation"],
-.representing-company #pageFooter {
+:is(.representing-company, .consultation-profile) nav[aria-label="Navegación principal"],
+:is(.representing-company, .consultation-profile) [data-bs-target="#primaryNavigation"],
+:is(.representing-company, .consultation-profile) #pageFooter {
 	display: none !important;
 }
 
-.representing-company main[aria-label="Contenido principal"] {
+:is(.representing-company, .consultation-profile) main[aria-label="Contenido principal"] {
 	width: 100%;
+}
+
+.date-range-calendar {
+	max-width: 22rem;
+}
+
+.date-range-days {
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.date-range-days button {
+	min-height: 2.25rem;
 }
 
 .company-context-details, .company-context-copy { min-width: 0; }
@@ -78,6 +90,34 @@
 .app-table > thead > tr > th {
 	font-weight: 600;
 	vertical-align: middle;
+}
+
+table > :is(thead, tbody) > tr > .table-actions-column {
+	width: 1%;
+	min-width: 0;
+	white-space: nowrap;
+	text-align: start !important;
+}
+
+.table-action {
+	--bs-btn-padding-x: 0.875rem;
+	--bs-btn-padding-y: 0.25rem;
+	--bs-btn-font-size: 0.875rem;
+	--bs-btn-line-height: 1.5;
+	--bs-btn-border-radius: var(--bs-border-radius-sm);
+	gap: 0.375rem;
+}
+
+.table-action > .bi {
+	flex: none;
+	font-size: 1em;
+	line-height: 1;
+}
+
+.table-action-description {
+	inline-size: 0;
+	min-inline-size: 100%;
+	white-space: normal;
 }
 
 .app-table > tbody > tr:last-child > * {
@@ -281,17 +321,25 @@
 	line-height: 1.65;
 }
 
-.rit-save-bar {
-	position: sticky;
-	bottom: 0;
-	z-index: 1020;
-	margin: 1.5rem -0.25rem -1rem;
+.rit-save-bar,
+.selection-action-bar {
 	background: var(--bs-white);
 	border: 1px solid var(--bs-border-color);
 	border-bottom: 0;
 	border-radius: 0.75rem 0.75rem 0 0;
 	box-shadow: var(--bs-box-shadow-sm);
 	backdrop-filter: blur(0.5rem);
+}
+
+.rit-save-bar {
+	position: sticky;
+	bottom: 0;
+	z-index: 1020;
+	margin: 1.5rem -0.25rem -1rem;
+}
+
+.selection-action-bar {
+	z-index: 1020;
 }
 
 .address-card {

@@ -125,6 +125,9 @@
     tokens.sort((a, b) => order.indexOf(a.level) - order.indexOf(b.level) || a.family.localeCompare(b.family) || a.name.localeCompare(b.name) || a.selector.localeCompare(b.selector));
     const search = document.querySelector('#token-search');
     const source = document.querySelector('#token-source');
+    const pageSize = document.querySelector('#token-page-size');
+    const pagination = document.querySelector('#token-pagination');
+    let page = 1;
     let selectedLevel = '';
     let selectedFamily = '';
     const groups = document.querySelector('#token-groups');
@@ -162,12 +165,16 @@
         }
     }
     const list = document.querySelector('#token-list');
-    function render() {
+    function render(reset = true) {
         const query = search.value.trim().toLowerCase();
         const filtered = tokens.filter(token => (!selectedLevel || selectedLevel === token.level) && (!selectedFamily || selectedFamily === token.family) && (!source.value || source.value === token.source) && `${token.name} ${token.figmaName} ${token.value} ${token.selector} ${token.context} ${token.family}`.toLowerCase().includes(query));
+        const size = Number(pageSize.value);
+        const pages = Math.max(1, Math.ceil(filtered.length / size));
+        page = reset ? 1 : Math.min(page, pages);
+        const first = (page - 1) * size;
         const fragment = document.createDocumentFragment();
         let previousGroup = '';
-        for (const token of filtered) {
+        for (const token of filtered.slice(first, first + size)) {
             const group = `${levels[token.level]} · ${token.family}`;
             if (group !== previousGroup) {
                 const heading = document.createElement('tr');
@@ -220,10 +227,22 @@
         }
         list.replaceChildren(fragment);
         document.querySelector('#token-empty').hidden = filtered.length > 0;
-        document.querySelector('#token-count').textContent = `${filtered.length} de ${tokens.length} declaraciones · ${new Set(tokens.map(token => token.name)).size} variables únicas${errors.length ? ' · No se pudieron leer algunos estilos. Abre esta página desde el servidor local.' : ''}`;
+        pagination.innerHTML = tablePaginationFooter({
+            label: 'variables CSS',
+            summary: tablePageSummary(filtered.length, first, size) + (errors.length ? ' No se pudieron leer algunos estilos.' : ''),
+            controls: paginationControls(page, pages, (number) => `data-token-page="${number}"`),
+        });
     }
     search.addEventListener('input', render);
     source.addEventListener('change', render);
+    pageSize.addEventListener('change', render);
+    pagination.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-token-page]');
+        if (!button || button.disabled) return;
+        page = Number(button.dataset.tokenPage);
+        render(false);
+        pagination.querySelector('[aria-current="page"]')?.focus();
+    });
     renderFilters();
     render();
 })();

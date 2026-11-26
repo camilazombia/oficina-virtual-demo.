@@ -5,8 +5,9 @@ const vm = require('node:vm');
 function setup() {
  const handlers = {};
  const context = vm.createContext({
-  document: { addEventListener(name, fn) { (handlers[name] ||= []).push(fn); }, querySelectorAll: () => [], getElementById: () => ({ value: '000000144' }) },
+  document: { addEventListener(name, fn) { (handlers[name] ||= []).push(fn); }, querySelectorAll: () => [], getElementById: () => ({ value: '600741000' }) },
   icaEscape: value => String(value ?? ''), pageTitle: title => title, section: (title, content) => title + content, table: () => '',
+  getTaxpayerIdentity: () => ({ documentType: 'CC', documentNumber: '1000000001', fullName: 'Miguel Salazar' }),
   renderRoute() {}, Intl, location: { hash: '#predial-declaracion' },
  });
  vm.runInContext(fs.readFileSync('js/predial-declaration.js', 'utf8'), context);

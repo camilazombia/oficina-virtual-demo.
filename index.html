@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,9 +8,9 @@
     <title>Oficina Virtual de Bogotá</title>
 
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="css/styles.css?v=20261119-rit-tables" rel="stylesheet">
+    <link href="css/styles.css?v=acciones-tablas" rel="stylesheet">
 </head>
 <body class="bg-body">
     <aside class="offcanvas offcanvas-end rounded-start-4" tabindex="-1" id="notificationPanel" aria-labelledby="notificationPanelTitle">
@@ -50,10 +50,10 @@
 
                         <!-- Perfil de usuario -->
                         <div class="dropdown">
-                            <button class="btn btn-link link-dark text-decoration-none d-flex align-items-center gap-2 p-0 dropdown-toggle" id="profileMenuButton" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Cuenta de Contribuyente Demo, Contribuyente">
+                            <button class="btn btn-link link-dark text-decoration-none d-flex align-items-center gap-2 p-0 dropdown-toggle" id="profileMenuButton" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Cuenta de Miguel Salazar, Contribuyente">
                                     <span id="profileInitials" class="rounded-circle bg-primary-subtle text-primary-emphasis d-inline-flex align-items-center justify-content-center fw-semibold flex-shrink-0" aria-hidden="true">PP</span>
                                 <span class="d-none d-lg-flex flex-column align-items-start gap-1">
-                                    <span id="profileName" class="fw-semibold">Contribuyente Demo</span>
+                                    <span id="profileName" class="fw-semibold">Miguel Salazar</span>
                                     <span class="badge bg-primary-subtle text-primary-emphasis profile-active-badge">Contribuyente</span>
                                 </span>
                             </button>
@@ -64,7 +64,16 @@
                                         <span class="profile-role-icon" aria-hidden="true"><i class="bi bi-person-check"></i></span>
                                         <span class="profile-role-copy">
                                             <span class="d-flex flex-wrap align-items-center justify-content-between gap-2"><strong>Contribuyente</strong><span class="badge rounded-pill bg-primary-subtle text-primary-emphasis border border-primary-subtle" data-profile-active-badge><i class="bi bi-check2 me-1" aria-hidden="true"></i>Activo</span></span>
-                                            <span class="profile-role-description">Ingresa aquí para realizar tus transacciones en línea.</span>
+                                            <span class="profile-role-description">Consulta y gestiona tus obligaciones tributarias, accede a tus documentos y realiza los trámites disponibles.</span>
+                                        </span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item profile-role-option" type="button" data-profile-role="Gran contribuyente" aria-pressed="false">
+                                        <span class="profile-role-icon" aria-hidden="true"><i class="bi bi-buildings"></i></span>
+                                        <span class="profile-role-copy">
+                                            <span class="d-flex flex-wrap align-items-center justify-content-between gap-2"><strong>Gran contribuyente</strong><span class="badge rounded-pill bg-primary-subtle text-primary-emphasis border border-primary-subtle d-none" data-profile-active-badge>Activo</span></span>
+                                            <span class="profile-role-description">Consulta y gestiona las obligaciones tributarias de los objetos asociados a tu identificación.</span>
                                         </span>
                                     </button>
                                 </li>
@@ -78,13 +87,25 @@
                                     </button>
                                 </li>
                                 <li>
-                                    <div class="profile-role-option profile-role-option-static">
+                                    <button class="dropdown-item profile-role-option" type="button" data-profile-role="Concesionarios" aria-pressed="false">
                                         <span class="profile-role-icon" aria-hidden="true"><i class="bi bi-building"></i></span>
                                         <span class="profile-role-copy">
-                                            <span class="d-flex flex-wrap align-items-center justify-content-between gap-2"><strong>Concesionarios</strong></span>
-                                            <span class="profile-role-description">Consulta obligaciones pendientes si la Dirección de Impuestos de Bogotá te autorizó.</span>
+                                            <span class="d-flex flex-wrap align-items-center justify-content-between gap-2"><strong>Concesionarios</strong><span class="badge rounded-pill bg-primary-subtle text-primary-emphasis border border-primary-subtle d-none" data-profile-active-badge>Activo</span></span>
+                                            <span class="profile-role-description">Consulta las obligaciones tributarias pendientes si cuentas con autorización de la Dirección de Impuestos de Bogotá.</span>
+                                            <span class="small fw-semibold text-primary">Ingresar</span>
                                         </span>
-                                    </div>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item profile-role-option" type="button" data-profile-role="Notarías y sucesiones" aria-pressed="false">
+                                        <span class="profile-role-icon" aria-hidden="true"><i class="bi bi-building"></i></span>
+                                        <span class="profile-role-copy">
+                                            <span class="small text-secondary">Terceros autorizados</span>
+                                            <span class="d-flex flex-wrap align-items-center justify-content-between gap-2"><strong>Notarías y sucesiones</strong><span class="badge rounded-pill bg-primary-subtle text-primary-emphasis border border-primary-subtle d-none" data-profile-active-badge>Activo</span></span>
+                                            <span class="profile-role-description">Consulta las obligaciones tributarias pendientes si cuentas con autorización de la Dirección de Impuestos de Bogotá.</span>
+                                            <span class="small fw-semibold text-primary">Ingresar</span>
+                                        </span>
+                                    </button>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item profile-signout d-flex align-items-center gap-2" href="#cerrar-sesion"><i class="bi bi-box-arrow-right" aria-hidden="true"></i>Cerrar sesión</a></li>
@@ -138,10 +159,10 @@
                         <section class="bg-white border rounded-3 p-3 p-md-4 mb-4" aria-labelledby="basic-personal-data">
                             <h2 class="h6 fw-semibold text-body border-bottom pb-2 mb-3" id="basic-personal-data">Datos personales y de identificación</h2>
                             <div class="row g-3">
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-name">Primer nombre</label><input class="form-control form-control-sm" id="basic-first-name" type="text" value="CONTRIBUYENTE" autocomplete="given-name" disabled></div>
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-middle-name">Segundo nombre</label><input class="form-control form-control-sm" id="basic-middle-name" type="text" value="EJEMPLO" autocomplete="additional-name" disabled></div>
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-surname">Primer apellido</label><input class="form-control form-control-sm" id="basic-first-surname" type="text" value="DEMO" autocomplete="family-name" disabled></div>
-                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-second-surname">Segundo apellido</label><input class="form-control form-control-sm" id="basic-second-surname" type="text" value="FICTICIO" autocomplete="additional-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-name">Primer nombre</label><input class="form-control form-control-sm" id="basic-first-name" type="text" value="MIGUEL" autocomplete="given-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-middle-name">Segundo nombre</label><input class="form-control form-control-sm" id="basic-middle-name" type="text" value="ANDRÉS" autocomplete="additional-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-first-surname">Primer apellido</label><input class="form-control form-control-sm" id="basic-first-surname" type="text" value="SALAZAR" autocomplete="family-name" disabled></div>
+                                <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-second-surname">Segundo apellido</label><input class="form-control form-control-sm" id="basic-second-surname" type="text" value="RÍOS" autocomplete="additional-name" disabled></div>
                                 <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-id-class">Clase de identificación</label><select class="form-select form-select-sm" id="basic-id-class" disabled><option value="">Seleccione</option><option value="CC" selected>CC - Cédula de Ciudadanía</option><option value="CE">Cédula de extranjería</option><option value="PA">Pasaporte</option></select></div>
                                 <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-document-number">Número de documento</label><input class="form-control form-control-sm" id="basic-document-number" type="text" inputmode="numeric" value="1000000001" autocomplete="off" disabled></div>
                                 <div class="col-12 col-sm-6 col-lg-3"><label class="form-label small mb-1" for="basic-document-issue-date">Fecha de expedición del documento</label><input class="form-control form-control-sm" id="basic-document-issue-date" type="date" value="2000-01-01" disabled></div>
@@ -239,7 +260,7 @@
                         <section class="bg-white border rounded-3 p-3 p-md-4 mb-4" aria-labelledby="change-email">
                             <h2 class="h6 fw-semibold text-body border-bottom pb-2 mb-3" id="change-email">Cambiar correo electrónico / usuario</h2>
                             <div class="row g-3">
-                                <div class="col-12 col-md-6"><label class="form-label small mb-1" for="current-email">Correo electrónico</label><input class="form-control form-control-sm" type="email" id="current-email" autocomplete="email" value="contribuyente.demo@example.com"></div>
+                                <div class="col-12 col-md-6"><label class="form-label small mb-1" for="current-email">Correo electrónico</label><input class="form-control form-control-sm" type="email" id="current-email" autocomplete="email" value="miguel.salazar@example.com"></div>
                                 <div class="col-12 col-md-6"><label class="form-label small mb-1" for="new-email">Nuevo correo electrónico <span class="text-danger">*</span></label><input class="form-control form-control-sm" type="email" id="new-email" required autocomplete="email" placeholder="Ingresa el nuevo correo"></div>
                                 <div class="col-12 col-md-6"><label class="form-label small mb-1" for="confirm-email">Confirmar nuevo correo electrónico <span class="text-danger">*</span></label><input class="form-control form-control-sm" type="email" id="confirm-email" required autocomplete="email" placeholder="Repite el nuevo correo"></div>
                             </div>
@@ -316,16 +337,36 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/agent-flow.js?v=20261119-table-style"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/agent-flow.js?v=20261124-documentos"></script>
     <script src="js/ica.js?v=20261119-textos"></script>
-    <script src="js/predial-declaration.js?v=20261119-textos"></script>
-    <script src="js/obligations.js?v=20261119-layout-rop"></script>
-    <script src="js/procedure-tracking.js?v=20261117-bootstrap"></script>
+    <script src="js/predial-declaration.js?v=fichas-impuestos"></script>
+    <script src="js/procedure-tracking.js?v=menu-directo"></script>
     <script src="js/multipayment-certification.js?v=20261117-bootstrap"></script>
-    <script src="js/payment-history.js?v=20261119-textos"></script>
-    <script src="js/script.js?v=20261119-notificaciones"></script>
-    <script src="js/table-sort.js?v=20261119-rit-tables"></script>
+    <script src="js/payment-history.js?v=objetos-tributarios"></script>
+    <script src="js/notary-service.js?v=placas"></script>
+    <script src="js/table-pagination.js"></script>
+    <script src="js/selection-action-bar.js"></script>
+    <script src="js/query-results.js?v=secciones-impuestos"></script>
+    <script src="js/notary-obligations.js?v=impuestos"></script>
+    <script src="js/date-range-picker.js"></script>
+    <script src="js/dealer-service.js"></script>
+    <script src="js/dealer-references.js"></script>
+    <script src="js/taxpayer-queries.js?v=declaraciones-unificadas"></script>
+    <script src="js/obligations.js?v=seleccion-tablas"></script>
+    <script src="js/taxpayer-billing.js?v=fichas-impuestos"></script>
+    <script src="js/multipay.js?v=seleccion-tablas"></script>
+    <script src="js/invoice-rit.js?v=nombres-apellidos"></script>
+    <script src="js/payment-plan-rop.js"></script>
+    <script src="js/account-statement.js?v=publicidad-exterior"></script>
+    <script src="js/tax-details.js?v=declaraciones-unificadas"></script>
+    <script src="js/publicity-tax.js?v=secciones-impuestos"></script>
+    <script src="js/fuel-surtax.js?v=declaracion-sobretasa"></script>
+    <script src="js/pending-obligations.js?v=publicidad-exterior"></script>
+    <script src="js/declarations.js"></script>
+    <script src="js/script.js?v=declaraciones-unificadas"></script>
+    <script src="js/table-sort.js?v=declaraciones-unificadas"></script>
+    <script src="js/table-actions.js?v=declaraciones-unificadas"></script>
 </body>
 </html>
 

@@ -7,25 +7,108 @@ let icaData = { activities: [{ code: '1061', name: 'Trilla de café', type: 'P',
 try { const saved = JSON.parse(localStorage.getItem('hacienda-ica-v1')); if (saved && Array.isArray(saved.activities) && Array.isArray(saved.establishments)) icaData = saved; } catch {}
 try {
  if (localStorage.getItem('hacienda-ica-establishment-seed-v1') !== 'true') {
-  if (!icaData.establishments.some(item => item.registration === 'ABCD')) icaData.establishments.push({ registration: 'ABCD', name: 'Establecimiento Demo', address: 'Dirección ficticia de ejemplo', phone: '0000000000', start: '2025-01-01' });
+  if (!icaData.establishments.some(item => item.registration === 'ABCD')) icaData.establishments.push({ registration: 'ABCD', name: 'Café Alameda', address: 'AC 8 # 1 1', phone: '6012771317', start: '2025-01-01' });
   localStorage.setItem('hacienda-ica-v1', JSON.stringify(icaData));
   localStorage.setItem('hacienda-ica-establishment-seed-v1', 'true');
  }
-} catch { if (!icaData.establishments.length) icaData.establishments.push({ registration: 'ABCD', name: 'Establecimiento Demo', address: 'Dirección ficticia de ejemplo', phone: '0000000000', start: '2025-01-01' }); }
+} catch { if (!icaData.establishments.length) icaData.establishments.push({ registration: 'ABCD', name: 'Café Alameda', address: 'AC 8 # 1 1', phone: '6012771317', start: '2025-01-01' }); }
 icaData.establishments.forEach(item => {
- if (item.name === 'PRUEBA') item.name = 'Establecimiento Demo';
+ if (item.name === 'PRUEBA') item.name = 'Café Alameda';
 });
 let icaTab = 'activities';
 const icaEscape = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 const icaDate = value => value.split('-').reverse().join('/');
+const icaIndividualData = icaData;
+let icaCorporateData;
+function icaStorageKey() {
+ return taxpayerSession?.requiresObject ? 'hacienda-ica-corporate-v1' : 'hacienda-ica-v1';
+}
+
+function selectIcaProfile() {
+ if (!taxpayerSession?.requiresObject) {
+  icaData = icaIndividualData;
+  return;
+ }
+ if (!icaCorporateData) {
+  try {
+   const saved = JSON.parse(localStorage.getItem(icaStorageKey()));
+   if (saved && Array.isArray(saved.activities) && Array.isArray(saved.establishments)) icaCorporateData = saved;
+  } catch {}
+  icaCorporateData ??= {
+   activities: [
+    { ...icaCatalog[0], type: 'P', start: '2022-01-01' },
+    { ...icaCatalog[1], type: 'S', start: '2023-01-01' },
+   ],
+   establishments: [],
+  };
+ }
+ icaData = icaCorporateData;
+}
+
+function finishIcaActivity(index) {
+ const owner = icaData;
+ const session = taxpayerSession;
+ const item = owner.activities[index];
+ if (!item || item.end || item.type === 'P') return;
+ const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+ icaModal('Finalizar actividad económica', `<form>
+  <p>Confirme los datos y defina la fecha de cierre de la actividad.</p>
+  <dl class="row g-2 mb-3"><div class="col-sm-3"><dt>Código</dt><dd>${icaEscape(item.code)}</dd></div>
+   <div class="col-sm-6"><dt>Descripción</dt><dd>${icaEscape(item.name)}</dd></div>
+   <div class="col-sm-3"><dt>Fecha de inicio</dt><dd>${icaDate(item.start)}</dd></div></dl>
+  <label class="form-label" for="ica-activity-end">Fecha de finalización de la actividad</label>
+  <input class="form-control" type="date" id="ica-activity-end" required min="${icaEscape(item.start)}" aria-describedby="ica-end-format">
+  <div class="form-text" id="ica-end-format">DD/MM/AAAA. La fecha debe ser igual o posterior a la fecha de inicio.</div>
+  <div class="form-check mt-3"><input class="form-check-input" type="checkbox" id="ica-end-today"><label class="form-check-label" for="ica-end-today">Finalizar actividad hoy</label></div>
+  <div class="alert alert-danger d-none mt-3" data-ica-finish-error role="alert">No fue posible finalizar la actividad económica. Intente nuevamente.</div>
+  <div class="d-flex flex-wrap justify-content-end gap-2 mt-4"><button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">No, cancelar</button>
+  <button class="btn btn-primary" type="submit" disabled>Sí, finalizar</button></div></form>`, (modal, instance) => {
+  const form = modal.querySelector('form');
+  const date = form.querySelector('#ica-activity-end');
+  const shortcut = form.querySelector('#ica-end-today');
+  const submit = form.querySelector('[type="submit"]');
+  const valid = () => Boolean(date.value && date.value >= item.start && date.checkValidity());
+  const update = () => { submit.disabled = !valid(); };
+  shortcut.disabled = today < item.start;
+  shortcut.addEventListener('change', () => {
+   date.readOnly = shortcut.checked;
+   date.value = shortcut.checked ? today : '';
+   update();
+  });
+  date.addEventListener('input', update);
+  form.addEventListener('submit', event => {
+   event.preventDefault();
+   if (!valid() || item.end || item.type === 'P' || taxpayerSession !== session || icaData !== owner) return;
+   item.end = date.value;
+   try { localStorage.setItem(icaStorageKey(), JSON.stringify(owner)); }
+   catch {
+    delete item.end;
+    form.querySelector('[data-ica-finish-error]').classList.remove('d-none');
+    return;
+   }
+   submit.disabled = true;
+   modal.addEventListener('hidden.bs.modal', () => icaRefresh('La actividad económica se finalizó correctamente.'), { once: true });
+   instance.hide();
+  });
+ });
+}
+
 function renderIca() {
- const activities = icaData.activities.map((item, index) => item.end ? null : [icaEscape(item.code), icaEscape(item.name), tableBadge(item.type === 'P' ? 'Principal' : 'Secundaria', item.type === 'P' ? 'info' : 'secondary'), '', icaDate(item.start), '31/12/9999', item.type === 'P' ? '<span class="small text-secondary text-nowrap"><i class="bi bi-lock me-1" aria-hidden="true"></i>No se puede eliminar</span>' : `<button type="button" class="btn btn-outline-primary btn-sm px-3 text-nowrap" data-ica-delete="activities" data-index="${index}" aria-label="Eliminar actividad ${icaEscape(item.code)}"><i class="bi bi-trash me-1" aria-hidden="true"></i>Eliminar</button>`]).filter(Boolean);
+ const activityHeaders = ['Código CIIU', 'Nombre de la actividad económica', 'Tipo', 'Tarifa', 'Fecha de inicio', 'Fecha de finalización'];
+ const activityValues = item => [icaEscape(item.code), icaEscape(item.name),
+  tableBadge(item.type === 'P' ? 'Principal' : 'Secundaria', item.type === 'P' ? 'info' : 'secondary'), '',
+  icaDate(item.start), item.end ? icaDate(item.end) : '—'];
+ const activities = icaData.activities.flatMap((item, index) => item.end ? [] : [[...activityValues(item),
+  item.type === 'P' ? '<span class="small text-secondary text-nowrap"><i class="bi bi-lock me-1" aria-hidden="true"></i>No se puede finalizar la actividad principal</span>'
+   : `<button type="button" class="btn btn-outline-primary btn-sm" data-ica-finish="${index}" aria-label="Finalizar actividad económica ${icaEscape(item.code)}">Finalizar actividad económica</button>`]]);
+ const history = icaData.activities.filter(item => item.end).map(item => [...activityValues(item), tableBadge('Finalizada', 'secondary')]);
+ const historyTable = registeredTaxTable('ica-history', 'Historial de actividades económicas', [...activityHeaders, 'Estado'], history);
  const establishments = icaData.establishments.map((item, index) => item.end ? null : [icaEscape(item.registration), icaEscape(item.name), icaEscape(item.address), icaEscape(item.phone), icaDate(item.start), '31/12/9999', `<button type="button" class="btn btn-outline-primary btn-sm px-3 text-nowrap" data-ica-delete="establishments" data-index="${index}" aria-label="Eliminar establecimiento ${icaEscape(item.name)}"><i class="bi bi-trash me-1" aria-hidden="true"></i>Eliminar</button>`]).filter(Boolean);
  const panel = (key, title, description, headers, rows, button) => `<div class="tab-pane fade ${icaTab === key ? 'show active' : ''}" id="ica-${key}" role="tabpanel" aria-labelledby="ica-${key}-tab" tabindex="0"><div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4"><div><h2 class="h5 mb-1">${title}</h2><p class="small text-secondary mb-0">${description}</p></div><button class="btn btn-primary flex-shrink-0" type="button" data-ica-add="${key}"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>${button}</button></div>${!rows.length && key === 'establishments' ? '<div class="text-center border rounded-3 bg-body-tertiary py-5"><i class="bi bi-shop fs-1 text-secondary" aria-hidden="true"></i><h3 class="h6 mt-3">No existen datos actuales de establecimientos.</h3><p class="small text-secondary mb-0">Agrega tu primer establecimiento para consultar sus datos aquí.</p></div>' : registeredTaxTable(`ica-${key}`, title, headers, rows).replace(/<div class="mb-4">[\s\S]*?<\/div>/, '')}</div>`;
- return `${pageTitle('Impuesto de Industria y Comercio (ICA)', 'Consulta y administra tus actividades económicas y establecimientos.')}<div id="ica-status" class="alert alert-success d-none" role="status"></div><div class="card border-0 shadow-sm registered-taxes"><div class="card-header bg-white px-3 px-md-4 pt-3 pb-0"><ul class="nav nav-tabs card-header-tabs gap-2" role="tablist" aria-label="Información de ICA">${[['activities','Actividades económicas','bi-briefcase',icaData.activities.filter(item => !item.end).length],['establishments','Establecimientos','bi-shop',icaData.establishments.filter(item => !item.end).length]].map(([key,label,icon,count]) => `<li class="nav-item" role="presentation"><button class="nav-link d-flex align-items-center gap-2 px-3 py-3 ${icaTab === key ? 'active' : ''}" id="ica-${key}-tab" type="button" role="tab" data-ica-tab="${key}" data-bs-toggle="tab" data-bs-target="#ica-${key}" aria-controls="ica-${key}" aria-selected="${icaTab === key}">${label}<span class="badge rounded-pill text-bg-light border">${count}</span></button></li>`).join('')}</ul></div><div class="card-body p-3 p-md-4 tab-content">${panel('activities','Actividades económicas vigentes','Actividades registradas y su fecha de inicio.', ['Código CIIU','Nombre de la actividad económica','Tipo','Tarifa','Fecha de inicio','Fecha de finalización','Acciones'], activities,'Agregar actividad')}${panel('establishments','Establecimientos activos','Información de los establecimientos asociados a tu registro.', ['Matrícula','Nombre','Dirección','Teléfono','Fecha de apertura','Fecha de cierre','Acciones'], establishments,'Agregar establecimiento')}</div></div>`;
+ return `${pageTitle('Impuesto de Industria y Comercio (ICA)', 'Consulta y administra tus actividades económicas y establecimientos.')}<div id="ica-status" class="alert alert-success d-none" role="status"></div><div class="card border-0 shadow-sm registered-taxes"><div class="card-header bg-white px-3 px-md-4 pt-3 pb-0"><ul class="nav nav-tabs card-header-tabs gap-2" role="tablist" aria-label="Información de ICA">${[['activities','Actividades económicas','bi-briefcase',icaData.activities.filter(item => !item.end).length],['establishments','Establecimientos','bi-shop',icaData.establishments.filter(item => !item.end).length]].map(([key,label,icon,count]) => `<li class="nav-item" role="presentation"><button class="nav-link d-flex align-items-center gap-2 px-3 py-3 ${icaTab === key ? 'active' : ''}" id="ica-${key}-tab" type="button" role="tab" data-ica-tab="${key}" data-bs-toggle="tab" data-bs-target="#ica-${key}" aria-controls="ica-${key}" aria-selected="${icaTab === key}">${label}<span class="badge rounded-pill text-bg-light border">${count}</span></button></li>`).join('')}</ul></div><div class="card-body p-3 p-md-4 tab-content">${panel('activities','Actividades económicas vigentes','Actividades registradas y su fecha de inicio.', [...activityHeaders, 'Acciones'], activities,'Agregar actividad').replace(/<\/div>$/, '<hr class="my-4">' + historyTable + '</div>')}${panel('establishments','Establecimientos activos','Información de los establecimientos asociados a tu registro.', ['Matrícula','Nombre','Dirección','Teléfono','Fecha de apertura','Fecha de cierre','Acciones'], establishments,'Agregar establecimiento')}</div></div>`;
 }
 function icaRefresh(message) {
- try { localStorage.setItem('hacienda-ica-v1', JSON.stringify(icaData)); } catch {}
+ try { localStorage.setItem(icaStorageKey(), JSON.stringify(icaData)); } catch {}
  renderRoute();
  if (message) { const status = document.getElementById('ica-status'); status.textContent = message; status.classList.remove('d-none'); }
 }
@@ -76,6 +159,8 @@ function icaAdd(key) {
 document.addEventListener('click', event => {
  const tab = event.target.closest('[data-ica-tab]'); if (tab) icaTab = tab.dataset.icaTab;
  const add = event.target.closest('[data-ica-add]'); if (add) icaAdd(add.dataset.icaAdd);
+ const finish = event.target.closest('[data-ica-finish]');
+ if (finish) finishIcaActivity(Number(finish.dataset.icaFinish));
  const remove = event.target.closest('[data-ica-delete]');
  if (remove) {
   const key = remove.dataset.icaDelete; const index = Number(remove.dataset.index); const item = icaData[key][index];

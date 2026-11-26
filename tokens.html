@@ -52,18 +52,24 @@
                 </div>
             </div>
         </section>
-        <p id="token-count" class="text-secondary small" role="status" aria-live="polite">Cargando variables…</p>
-        <div class="table-responsive app-table-container mb-3">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <label class="form-label small fw-semibold text-secondary mb-0" for="token-page-size">Mostrar</label>
+            <select class="form-select form-select-sm w-auto" id="token-page-size" aria-label="Datos por página"><option>10</option><option>20</option><option>30</option></select>
+            <span class="small text-secondary">registros por página</span>
+        </div>
+        <div class="table-responsive app-table-container mb-3" tabindex="0" role="region" aria-label="Variables CSS">
             <table class="table app-table table-hover align-middle mb-0">
                 <caption class="visually-hidden">Variables CSS, valores declarados y selectores de aplicación</caption>
                 <thead class="table-light"><tr><th scope="col">Nombre sugerido en Figma</th><th scope="col">Variable CSS</th><th scope="col">Valor declarado</th><th scope="col">Selector y contexto</th><th scope="col">Origen</th></tr></thead>
                 <tbody id="token-list"></tbody>
             </table>
         </div>
+        <div id="token-pagination"></div>
         <p id="token-empty" class="text-center text-secondary py-5" hidden>No hay variables que coincidan con tu búsqueda.</p>
         <noscript><p class="alert alert-warning mt-3">Activa JavaScript para consultar las variables.</p></noscript>
     </main>
-    <script src="js/tokens.js"></script>
-    <script src="js/table-sort.js"></script>
+    <script src="js/table-pagination.js"></script>
+    <script src="js/tokens.js?v=tablas-compartidas"></script>
+    <script src="js/table-sort.js?v=tablas-compartidas"></script>
 </body>
 </html>

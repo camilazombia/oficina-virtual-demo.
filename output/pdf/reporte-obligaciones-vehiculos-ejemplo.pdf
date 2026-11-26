@@ -1,0 +1,50 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+5 0 obj
+<< /Length 1232 >>
+stream
+BT
+/F1 18 Tf 1 0 0 1 45 790 Tm (Reporte de Obligaciones Pendientes) Tj
+/F1 12 Tf 1 0 0 1 45 762 Tm (Impuesto de Vehiculos - Ejemplo de referencia) Tj
+/F1 11 Tf 1 0 0 1 45 740 Tm (Objeto contrato: 21864114) Tj
+/F1 11 Tf 1 0 0 1 45 718 Tm (Placa: JWT71D) Tj
+/F1 11 Tf 1 0 0 1 45 696 Tm (Id. de Reporte: 100222597020261110140202) Tj
+/F1 11 Tf 1 0 0 1 45 674 Tm (Fecha: 10/11/2026    Hora: 14:02:02) Tj
+/F1 10 Tf 1 0 0 1 45 652 Tm () Tj
+/F1 10 Tf 1 0 0 1 45 630 Tm (ANO   PLACA   MODELO   MARCA    LINEA        ESTADO     SALDO) Tj
+/F1 10 Tf 1 0 0 1 45 608 Tm (2025  JWT71D  2013     DUCATI   1199 ABS P   MOROSO     661.000) Tj
+/F1 10 Tf 1 0 0 1 45 586 Tm (2026  JWT71D  2013     DUCATI   1199 ABS P   MOROSO     552.000) Tj
+/F1 10 Tf 1 0 0 1 45 564 Tm (2026  MCU235  2012     BMW      328 i        MOROSO   1.051.000) Tj
+/F1 10 Tf 1 0 0 1 45 542 Tm () Tj
+/F1 10 Tf 1 0 0 1 45 520 Tm (NOTA: Este reporte no incluye obligaciones que se encuentren) Tj
+/F1 10 Tf 1 0 0 1 45 498 Tm (en proceso de determinacion.) Tj
+/F1 10 Tf 1 0 0 1 45 476 Tm () Tj
+/F1 10 Tf 1 0 0 1 45 454 Tm (Documento de ejemplo basado en la informacion compartida.) Tj
+/F1 10 Tf 1 0 0 1 45 432 Tm (Los saldos difieren de la tabla y estan pendientes de validar.) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000309 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1593
+%%EOF

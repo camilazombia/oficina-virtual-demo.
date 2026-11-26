@@ -3,9 +3,14 @@
 	const collator = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
 	function enhanceTables() {
 		document.querySelectorAll('table thead th').forEach((header) => {
+			const label = header.textContent.trim();
+			if (/^(acción|acciones|presentar declaración)$/i.test(label)) {
+				header.dataset.tableSortReady = 'true';
+				return;
+			}
 			if (header.querySelector('button, a, input') || header.dataset.tableSortReady) return;
 			header.dataset.tableSortReady = 'true';
-			if (/^(acciones|seleccionar|imprimir)$/i.test(header.textContent.trim())) return;
+			if (/^(seleccionar|imprimir)$/i.test(label)) return;
 			const button = document.createElement('button');
 			button.type = 'button';
 			button.className = 'btn btn-link p-0 text-start text-body fw-semibold text-decoration-none d-flex align-items-center gap-2';
@@ -37,7 +42,7 @@
 			[...body.rows].forEach((row) => {
 				if (row.hasAttribute('data-pending-declaration-details')) {
 					groups.at(-1)?.push(row);
-				} else if (row.cells.length === 1 && row.cells[0].colSpan > 1) {
+				} else if (row.hasAttribute('data-pagination-empty') || (row.cells.length === 1 && row.cells[0].colSpan > 1)) {
 					emptyRows.push(row);
 				} else groups.push([row]);
 			});
@@ -57,6 +62,7 @@
 		if (table.id === 'pending-declarations-table') filterPendingDeclarations(true);
 		if (table.id === 'notification-page-list') paginateNotifications(true);
 		if (table.id === 'predialPropertiesTable') filterPredialProperties();
+		table.dispatchEvent(new Event('table-sorted'));
 	});
 	new MutationObserver(enhanceTables).observe(document.body, { childList: true, subtree: true });
 	enhanceTables();
